@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.UserMapper">
+    <select id="selectByField" resultType="com.hl.fruitmall.entity.bean.User">
+        SELECT id,phone,password,app_id,avatar,nickname,
+                role_type,ban_time,is_delete,violation,create_time,update_time
+        FROM user WHERE ${field} = #{value}
+    </select>
+    <select id="page" resultType="com.hl.fruitmall.entity.vo.UserPageVO">
+        <bind name="toKey" value="'%' + key + '%'"/>
+        SELECT id,nickname,phone,ban_time,violation,create_time FROM user
+        <if test="key != null and key.trim != '' and start != null">
+            WHERE (phone = #{key} OR nickname like #{toKey}) AND create_time BETWEEN #{start} AND #{end}
+        </if>
+        <if test="(key == null or key.trim == '') and start != null">
+            WHERE create_time BETWEEN #{start} AND #{end}
+        </if>
+        <if test="(key != null and key.trim != '') and start == null">
+            WHERE (phone = #{key} OR nickname like #{toKey})
+        </if>
+        LIMIT 10 OFFSET #{cur}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        <bind name="toKey" value="'%' + key + '%'"/>
+        SELECT COUNT(1) FROM user
+        <if test="key != null and key.trim != '' and start != null">
+            WHERE (phone = #{key} OR nickname like #{toKey}) AND create_time BETWEEN #{start} AND #{end}
+        </if>
+        <if test="(key == null or key.trim == '') and start != null">
+            WHERE create_time BETWEEN #{start} AND #{end}
+        </if>
+        <if test="(key != null and key.trim != '') and start == null">
+            WHERE (phone = #{key} OR nickname like #{toKey})
+        </if>
+    </select>
+</mapper>

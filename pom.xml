@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.hl</groupId>
+    <artifactId>fruit-mall-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>fruit-mall-server</name>
+    <description>水果网店后端</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+
+        <!-- 获取项目在线swagger的json数据,端口号8099,修改为自己项目设置的 -->
+        <swagger_source_url>http://localhost:8080/fruit-mall/v2/api-docs</swagger_source_url>
+        <!-- 生成的asciidoc文件的存放目录 -->
+        <asciidoc_output_directory>src/main/resources/docs/asciidoc/generated</asciidoc_output_directory>
+        <!-- 生成的html文件的存放目录 -->
+        <html_output_directory>src/main/resources/docs/html/generated</html_output_directory>
+        <!-- 生成的pdf文件的存放目录 -->
+        <pdf_output_directory>src/main/resources/docs/pdf/generated</pdf_output_directory>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.60</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.1.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.10.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+
+      <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <!--
+               <dependency>
+                   <groupId>io.github.swagger2markup</groupId>
+                   <artifactId>swagger2markup</artifactId>
+                   <version>1.3.1</version>
+               </dependency>-->
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+
+            <!--<plugin>
+                <groupId>io.github.swagger2markup</groupId>
+                <artifactId>swagger2markup-maven-plugin</artifactId>
+                <version>1.3.1</version>
+                <configuration>
+                    <swaggerInput>${swagger_source_url}</swaggerInput>
+                    <outputDir>src/main/resources/docs/asciidoc/generated</outputDir>
+                    <config>
+                        <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
+                    </config>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.6</version>
+
+                &lt;!&ndash; 生成pdf需要使用的依赖  &ndash;&gt;
+                <dependencies>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-pdf</artifactId>
+                        &lt;!&ndash; 注意此版本 &ndash;&gt;
+                        <version>1.5.0-alpha-zh.16</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jruby</groupId>
+                        <artifactId>jruby-complete</artifactId>
+                        <version>1.7.21</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    &lt;!&ndash; 源文件地址 asciidoc 存放的位置&ndash;&gt;
+                    <sourceDirectory>${asciidoc_output_directory}</sourceDirectory>
+                    <sourceHighlighter>coderay</sourceHighlighter>
+                    <attributes>
+                        &lt;!&ndash;菜单栏在左边&ndash;&gt;
+                        <toc>left</toc>
+                        &lt;!&ndash;多标题排列&ndash;&gt;
+                        <toclevels>3</toclevels>
+                        &lt;!&ndash;自动生成数字序号&ndash;&gt;
+                        <sectnums>true</sectnums>
+                    </attributes>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>output-html</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>html5</backend>
+                            &lt;!&ndash; 生成的html存放位置 &ndash;&gt;
+                            <outputDirectory>${html_output_directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>output-pdf</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>pdf</backend>
+                            &lt;!&ndash; 生成的pdf存放位置 &ndash;&gt;
+                            <outputDirectory>${pdf_output_directory}</outputDirectory>
+                            &lt;!&ndash; 解决pdf中文缺字问题 &ndash;&gt;
+                            <attributes>
+                                <pdf-style>cn</pdf-style>
+                            </attributes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hl.fruitmall.mapper.CommodityInfoMapper">
+    <select id="getInfo" resultType="com.hl.fruitmall.entity.bean.CommodityInfo">
+        select specification,weight,stock,price from commodity_info where commodity_id = #{commodityId} limit 1 offset #{cur};
+    </select>
+    <select id="getTotal" resultType="integer">
+        select count(1) from commodity_info where commodity_id = #{commodityId};
+    </select>
+</mapper>

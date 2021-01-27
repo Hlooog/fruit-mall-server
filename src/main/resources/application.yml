@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: fruit-mall-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://8.129.87.61:3306/fruit_mall?useUniCode=true?charsetEncoding=utf-8?serverTimeZone=GMT%2B8
+    type: com.alibaba.druid.pool.DruidDataSource
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  redis:
+    host: 8.129.87.61
+    password: 123456
+    port: 6379
+    database: 6
+    timeout: 10000
+
+server:
+  servlet:
+    context-path: /fruit-mall
+  port: 8080
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.hl.fruitmall.entity.bean
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.hl.fruitmallserver.mapper: debug
+
+
+aliyun:
+  oss:
+    endpoint: oss-cn-guangzhou.aliyuncs.com
+    accessKeyId: LTAI4G5YccKj9CQjMbCbgK5A
+    accessKeySecret: 34FuxnnHiyqlfaBFS0ORFSlS9rRJ0w
+    bucketName: hl-fruit-mall
