@@ -15,14 +15,24 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    User selectByField(@Param("field") String field,@Param("value") String value);
+    User selectByField(@Param("field") String field,@Param("value") Object value);
 
     List<UserPageVO> page(@Param("cur") int cur,
                           @Param("key") String key,
                           @Param("start") Date start,
-                          @Param("end") Date end);
+                          @Param("end") Date end,
+                          @Param("code") Integer code);
 
     Integer getTotal(@Param("key") String key,
                      @Param("start") Date start,
-                     @Param("end") Date end);
+                     @Param("end") Date end,
+                     @Param("code") Integer code);
+
+    void updateBanTime(@Param("id") Integer id,
+                       @Param("banTime") Date banTime,
+                       @Param("violation") Integer violation);
+
+    void updateById(@Param("id") Integer id,
+                    @Param("field") String field,
+                    @Param("value") Object value);
 }

@@ -26,20 +26,41 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/page")
+    @GetMapping("/page/general")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
-    public R page(@RequestParam("cur") Integer cur,
+    public R pageGeneral(@RequestParam("cur") Integer cur,
                   @RequestParam(value = "key",required = false) String key,
                   @RequestParam(value = "startTime",required = false)String startTime,
                   @RequestParam(value = "endTime",required = false) String endTime){
-        return userService.page(cur,key,startTime,endTime);
+        return userService.page(cur,key,startTime,endTime,RoleEnum.USER.getCode());
     }
 
-    @GetMapping("/ban/{id}")
+    @PutMapping("/ban/general")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
-    public R banUser(@PathVariable("id") Integer id){
-        return userService.ban(id);
+    public R banUser(@RequestParam("id") Integer id,
+                     @RequestParam("days") Integer days){
+        return userService.ban(id,days);
     }
 
+    @PutMapping("/service/{id}")
+    @VerificationToken
+    public R setService(@PathVariable("id") Integer id){
+        return userService.setService(id);
+    }
 
+    @GetMapping("/page/merchant")
+    @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
+    public R pageMerchant(@RequestParam("cur") Integer cur,
+                  @RequestParam(value = "key",required = false) String key,
+                  @RequestParam(value = "startTime",required = false)String startTime,
+                  @RequestParam(value = "endTime",required = false) String endTime){
+        return userService.page(cur,key,startTime,endTime,RoleEnum.MERCHANT.getCode());
+    }
+
+    @PutMapping("/ban/merchant")
+    @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
+    public R banMerchant(@RequestParam("id") Integer id,
+                     @RequestParam("days") Integer days){
+        return userService.ban(id,days);
+    }
 }

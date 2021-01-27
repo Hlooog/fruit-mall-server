@@ -15,13 +15,12 @@ public enum ExceptionEnum {
     TOKEN_VERIFICATION_FAIL(10007, "token验证失败"),
     HAS_NOT_SHOP_RECORDS(10008, "没有找到店铺信息"),
     DELETE_USER_HAS_ERR(10009, "删除用户失败"),
-    USER_HAS_BEEN_MUTED(10011, "用户已经被永久禁言"),
-    USER_HAS_BEEN_BAN(10012, "用户已经被永久封禁"),
-    HAS_NOT_CITY_RECORDS(10013, "没有找到城市信息"),
-    NOT_THE_CORRECT_TIME_TYPE(10014, "不是正确的时间类型"),
-    SHOP_HAS_BEEN_BAN(10015,"店铺已经被永久封禁"),
-    INSUFFICIENT_PERMISSIONS(10016,"权限不够"),
-    OPERATION_FAILED(10017,"操作失败")
+    USER_HAS_BEEN_BAN(10010, "用户已经被封禁"),
+    HAS_NOT_CITY_RECORDS(10011, "没有找到城市信息"),
+    NOT_THE_CORRECT_TIME_TYPE(10012, "不是正确的时间类型"),
+    SHOP_HAS_BEEN_BAN(10013,"店铺已经被永久封禁"),
+    INSUFFICIENT_PERMISSIONS(10014,"权限不够"),
+    OPERATION_FAILED(10015,"操作失败")
     ;
     private Integer code;
     private String msg;

@@ -16,7 +16,9 @@ public interface UserService {
 
     R logout(HttpServletRequest request);
 
-    R page(Integer cur, String key, String startTime, String endTime);
+    R page(Integer cur, String key, String startTime, String endTime, Integer code);
 
-    R ban(Integer id);
+    R ban(Integer id, Integer days);
+
+    R setService(Integer id);
 }

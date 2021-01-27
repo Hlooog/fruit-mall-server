@@ -9,7 +9,7 @@ import com.hl.fruitmall.common.interfaces.EnumInterface;
 public enum RoleEnum implements EnumInterface {
     ADMIN(0,"管理员"),
     CUSTOMER_SERVICE(1,"客服"),
-    SHOPKEEPER(2,"店主"),
+    MERCHANT(2,"商家"),
     USER(3,"普通用户")
     ;
 

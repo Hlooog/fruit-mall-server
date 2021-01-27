@@ -1,5 +1,7 @@
 package com.hl.fruitmall.common.uitls;
 
+import com.hl.fruitmall.entity.bean.User;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,19 +15,21 @@ public class GlobalUtils {
 
     public static final int MAX_VIOLATION = 5;
 
-    public static Date changeTime(Date create, Date date, int day) {
+    public static void changeTime(User user, int day) {
         Calendar cal = Calendar.getInstance();
         if (day == -1) {
-            cal.setTime(create);
+            cal.setTime(user.getCreateTime());
         } else {
-            Date now = new Date();
-            if (now.before(date)) {
-                cal.setTime(date);
+            Integer violation = user.getViolation();
+            if (violation == PUNISHMENT.length * MAX_VIOLATION) {
+                cal.setTime(user.getCreateTime());
+                day = PUNISHMENT[MAX_VIOLATION];
             } else {
-                cal.setTime(now);
+                cal.setTime(new Date());
+                day = PUNISHMENT[day] + PUNISHMENT[violation / MAX_VIOLATION];
             }
         }
         cal.add(Calendar.DATE, day);
-        return cal.getTime();
+        user.setBanTime(cal.getTime());
     }
 }

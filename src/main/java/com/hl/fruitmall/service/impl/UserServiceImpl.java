@@ -5,6 +5,7 @@ import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
+import com.hl.fruitmall.common.uitls.GlobalUtils;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.common.uitls.TokenUtils;
 import com.hl.fruitmall.entity.bean.User;
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public R page(Integer cur, String key, String startTime, String endTime) {
+    public R page(Integer cur, String key, String startTime, String endTime, Integer code) {
         Date start = null,end = null;
         if (null != startTime
                 && null != endTime
@@ -103,8 +104,8 @@ public class UserServiceImpl implements UserService {
                 e.printStackTrace();
             }
         }
-        List<UserPageVO> list = userMapper.page((cur - 1) * 10, key,start,end);
-        Integer total = userMapper.getTotal(key,start,end);
+        List<UserPageVO> list = userMapper.page((cur - 1) * 10, key,start,end,code);
+        Integer total = userMapper.getTotal(key,start,end,code);
         return R.ok(new HashMap<String,Object>(){
             {
                 put("data", list);
@@ -114,8 +115,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public R ban(Integer id) {
-        return null;
+    public R ban(Integer id, Integer days) {
+        User user = checkUser(id);
+        user.addViolation();
+        GlobalUtils.changeTime(user, days);
+        userMapper.updateBanTime(id,user.getBanTime(),user.getViolation());
+        return R.ok();
+    }
+
+    @Override
+    public R setService(Integer id) {
+        checkUser(id);
+        userMapper.updateById(id,"role_type",RoleEnum.CUSTOMER_SERVICE.getCode());
+        return R.ok();
+    }
+
+
+    private User checkUser(Integer id){
+        User user = userMapper.selectByField("id", id);
+        if (user == null) {
+            throw new GlobalException(ExceptionEnum.HAS_NOT_USER_RECORDS);
+        }
+        if (user.getCreateTime().after(user.getBanTime())
+                || user.getBanTime().after(new Date())) {
+            throw new GlobalException(ExceptionEnum.USER_HAS_BEEN_BAN);
+        }
+        return user;
     }
 
 }
