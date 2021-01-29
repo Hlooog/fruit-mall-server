@@ -1,6 +1,6 @@
 package com.hl.fruitmall.mapper;
 
-import com.hl.fruitmall.entity.vo.MerchantVO;
+import com.hl.fruitmall.entity.vo.ApplyVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -10,9 +10,12 @@ import java.util.List;
  * @create 2021/1/25 21:51
  */
 public interface MerchantInfoMapper {
-    void updateByField(@Param("id") Integer id, @Param("field") String field, @Param("value") Object value);
+    void updateByField(@Param("field1") String field1,
+                       @Param("value1") Object value1,
+                       @Param("field2") String field2,
+                       @Param("value2") Object value2);
 
-    List<MerchantVO> getList(@Param("cur") Integer cur, @Param("status") Integer status);
+    List<ApplyVO> getList(@Param("cur") Integer cur, @Param("status") Integer status);
 
     Integer getTotal(@Param("status") Integer status);
 }

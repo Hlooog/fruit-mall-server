@@ -1,12 +1,16 @@
 package com.hl.fruitmall.service.impl;
 
 import com.hl.fruitmall.common.enums.ReviewStatusEnums;
+import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.mapper.MerchantInfoMapper;
-import com.hl.fruitmall.entity.vo.MerchantVO;
+import com.hl.fruitmall.entity.vo.ApplyVO;
+import com.hl.fruitmall.mapper.UserMapper;
 import com.hl.fruitmall.service.MerchantInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,15 +25,20 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Autowired
     private MerchantInfoMapper merchantInfoMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public R review(Integer id) {
-        merchantInfoMapper.updateByField(id,"status", ReviewStatusEnums.ReVIEWED.getCode());
+        merchantInfoMapper.updateByField("user_id",id,"status", ReviewStatusEnums.REVIEWED.getCode());
+        userMapper.updateByField("id", id, "role_type", RoleEnum.MERCHANT.getCode());
         return R.ok();
     }
 
     @Override
     public R getListReview(Integer cur,Integer status) {
-        List<MerchantVO> list = merchantInfoMapper.getList((cur - 1) * 10,status);
+        List<ApplyVO> list = merchantInfoMapper.getList((cur - 1) * 10,status);
         Integer total = merchantInfoMapper.getTotal(status);
         return R.ok(new HashMap<String,Object>(){
             {
@@ -41,7 +50,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     @Override
     public R refuse(Integer id) {
-        merchantInfoMapper.updateByField(id, "status", ReviewStatusEnums.REFUSE.getCode());
+        merchantInfoMapper.updateByField("id",id, "status", ReviewStatusEnums.REFUSE.getCode());
         return R.ok();
     }
 

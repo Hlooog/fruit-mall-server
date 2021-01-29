@@ -2,19 +2,26 @@ package com.hl.fruitmall.entity.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author Hl
- * @create 2021/1/25 22:04
+ * @create 2021/1/28 15:54
  */
 @Data
 public class MerchantVO {
-
     private Integer id;
-    private Integer userId;
-    private String IdCard;
+
     private String name;
-    private String positive;
-    private String negative;
-    private Integer status;
+
+    private String idCard;
+
+    private String phone;
+
+    private Date banTime;
+
+    private Integer violation;
+
+    private Date createTime;
 
 }

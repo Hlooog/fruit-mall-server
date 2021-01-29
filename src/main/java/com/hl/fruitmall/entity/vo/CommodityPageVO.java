@@ -1,9 +1,8 @@
 package com.hl.fruitmall.entity.vo;
 
-import com.hl.fruitmall.entity.bean.Commodity;
 import lombok.Data;
 
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -13,32 +12,16 @@ import java.util.List;
 @Data
 public class CommodityPageVO {
 
-    private Integer commodityId;
+    private Integer id;
 
-    private String commodityName;
+    private String name;
 
-    private List<String> imageList;
+    private Integer isOnShelf;
 
-    private Integer sales;
+    private String varietyName;
 
-    private Date createTime;
+    private BigDecimal price;
 
-    private Date updateTime;
+    private List<String> urlList;
 
-    public static String[] toArray(){
-        return new String[]{
-          "id","name","create_time","update_time"
-        };
-    }
-
-    public static CommodityPageVO toCommodityPageVO(Commodity commodity,List<String> imageList, Integer sales){
-        CommodityPageVO commodityPageVO = new CommodityPageVO();
-        commodityPageVO.setCommodityId(commodity.getId());
-        commodityPageVO.setCommodityName(commodity.getName());
-        commodityPageVO.setCreateTime(commodity.getCreateTime());
-        commodityPageVO.setImageList(imageList);
-        commodityPageVO.setUpdateTime(commodity.getUpdateTime());
-        commodityPageVO.setSales(sales);
-        return commodityPageVO;
-    }
 }

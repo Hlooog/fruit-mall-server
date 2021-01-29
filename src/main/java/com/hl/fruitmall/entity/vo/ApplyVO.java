@@ -1,4 +1,4 @@
-package com.hl.fruitmall.entity.bean;
+package com.hl.fruitmall.entity.vo;
 
 import lombok.Data;
 
@@ -6,13 +6,14 @@ import java.util.Date;
 
 /**
  * @author Hl
- * @create 2021/1/25 21:45
+ * @create 2021/1/25 22:04
  */
 @Data
-public class MerchantInfo {
+public class ApplyVO {
+
     private Integer id;
     private Integer userId;
-    private String IdCard;
+    private String idCard;
     private String name;
     private String positive;
     private String negative;

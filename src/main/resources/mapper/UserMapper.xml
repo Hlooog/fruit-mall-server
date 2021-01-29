@@ -3,11 +3,24 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.UserMapper">
+
+    <resultMap id="merchantVO" type="com.hl.fruitmall.entity.vo.MerchantVO">
+        <id column="id" property="id" javaType="int"/>
+        <result column="phone" property="phone" javaType="string"/>
+        <result column="violation" property="violation" javaType="int"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="ban_time" property="banTime" javaType="java.util.Date"/>
+        <result column="name" property="name" javaType="string"/>
+        <result column="id_card" property="idCard" javaType="string"/>
+    </resultMap>
+
     <update id="updateBanTime">
-        UPDATE user SET ban_time = #{banTime}, violation = #{violation} WHERE id = #{id}
+        UPDATE user SET ban_time = #{banTime}, violation = #{violation},update_time = CURRENT_TIMESTAMP
+         WHERE id = #{id}
     </update>
-    <update id="updateById">
-        UPDATE user SET ${field} = #{value} WHERE id = #{id};
+    <update id="updateByField">
+        UPDATE user SET ${field2} = #{value2}, update_time = CURRENT_TIMESTAMP
+         WHERE ${field1} = #{value1};
     </update>
 
     <select id="selectByField" resultType="com.hl.fruitmall.entity.bean.User">
@@ -19,29 +32,48 @@
     <select id="page" resultType="com.hl.fruitmall.entity.vo.UserPageVO">
         <bind name="toKey" value="'%' + key + '%'"/>
         SELECT id,nickname,phone,ban_time,violation,create_time FROM user
-        WHERE role_type = #{code}
-        <if test="key != null and key.trim != '' and start != null">
-            AND (phone = #{key} OR nickname like #{toKey}) AND create_time BETWEEN #{start} AND #{end}
-        </if>
-        <if test="(key == null or key.trim == '') and start != null">
-            AND create_time BETWEEN #{start} AND #{end}
-        </if>
-        <if test="(key != null and key.trim != '') and start == null">
-            AND (phone = #{key} OR nickname like #{toKey})
-        </if>
+        <where>
+            role_type = 3
+            <if test="key != null and key.trim != ''">
+                AND (phone = #{key} OR nickname like #{toKey})
+            </if>
+            <if test="start != null">
+                AND create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
         LIMIT 10 OFFSET #{cur}
     </select>
     <select id="getTotal" resultType="java.lang.Integer">
         <bind name="toKey" value="'%' + key + '%'"/>
-        SELECT COUNT(1) FROM user WHERE role_type = #{code}
-        <if test="key != null and key.trim != '' and start != null">
-            AND (phone = #{key} OR nickname like #{toKey}) AND create_time BETWEEN #{start} AND #{end}
-        </if>
-        <if test="(key == null or key.trim == '') and start != null">
-            AND create_time BETWEEN #{start} AND #{end}
-        </if>
-        <if test="(key != null and key.trim != '') and start == null">
-            AND (phone = #{key} OR nickname like #{toKey})
-        </if>
+        SELECT COUNT(1) FROM user
+        <where>
+            role_type = #{type}
+            <if test="key != null and key.trim != ''">
+                AND (phone = #{key} OR nickname like #{toKey})
+            </if>
+            <if test="start != null">
+                AND create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+    </select>
+    <select id="getListByFiled" resultType="com.hl.fruitmall.entity.vo.UserPageVO">
+        SELECT id,phone,password,app_id,avatar,nickname,
+                role_type,ban_time,is_delete,violation,create_time,update_time FROM user
+        WHERE ${field} = #{value}
+    </select>
+    <select id="pageMerchant" resultMap="merchantVO">
+        <bind name="toKey" value="'%' + key + '%'"/>
+        SELECT u.id,u.phone,u.ban_time,u.violation,u.create_time,m.name,m.id_card FROM user u LEFT JOIN
+        merchant_info m ON u.id = m.user_id
+        <where>
+            role_type = 2
+            <if test="key != null and key.trim != ''">
+                AND (phone = #{key} OR nickname like #{toKey})
+            </if>
+            <if test="start != null">
+                AND create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+        LIMIT 10 OFFSET #{cur}
     </select>
 </mapper>

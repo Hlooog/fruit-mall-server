@@ -2,6 +2,7 @@ package com.hl.fruitmall.controller;
 
 
 import com.hl.fruitmall.common.annotation.VerificationToken;
+import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.service.CommodityService;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +24,16 @@ public class CommodityController {
     @Resource
     private CommodityService commodityService;
 
-    @GetMapping("/list")
-    @VerificationToken
-    public R getList(@RequestParam("shopId") Integer shopId,
-                     @RequestParam("cur") Integer cur,
-                     @RequestParam("size") Integer size,
-                     @RequestParam(value = "key",required = false) String key){
-        return commodityService.getList(shopId,cur,size,key);
+    @GetMapping("/page/{id}")
+    @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
+    public R page(@PathVariable("id")Integer id){
+        return commodityService.page(id);
     }
 
-    @DeleteMapping("/delete/{commodityId}")
-    @VerificationToken
-    public R delete(@PathVariable("commodityId") Integer commodityId) {
-        return commodityService.delete(commodityId);
+    @PutMapping("/off/{id}")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R off(@PathVariable("id") Integer id){
+        return commodityService.off(id);
     }
 
 }

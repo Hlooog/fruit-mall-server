@@ -8,7 +8,7 @@ import com.hl.fruitmall.common.interfaces.EnumInterface;
  */
 public enum ReviewStatusEnums implements EnumInterface {
     UN_REVIEWED(0,"未审核"),
-    ReVIEWED(1,"通过审核"),
+    REVIEWED(1,"通过审核"),
     REFUSE(2,"不通过审核")
     ;
 

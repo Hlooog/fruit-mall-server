@@ -2,6 +2,7 @@ package com.hl.fruitmall.controller;
 
 
 import com.hl.fruitmall.common.annotation.VerificationToken;
+import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.service.ShopService;
 import org.springframework.web.bind.annotation.*;
@@ -24,20 +25,25 @@ public class ShopController {
     private ShopService shopService;
 
     @GetMapping("/page")
-    @VerificationToken
+    @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
     public R page(@RequestParam("cur") Integer cur,
-                  @RequestParam("size") Integer size,
                   @RequestParam(value = "key",required = false) String key,
                   @RequestParam(value = "startTime",required = false) String startTime,
                   @RequestParam(value = "endTime",required = false) String endTime,
                   @RequestParam(value = "cityId",required = false) Integer cityId) {
-        return shopService.page(cur,size,key,startTime,endTime,cityId);
+        return shopService.page(cur,key,startTime,endTime,cityId);
     }
-    
-    @PutMapping("/mute")
-    @VerificationToken
-    public R mute(@RequestParam("shopId") Integer shopId,
-                  @RequestParam("degree") Integer degree){
-        return shopService.mute(shopId,degree);
+
+    @PutMapping("/ban")
+    @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
+    public R ban(@RequestParam("id") Integer id,
+                 @RequestParam("days") Integer days){
+        return shopService.ban(id,days);
+    }
+
+    @GetMapping("/get/{id}")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R get(@PathVariable("id") Integer id){
+        return shopService.get(id);
     }
 }

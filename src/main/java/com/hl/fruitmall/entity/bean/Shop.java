@@ -37,4 +37,8 @@ public class Shop{
     private Date createTime;
     //修改时间
     private Date updateTime;
+
+    public void addViolation(){
+        this.violation++;
+    }
 }

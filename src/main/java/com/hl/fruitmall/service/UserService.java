@@ -1,6 +1,7 @@
 package com.hl.fruitmall.service;
 
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.entity.bean.User;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,9 +17,22 @@ public interface UserService {
 
     R logout(HttpServletRequest request);
 
-    R page(Integer cur, String key, String startTime, String endTime, Integer code);
+    R page(Integer cur, String key, String startTime, String endTime);
 
-    R ban(Integer id, Integer days);
+    R banGeneral(Integer id, Integer days);
 
     R setService(Integer id);
+
+    R banMerchant(Integer id, Integer days);
+
+    User checkUser(String field,Object value);
+
+    R cancelMerchant(Integer id);
+
+    R getList(Integer code);
+
+    R cancelService(Integer id);
+
+    R pageMerchant(Integer cur, String key, String startTime, String endTime);
+
 }

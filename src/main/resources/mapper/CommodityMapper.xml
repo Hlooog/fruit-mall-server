@@ -3,7 +3,34 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.CommodityMapper">
-    <update id="update">
-        UPDATE commodity SET is_on_shelf = 1, update_time = CURRENT_TIMESTAMP WHERE id = #{commodityId};
+
+    <resultMap id="pageVO" type="com.hl.fruitmall.entity.vo.CommodityPageVO">
+        <id column="id" property="id" javaType="int"/>
+        <result column="cname" property="name" javaType="string"/>
+        <result column="is_on_shelf" property="isOnShelf" javaType="int"/>
+        <result column="vname" property="varietyName" javaType="string"/>
+        <result column="price" property="price" javaType="java.math.BigDecimal"/>
+        <collection property="urlList" resultMap="urls"></collection>
+    </resultMap>
+    
+    <resultMap id="urls" type="java.lang.String">
+        <result column="url"/>
+    </resultMap>
+    <update id="updateByField">
+        UPDATE commodity SET ${filed2} = #{value2}, update_time = CURRENT_TIMESTAMP
+        WHERE ${field1} = #{value1}
     </update>
+
+    <select id="selectPage" resultMap="pageVO">
+        SELECT c.id,c.name AS cname, c.is_on_shelf, p.price,v.name AS vname, ci.url FROM commodity c
+            LEFT JOIN commodity_image ci on c.id = ci.commodity_id
+            LEFT JOIN variety v on c.variety_id = v.id
+            LEFT JOIN (SELECT commodity_id,MIN(price) AS price
+                        FROM commodity_info WHERE shop_id = #{id}
+                        GROUP BY commodity_id) AS p ON c.id = p.commodity_id
+        WHERE c.shop_id = #{id}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM commodity WHERE shop_id = #{id}
+    </select>
 </mapper>

@@ -10,8 +10,7 @@ import com.hl.fruitmall.common.uitls.R;
  */
 public interface CommodityService {
 
-    R getList(Integer shopId, Integer cur, Integer size, String key);
+    R page(Integer id);
 
-    R delete(Integer commodityId);
-
+    R off(Integer id);
 }

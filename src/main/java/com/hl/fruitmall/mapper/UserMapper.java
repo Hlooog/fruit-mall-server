@@ -15,24 +15,32 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    User selectByField(@Param("field") String field,@Param("value") Object value);
+    User selectByField(@Param("field") String field, @Param("value") Object value);
 
     List<UserPageVO> page(@Param("cur") int cur,
                           @Param("key") String key,
                           @Param("start") Date start,
-                          @Param("end") Date end,
-                          @Param("code") Integer code);
+                          @Param("end") Date end);
 
     Integer getTotal(@Param("key") String key,
                      @Param("start") Date start,
                      @Param("end") Date end,
-                     @Param("code") Integer code);
+                     @Param("type") Integer type);
 
     void updateBanTime(@Param("id") Integer id,
                        @Param("banTime") Date banTime,
                        @Param("violation") Integer violation);
 
-    void updateById(@Param("id") Integer id,
-                    @Param("field") String field,
-                    @Param("value") Object value);
+    void updateByField(@Param("field1") String field1,
+                       @Param("value1") Object value1,
+                       @Param("field2") String field,
+                       @Param("value2") Object value);
+
+    List<UserPageVO> getListByFiled(@Param("field") String field,
+                                    @Param("value") Integer value);
+
+    List<UserPageVO> pageMerchant(@Param("cur") int cur,
+                                  @Param("key") String key,
+                                  @Param("start") Date start,
+                                  @Param("end") Date end);
 }

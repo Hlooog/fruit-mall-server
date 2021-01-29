@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.ShopMapper">
+
+    <resultMap id="shopPageVO" type="com.hl.fruitmall.entity.vo.ShopPageVO">
+        <id column="id" property="id" javaType="int"/>
+        <result column="owner_id" property="ownerId" javaType="int"/>
+        <result column="real_name" property="ownerName" javaType="string"/>
+        <result column="shop_name" property="shopName" javaType="string"/>
+        <result column="city_name" property="cityName" javaType="string"/>
+        <result column="heat" property="heat" javaType="int"/>
+        <result column="violation" property="violation" javaType="int"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="ban_time" property="banTime" javaType="java.util.Date"/>
+    </resultMap>
+
+    <update id="updateBanTime">
+        UPDATE shop SET ban_time = #{banTime}, violation = #{violation},
+                        update_time = CURRENT_TIMESTAMP
+         WHERE id = #{id}
+    </update>
+    <update id="updateByField">
+        UPDATE shop SET ${field2} = #{value2},
+                        update_time = CURRENT_TIMESTAMP
+         WHERE ${field1} = #{value1};
+    </update>
+    <select id="selectByFiled" resultType="com.hl.fruitmall.entity.bean.Shop">
+        SELECT id,owner_id,name,avatar,description,heat,is_delete,
+                violation,ban_time,city_id,create_time,update_time
+        FROM shop WHERE ${field} = #{value}
+    </select>
+    <select id="selectPage" resultMap="shopPageVO">
+        <bind name="toKey" value="'%' + key + '%'"/>
+        SELECT s.id,s.owner_id,s.name AS shop_name, s.heat,s.violation,s.create_time,s.ban_time,
+               mi.name AS real_name, c.name AS city_name FROM shop AS s
+            LEFT JOIN merchant_info mi ON s.owner_id = mi.user_id
+            LEFT JOIN city c ON s.city_id = c.id
+            <where>
+                <if test="key != ''">
+                    AND (s.id = #{key} OR s.owner_id = #{key} OR s.name like #{toKey})
+                </if>
+                <if test="start != null">
+                    AND s.create_time BETWEEN #{start} AND #{end}
+                </if>
+                <if test="cityId != 0">
+                    AND (c.id = #{cityId} OR c.parent_id = #{cityId})
+                </if>
+            </where>
+        LIMIT 10 OFFSET #{cur}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        <bind name="toKey" value="'%' + key + '%'"/>
+        SELECT COUNT(1) FROM shop AS s
+        LEFT JOIN city c ON s.city_id = c.id
+        <where>
+            <if test="key != ''">
+                AND (s.id = #{key} OR s.owner_id = #{key} OR s.name like #{toKey})
+            </if>
+            <if test="start != null">
+                AND s.create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="cityId != 0">
+                AND (c.id = #{cityId} OR c.parent_id = #{cityId})
+            </if>
+        </where>
+    </select>
+</mapper>

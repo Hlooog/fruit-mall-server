@@ -5,15 +5,11 @@
 <mapper namespace="com.hl.fruitmall.mapper.MerchantInfoMapper">
 
     <update id="updateByField">
-        UPDATE merchant_info SET
-        update_time = CURRENT_TIMESTAMP,
-        <if test="field == 'status'.toString">
-            status = #{value}
-        </if>
-        WHERE id = #{id}
+        UPDATE merchant_info SET ${field2}= #{value2} WHERE ${field1} = #{value1}
     </update>
-    <select id="getList" resultType="com.hl.fruitmall.entity.vo.MerchantVO">
-        SELECT id,user_id,id_card,name,positive,negative,status FROM merchant_info WHERE status = #{status} LIMIT 10 OFFSET #{cur}
+    <select id="getList" resultType="com.hl.fruitmall.entity.vo.ApplyVO">
+        SELECT id,user_id,id_card,name,positive,negative,status,apply_time
+        FROM merchant_info WHERE status = #{status} LIMIT 10 OFFSET #{cur}
     </select>
     <select id="getTotal" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM merchant_info WHERE status = #{status}

@@ -5,9 +5,10 @@
 
 <mapper namespace="com.hl.fruitmall.mapper.CommodityInfoMapper">
     <select id="getInfo" resultType="com.hl.fruitmall.entity.bean.CommodityInfo">
-        select specification,weight,stock,price from commodity_info where commodity_id = #{commodityId} limit 1 offset #{cur};
+        SELECT specification,weight,stock,price FROM commodity_info WHERE
+         commodity_id = #{commodityId} limit 1 offset #{cur};
     </select>
     <select id="getTotal" resultType="integer">
-        select count(1) from commodity_info where commodity_id = #{commodityId};
+        SELECT count(1) FROM commodity_info WHERE commodity_id = #{commodityId};
     </select>
 </mapper>
