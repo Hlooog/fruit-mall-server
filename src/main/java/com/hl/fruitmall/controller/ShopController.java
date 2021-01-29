@@ -4,6 +4,7 @@ package com.hl.fruitmall.controller;
 import com.hl.fruitmall.common.annotation.VerificationToken;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.entity.vo.ShopVO;
 import com.hl.fruitmall.service.ShopService;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,5 +46,17 @@ public class ShopController {
     @VerificationToken(roleType = RoleEnum.USER)
     public R get(@PathVariable("id") Integer id){
         return shopService.get(id);
+    }
+
+    @GetMapping("/getInfo/{id}")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R getInfo(@PathVariable("id") Integer id){
+        return shopService.getInfo(id);
+    }
+
+    @PostMapping("/createOrUpdate")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R createOrUpdate(@RequestBody ShopVO shopVO,@RequestParam("id") Integer id){
+        return shopService.createOrUpdate(shopVO,id);
     }
 }

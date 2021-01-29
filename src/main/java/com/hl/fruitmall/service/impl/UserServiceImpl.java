@@ -10,11 +10,11 @@ import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.common.uitls.TokenUtils;
 import com.hl.fruitmall.entity.bean.Shop;
 import com.hl.fruitmall.entity.bean.User;
+import com.hl.fruitmall.entity.vo.LoginVO;
 import com.hl.fruitmall.entity.vo.UserPageVO;
 import com.hl.fruitmall.mapper.MerchantInfoMapper;
 import com.hl.fruitmall.mapper.ShopMapper;
 import com.hl.fruitmall.mapper.UserMapper;
-import com.hl.fruitmall.service.ShopService;
 import com.hl.fruitmall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -44,9 +44,6 @@ public class UserServiceImpl implements UserService {
     private ShopMapper shopMapper;
 
     @Autowired
-    private ShopService shopService;
-
-    @Autowired
     private MerchantInfoMapper merchantInfoMapper;
 
     @Autowired
@@ -58,7 +55,9 @@ public class UserServiceImpl implements UserService {
     public static final String STR_TO_JSON = "{\"token\":\"%s\",\"password\":\"%s\"}";
 
     @Override
-    public R adminLogin(String phone, String password) {
+    public R adminLogin(LoginVO loginVO) {
+        String phone = loginVO.getPhone();
+        String password = loginVO.getPassword();
         User user = userMapper.selectByField("phone", phone);
         if (user == null) {
             throw new GlobalException(ExceptionEnum.HAS_NOT_USER_RECORDS);
@@ -69,10 +68,7 @@ public class UserServiceImpl implements UserService {
         if (RoleEnum.CUSTOMER_SERVICE.getCode() < user.getRoleType()) {
             throw new GlobalException(ExceptionEnum.INSUFFICIENT_PERMISSIONS);
         }
-        String key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), user.getId(), user.getPhone());
-        String token = TokenUtils.getToken(user);
-        String cache = String.format(STR_TO_JSON, token, user.getPassword());
-        redisTemplate.opsForValue().set(key, cache, TokenUtils.SAVE_TIME, TimeUnit.SECONDS);
+        String token = keyCache(user);
         return R.ok(new HashMap<String, Object>() {
             {
                 put("token", token);
@@ -136,16 +132,18 @@ public class UserServiceImpl implements UserService {
         user.setBanTime(
                 globalUtils.getBanTime(user.getCreateTime(), user.getViolation(), days)
         );
-        Shop shop = shopService.getShop("owner_id", id);
-        if (!shop.getBanTime().before(shop.getCreateTime())) {
-            if (user.getBanTime().before(user.getCreateTime())) {
-                Date banTime = globalUtils.getBanTime(shop.getCreateTime(),
-                        shop.getViolation(),
-                        GlobalUtils.PUNISHMENT.length - 1);
-                shopMapper.updateBanTime(shop.getId(), banTime, shop.getViolation());
-            } else {
-                if (user.getBanTime().after(shop.getBanTime())) {
-                    shopMapper.updateBanTime(shop.getId(), user.getBanTime(), shop.getViolation());
+        Shop shop = shopMapper.selectByFiled("owner_id", id);
+        if (shop != null) {
+            if (!shop.getBanTime().before(shop.getCreateTime())) {
+                if (user.getBanTime().before(user.getCreateTime())) {
+                    Date banTime = globalUtils.getBanTime(shop.getCreateTime(),
+                            shop.getViolation(),
+                            GlobalUtils.PUNISHMENT.length - 1);
+                    shopMapper.updateBanTime(shop.getId(), banTime, shop.getViolation());
+                } else {
+                    if (user.getBanTime().after(shop.getBanTime())) {
+                        shopMapper.updateBanTime(shop.getId(), user.getBanTime(), shop.getViolation());
+                    }
                 }
             }
         }
@@ -199,6 +197,39 @@ public class UserServiceImpl implements UserService {
                 put("total", total);
             }
         });
+    }
+
+    @Override
+    public R merchantLogin(LoginVO loginVO) {
+        String phone = loginVO.getPhone();
+        String password = loginVO.getPassword();
+        User user = checkUser("phone", phone);
+        if (!user.getPassword().equals(password)){
+            throw new GlobalException(ExceptionEnum.INCORRECT_PASSWORD);
+        }
+        if (!user.getRoleType().equals(RoleEnum.MERCHANT.getCode())) {
+            throw new GlobalException(ExceptionEnum.INSUFFICIENT_PERMISSIONS);
+        }
+        String token = keyCache(user);
+        Shop shop = shopMapper.selectByFiled("owner_id", user.getId());
+        return R.ok(new HashMap<String,Object>(){
+            {
+                put("token", token);
+                put("id", user.getId());
+                put("name", user.getNickname());
+                put("avatar", user.getAvatar());
+                put("phone", user.getPhone());
+                put("create", shop == null?0:1);
+            }
+        });
+    }
+
+    private String keyCache(User user){
+        String key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), user.getId(), user.getPhone());
+        String token = TokenUtils.getToken(user);
+        String cache = String.format(STR_TO_JSON, token, user.getPassword());
+        redisTemplate.opsForValue().set(key, cache, TokenUtils.SAVE_TIME, TimeUnit.SECONDS);
+        return token;
     }
 
 }

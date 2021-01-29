@@ -15,6 +15,10 @@
         <result column="create_time" property="createTime" javaType="java.util.Date"/>
         <result column="ban_time" property="banTime" javaType="java.util.Date"/>
     </resultMap>
+    <insert id="create" parameterType="com.hl.fruitmall.entity.vo.ShopVO">
+        INSERT INFO shop(owner_id,name,avatar,description,city_id)
+        VALUES (#{id},#{shopVO.name},#{shopVO.avatar},#{shopVO.description},#{shopVO.cityId})
+    </insert>
 
     <update id="updateBanTime">
         UPDATE shop SET ban_time = #{banTime}, violation = #{violation},
@@ -25,6 +29,14 @@
         UPDATE shop SET ${field2} = #{value2},
                         update_time = CURRENT_TIMESTAMP
          WHERE ${field1} = #{value1};
+    </update>
+    <update id="update" parameterType="com.hl.fruitmall.entity.vo.ShopVO">
+        UPDATE shop SET name = #{shopVO.name},
+        avatar = #{shopVO.avatar},
+        city_id = #{shopVO.cityId},
+        description = #{shopVO.description},
+        update_time = CURRENT_TIMESTAMP
+        WHERE id = #{shopVO.id}
     </update>
     <select id="selectByFiled" resultType="com.hl.fruitmall.entity.bean.Shop">
         SELECT id,owner_id,name,avatar,description,heat,is_delete,

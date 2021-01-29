@@ -1,15 +1,17 @@
 package com.hl.fruitmall.controller;
 
 import com.hl.fruitmall.common.annotation.PassToken;
+import com.hl.fruitmall.common.annotation.VerificationToken;
+import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.service.OSSService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Hl
@@ -27,5 +29,11 @@ public class OSSController {
     @PassToken
     public R uploadFile(@RequestParam("file") MultipartFile file) {
         return ossService.uploadFile(file);
+    }
+
+    @DeleteMapping("/delete")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R delete(@RequestBody List<String> list){
+        return ossService.delete(list);
     }
 }

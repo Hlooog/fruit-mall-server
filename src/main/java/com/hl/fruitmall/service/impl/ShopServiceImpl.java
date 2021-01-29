@@ -7,6 +7,7 @@ import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.bean.Shop;
 import com.hl.fruitmall.entity.vo.ShopInfoVO;
 import com.hl.fruitmall.entity.vo.ShopPageVO;
+import com.hl.fruitmall.entity.vo.ShopVO;
 import com.hl.fruitmall.mapper.ShopMapper;
 import com.hl.fruitmall.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,21 +49,9 @@ public class ShopServiceImpl implements ShopService {
             }
         });
     }
-
-
-    @Override
-    public Shop getShop(String field, Object value) {
-        Shop shop = shopMapper.selectByFiled(field,value);
-        if (shop == null) {
-            throw new GlobalException(ExceptionEnum.HAS_NOT_SHOP_RECORDS);
-        }
-        return shop;
-    }
-
     @Override
     public R ban(Integer id, Integer days) {
-        Shop shop = getShop("id", id);
-        checkShop(shop);
+        Shop shop = checkShop("id", id);
         shop.addViolation();
         Date banTime = globalUtils.getBanTime(shop.getCreateTime(), shop.getViolation(), days);
         shopMapper.updateBanTime(id, banTime, shop.getViolation());
@@ -71,16 +60,46 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public R get(Integer id) {
-        Shop shop = getShop("id", id);
-        checkShop(shop);
+        Shop shop = checkShop("id", id);
         ShopInfoVO shopInfoVO = ShopInfoVO.create(shop);
         return R.ok(shopInfoVO);
     }
 
-    private void checkShop(Shop shop){
+    @Override
+    public R getInfo(Integer id) {
+        Shop shop = checkShop("owner_id", id);
+        ShopVO shopVO = new ShopVO(shop.getId(),
+                shop.getName(),
+                shop.getDescription(),
+                shop.getCityId(),
+                shop.getAvatar());
+        return R.ok(shopVO);
+    }
+
+    @Override
+    public R createOrUpdate(ShopVO shopVO, Integer id) {
+        if (shopVO.getId() == null) {
+            // 创建
+            shopMapper.create(shopVO,id);
+        } else {
+            // 修改
+            shopMapper.update(shopVO);
+        }
+        if (shopVO.getUrlList() != null) {
+            // 发消息
+        }
+        return R.ok();
+    }
+
+    private Shop checkShop(String field,Object value){
+        Shop shop = shopMapper.selectByFiled(field,value);
+        if (shop == null) {
+            throw new GlobalException(ExceptionEnum.HAS_NOT_SHOP_RECORDS);
+        }
         if (shop.getCreateTime().after(shop.getBanTime())
                 || shop.getBanTime().after(new Date())){
             throw new GlobalException(ExceptionEnum.SHOP_HAS_BEEN_BAN);
         }
+        return shop;
     }
 }
