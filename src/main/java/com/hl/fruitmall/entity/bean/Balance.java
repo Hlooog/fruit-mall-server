@@ -19,7 +19,7 @@ public class Balance implements Serializable {
     //主键id
     private Integer id;
     //商户id
-    private Integer userId;
+    private String phone;
     //可提现的余额
     private BigDecimal withdrawAble;
     //以提现金额

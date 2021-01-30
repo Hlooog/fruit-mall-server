@@ -1,5 +1,7 @@
 package com.hl.fruitmall.service;
 
+import com.hl.fruitmall.common.uitls.R;
+
 /**
  * 提现记录表(WithdrawalRecord)表服务接口
  *
@@ -8,4 +10,5 @@ package com.hl.fruitmall.service;
  */
 public interface WithdrawalRecordService {
 
+    R page(String phone, Integer cur, String startTime, String endTime);
 }

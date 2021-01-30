@@ -19,17 +19,20 @@ public class WithdrawalRecord implements Serializable {
     //主键id
     private Integer id;
     //商户id
-    private Integer userId;
+    private String phone;
     //账户
     private String account;
     //金额
     private BigDecimal amount;
+    //提现状态
+    private Integer status;
     //创建时间
     private Date createTime;
 
-    public WithdrawalRecord(Integer userId, String account, BigDecimal amount) {
-        this.userId = userId;
+    public WithdrawalRecord(String phone, String account, Integer status, BigDecimal amount) {
+        this.phone = phone;
         this.account = account;
+        this.status = status;
         this.amount = amount;
     }
 }

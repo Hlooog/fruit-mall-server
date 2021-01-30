@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface BalanceMapper {
 
-    BalanceVO select(@Param("id") Integer id);
+    BalanceVO select(@Param("phone") String phone);
 
-    void update(@Param("id") Integer id, @Param("vo") BalanceVO balanceVO);
+    void update(@Param("id") String phone, @Param("vo") BalanceVO balanceVO);
 }

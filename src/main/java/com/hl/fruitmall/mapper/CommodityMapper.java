@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface CommodityMapper {
 
-    List<CommodityPageVO> selectPage(@Param("id") Integer id);
+    List<CommodityPageVO> selectList(@Param("id") Integer id);
 
     Integer getTotal(@Param("id") Integer id);
 

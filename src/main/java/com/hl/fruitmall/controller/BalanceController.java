@@ -28,13 +28,13 @@ public class BalanceController {
 
     @GetMapping("/get")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R get(HttpServletRequest request){
+    public R get(HttpServletRequest request) {
         return balanceService.get(request);
     }
 
     @PostMapping("/withdraw")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R withdraw(@RequestBody WithdrawVO withdrawVO,HttpServletRequest request){
+    public R withdraw(@RequestBody WithdrawVO withdrawVO,HttpServletRequest request) {
         return balanceService.withdraw(withdrawVO,request);
     }
 

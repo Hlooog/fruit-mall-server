@@ -21,7 +21,7 @@
         WHERE ${field1} = #{value1}
     </update>
 
-    <select id="selectPage" resultMap="pageVO">
+    <select id="selectList" resultMap="pageVO">
         SELECT c.id,c.name AS cname, c.is_on_shelf, p.price,v.name AS vname, ci.url FROM commodity c
             LEFT JOIN commodity_image ci on c.id = ci.commodity_id
             LEFT JOIN variety v on c.variety_id = v.id

@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService {
                 put("name", user.getNickname());
                 put("avatar", user.getAvatar());
                 put("phone", user.getPhone());
-                put("create", shop == null?0:1);
+                put("shop_id", shop == null? 0:shop.getId());
             }
         });
     }

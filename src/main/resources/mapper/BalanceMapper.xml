@@ -3,8 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.BalanceMapper">
+    <update id="update">
+        UPDATE balance SET withdraw = #{vo.withdraw},
+                            withdraw_able = #{vo.withdrawAble},
+                            frozen = #{vo.frozen},
+                            lump_sum = #{vo.lumpSum},
+                            update_time = CURRENT_TIMESTAMP
+        WHERE phone = #{phone}
+    </update>
 
     <select id="select" resultType="com.hl.fruitmall.entity.vo.BalanceVO">
-        SELECT withdraw,withdraw_able,frozen,lump_sum FROM balance WHERE user_id = #{id}
+        SELECT withdraw,withdraw_able,frozen,lump_sum FROM balance WHERE phone = #{phone}
     </select>
 </mapper>

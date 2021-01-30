@@ -10,7 +10,7 @@ import com.hl.fruitmall.common.uitls.R;
  */
 public interface CommodityService {
 
-    R page(Integer id);
+    R list(Integer id);
 
     R off(Integer id);
 }

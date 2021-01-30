@@ -20,7 +20,7 @@ public class CommodityServiceTest {
 
     @Test
     void test(){
-        List<CommodityPageVO> commodityPageVOS = commodityMapper.selectPage(10000);
+        List<CommodityPageVO> commodityPageVOS = commodityMapper.selectList(10000);
         System.out.println(commodityPageVOS);
     }
 

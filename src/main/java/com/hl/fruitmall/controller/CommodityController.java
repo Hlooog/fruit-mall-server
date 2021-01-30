@@ -24,10 +24,10 @@ public class CommodityController {
     @Resource
     private CommodityService commodityService;
 
-    @GetMapping("/page/{id}")
+    @GetMapping("/list/{id}")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
-    public R page(@PathVariable("id")Integer id){
-        return commodityService.page(id);
+    public R list(@PathVariable("id")Integer id){
+        return commodityService.list(id);
     }
 
     @PutMapping("/off/{id}")

@@ -23,8 +23,8 @@ public class CommodityServiceImpl implements CommodityService {
     private CommodityMapper commodityMapper;
 
     @Override
-    public R page(Integer id) {
-        List<CommodityPageVO> list = commodityMapper.selectPage(id);
+    public R list(Integer id) {
+        List<CommodityPageVO> list = commodityMapper.selectList(id);
         return R.ok(new HashMap<String,Object>(){
             {
                 put("data", list);
