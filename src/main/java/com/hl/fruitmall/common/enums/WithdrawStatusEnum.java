@@ -4,29 +4,29 @@ import com.hl.fruitmall.common.interfaces.EnumInterface;
 
 /**
  * @author Hl
- * @create 2021/1/25 22:41
+ * @create 2021/1/30 16:56
  */
-public enum ReviewStatusEnums implements EnumInterface {
-    UN_REVIEWED(0,"未审核"),
-    REVIEWED(1,"通过审核"),
-    REFUSE(2,"不通过审核")
+public enum  WithdrawStatusEnum implements EnumInterface {
+    REVIEW(0, "审核中"),
+    MARKING_MONEY(1, "打款中"),
+    FINISH(2, "完成提现")
     ;
 
     private Integer code;
     private String msg;
 
-    ReviewStatusEnums(Integer code, String msg) {
+    WithdrawStatusEnum(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
     @Override
     public Integer getCode() {
-        return code;
+        return this.code;
     }
 
     @Override
     public String getMsg() {
-        return msg;
+        return this.msg;
     }
 }

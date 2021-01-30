@@ -9,6 +9,7 @@ import com.hl.fruitmall.service.ShopService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 店铺表(Shop)表控制层
@@ -56,7 +57,7 @@ public class ShopController {
 
     @PostMapping("/createOrUpdate")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R createOrUpdate(@RequestBody ShopVO shopVO,@RequestParam("id") Integer id){
-        return shopService.createOrUpdate(shopVO,id);
+    public R createOrUpdate(@RequestBody ShopVO shopVO, HttpServletRequest request){
+        return shopService.createOrUpdate(shopVO,request);
     }
 }

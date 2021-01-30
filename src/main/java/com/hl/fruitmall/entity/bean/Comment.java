@@ -2,6 +2,7 @@ package com.hl.fruitmall.entity.bean;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,8 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @Data
-public class Comment {
+public class Comment implements Serializable {
+    private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
     //评论者id
@@ -31,5 +33,7 @@ public class Comment {
     private Date createTime;
     //修改时间
     private Date updateTime;
+
+    
 
 }

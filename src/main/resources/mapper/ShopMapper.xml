@@ -16,8 +16,8 @@
         <result column="ban_time" property="banTime" javaType="java.util.Date"/>
     </resultMap>
     <insert id="create" parameterType="com.hl.fruitmall.entity.vo.ShopVO">
-        INSERT INFO shop(owner_id,name,avatar,description,city_id)
-        VALUES (#{id},#{shopVO.name},#{shopVO.avatar},#{shopVO.description},#{shopVO.cityId})
+        INSERT INTO shop(owner_id,name,description,city_id)
+        VALUES (#{id},#{shopVO.name},#{shopVO.description},#{shopVO.cityId})
     </insert>
 
     <update id="updateBanTime">
@@ -32,14 +32,13 @@
     </update>
     <update id="update" parameterType="com.hl.fruitmall.entity.vo.ShopVO">
         UPDATE shop SET name = #{shopVO.name},
-        avatar = #{shopVO.avatar},
         city_id = #{shopVO.cityId},
         description = #{shopVO.description},
         update_time = CURRENT_TIMESTAMP
         WHERE id = #{shopVO.id}
     </update>
     <select id="selectByFiled" resultType="com.hl.fruitmall.entity.bean.Shop">
-        SELECT id,owner_id,name,avatar,description,heat,is_delete,
+        SELECT id,owner_id,name,description,heat,is_delete,
                 violation,ban_time,city_id,create_time,update_time
         FROM shop WHERE ${field} = #{value}
     </select>

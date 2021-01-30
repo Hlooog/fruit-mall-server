@@ -2,6 +2,7 @@ package com.hl.fruitmall.entity.bean;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,17 +14,20 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @Data
-public class Balance  {
+public class Balance implements Serializable {
+    private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
     //商户id
     private Integer userId;
     //可提现的余额
-    private BigDecimal withDrawable;
+    private BigDecimal withdrawAble;
+    //以提现金额
+    private BigDecimal withdraw;
     //被冻结
     private BigDecimal frozen;
-    //创建时间
-    private Date createTime;
+    //总金额
+    private BigDecimal lumpSum;
     //修改时间
     private Date updateTime;
 

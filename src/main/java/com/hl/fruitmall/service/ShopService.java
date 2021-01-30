@@ -3,6 +3,8 @@ package com.hl.fruitmall.service;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.vo.ShopVO;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 店铺表(Shop)表服务接口
  *
@@ -19,5 +21,5 @@ public interface ShopService {
 
     R getInfo(Integer id);
 
-    R createOrUpdate(ShopVO shopVO, Integer id);
+    R createOrUpdate(ShopVO shopVO, HttpServletRequest request);
 }

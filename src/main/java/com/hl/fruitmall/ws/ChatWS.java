@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Hl
  * @create 2021/1/25 23:15
  */
-@ServerEndpoint("/chat/{phone}/{toPhone}")
+@ServerEndpoint("/chat/{phone}")
 @Component
 public class ChatWS {
 
@@ -27,14 +28,10 @@ public class ChatWS {
 
     @OnOpen
     public void onOpen(@PathParam("phone") String phone,
-                       @PathParam("toPhone") String toPhone,
                        Session session) {
         this.session = session;
         if (!map.containsKey(phone)) {
             map.put(phone, this);
-        }
-        if (!toPhone.equals("null")) {
-            // 客户端连接客服 先获取聊天记录
         }
     }
 
@@ -42,7 +39,7 @@ public class ChatWS {
     public void onMessage(Session session, String msg) {
         Message message = JSON.parseObject(msg, Message.class);
         // 后面等客户端写出来了  完成客服功能  记录聊天记录  转发消息
-        /*ChatWS chatWS = map.get(message.getFromPhone());
+        ChatWS chatWS = map.get(message.getFromPhone());
         Message message1 = new Message();
         message1.setFromPhone("18211461718");
         message1.setFromPhone(message.getFromName());
@@ -54,7 +51,7 @@ public class ChatWS {
             chatWS.session.getBasicRemote().sendText(JSON.toJSONString(message1));
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     /**

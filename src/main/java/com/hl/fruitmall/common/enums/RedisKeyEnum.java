@@ -6,7 +6,8 @@ package com.hl.fruitmall.common.enums;
  */
 public enum RedisKeyEnum {
     USER_LOGIN_KEY("USER_LOGIN_%s_%s"),                 // 用户id_手机号码
-    CITY("redis_city_info")
+    CITY("redis_city_info"),
+    WITHDRAW_CODE_KEY("WITHDRAW_CODE_%s")
     ;
 
     private String key;

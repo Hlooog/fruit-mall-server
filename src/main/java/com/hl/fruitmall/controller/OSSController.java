@@ -6,11 +6,11 @@ import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.service.OSSService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +23,10 @@ import java.util.List;
 public class OSSController {
 
     @Autowired
-    OSSService ossService;
+    private OSSService ossService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @PostMapping("/upload")
     @PassToken

@@ -17,9 +17,11 @@ public enum ExceptionEnum {
     USER_HAS_BEEN_BAN(10009, "用户已经被封禁"),
     HAS_NOT_CITY_RECORDS(10010, "没有找到城市信息"),
     NOT_THE_CORRECT_TIME_TYPE(10011, "不是正确的时间类型"),
-    SHOP_HAS_BEEN_BAN(10012,"店铺已经被封禁"),
-    INSUFFICIENT_PERMISSIONS(10013,"权限不够"),
-    OPERATION_FAILED(10014,"操作失败")
+    SHOP_HAS_BEEN_BAN(10012, "店铺已经被封禁"),
+    INSUFFICIENT_PERMISSIONS(10013, "权限不够"),
+    OPERATION_FAILED(10014, "操作失败"),
+    VERIFICATION_CODE_ERROR(10015, "验证码错误"),
+    WITHDRAW_THAN_WITHDRAWABLE(10016,"提现金额大于可提现金额")
     ;
     private Integer code;
     private String msg;

@@ -1,5 +1,6 @@
 package com.hl.fruitmall.service.impl;
 
+import com.auth0.jwt.JWT;
 import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.GlobalUtils;
@@ -13,6 +14,7 @@ import com.hl.fruitmall.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -71,22 +73,19 @@ public class ShopServiceImpl implements ShopService {
         ShopVO shopVO = new ShopVO(shop.getId(),
                 shop.getName(),
                 shop.getDescription(),
-                shop.getCityId(),
-                shop.getAvatar());
+                shop.getCityId());
         return R.ok(shopVO);
     }
 
     @Override
-    public R createOrUpdate(ShopVO shopVO, Integer id) {
+    public R createOrUpdate(ShopVO shopVO, HttpServletRequest request) {
+        Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
         if (shopVO.getId() == null) {
             // 创建
             shopMapper.create(shopVO,id);
         } else {
             // 修改
             shopMapper.update(shopVO);
-        }
-        if (shopVO.getUrlList() != null) {
-            // 发消息
         }
         return R.ok();
     }

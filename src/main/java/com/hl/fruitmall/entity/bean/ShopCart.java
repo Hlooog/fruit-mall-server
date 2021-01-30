@@ -2,6 +2,7 @@ package com.hl.fruitmall.entity.bean;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,7 +14,8 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @Data
-public class ShopCart {
+public class ShopCart implements Serializable {
+    private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
     //用户id

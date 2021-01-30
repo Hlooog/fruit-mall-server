@@ -2,6 +2,7 @@ package com.hl.fruitmall.entity.bean;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -12,7 +13,8 @@ import java.math.BigDecimal;
  */
 @SuppressWarnings("serial")
 @Data
-public class CommodityInfo {
+public class CommodityInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
     //商品id

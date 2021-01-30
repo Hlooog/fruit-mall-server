@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.BalanceMapper">
+
+    <select id="select" resultType="com.hl.fruitmall.entity.vo.BalanceVO">
+        SELECT withdraw,withdraw_able,frozen,lump_sum FROM balance WHERE user_id = #{id}
+    </select>
+</mapper>

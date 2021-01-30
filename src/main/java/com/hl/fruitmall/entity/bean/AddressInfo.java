@@ -2,6 +2,8 @@ package com.hl.fruitmall.entity.bean;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 收货信息表(AddressInfo)表实体类
  *
@@ -10,7 +12,8 @@ import lombok.Data;
  */
 @SuppressWarnings("serial")
 @Data
-public class AddressInfo {
+public class AddressInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
     //用户id

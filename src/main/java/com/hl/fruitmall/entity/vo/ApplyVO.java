@@ -19,4 +19,6 @@ public class ApplyVO {
     private String negative;
     private Integer status;
     private Date applyTime;
+
+
 }

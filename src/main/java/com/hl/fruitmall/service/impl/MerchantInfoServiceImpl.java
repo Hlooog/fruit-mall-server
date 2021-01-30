@@ -1,6 +1,6 @@
 package com.hl.fruitmall.service.impl;
 
-import com.hl.fruitmall.common.enums.ReviewStatusEnums;
+import com.hl.fruitmall.common.enums.ReviewStatusEnum;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.mapper.MerchantInfoMapper;
@@ -31,7 +31,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public R review(Integer id) {
-        merchantInfoMapper.updateByField("user_id",id,"status", ReviewStatusEnums.REVIEWED.getCode());
+        merchantInfoMapper.updateByField("user_id",id,"status", ReviewStatusEnum.REVIEWED.getCode());
         userMapper.updateByField("id", id, "role_type", RoleEnum.MERCHANT.getCode());
         return R.ok();
     }
@@ -50,7 +50,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     @Override
     public R refuse(Integer id) {
-        merchantInfoMapper.updateByField("id",id, "status", ReviewStatusEnums.REFUSE.getCode());
+        merchantInfoMapper.updateByField("id",id, "status", ReviewStatusEnum.REFUSE.getCode());
         return R.ok();
     }
 

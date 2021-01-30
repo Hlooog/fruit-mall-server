@@ -16,6 +16,18 @@ spring:
     port: 6379
     database: 6
     timeout: 10000
+  rabbitmq:
+    host: 8.129.87.61
+    port: 5672
+    username: hl
+    password: 123456
+    virtual-host: /fruit-mall
+    publisher-confirm-type: correlated
+    listener:
+      direct:
+        acknowledge-mode: manual
+        prefetch: 1
+    publisher-returns: true
 
 server:
   servlet:
@@ -41,3 +53,8 @@ aliyun:
     accessKeyId: LTAI4G5YccKj9CQjMbCbgK5A
     accessKeySecret: 34FuxnnHiyqlfaBFS0ORFSlS9rRJ0w
     bucketName: hl-fruit-mall
+  sms:
+    key-id: LTAI4GFp1VNXWNmSRySrqzQb
+    key-secret: YsVWhqa5vdqnfj9FJABepmY4eg6hUH
+    sign-name: CcShare
+    template-code: SMS_170181193

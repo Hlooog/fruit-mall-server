@@ -12,14 +12,12 @@ public class ShopInfoVO {
     private Integer id;
     private String name;
     private String description;
-    private String avatar;
     private Integer heat;
 
     public static ShopInfoVO create(Shop shop){
         ShopInfoVO shopInfoVO = new ShopInfoVO();
         shopInfoVO.setId(shop.getId());
         shopInfoVO.setName(shop.getName());
-        shopInfoVO.setAvatar(shop.getAvatar());
         shopInfoVO.setDescription(shop.getDescription());
         shopInfoVO.setHeat(shop.getHeat());
         return shopInfoVO;
