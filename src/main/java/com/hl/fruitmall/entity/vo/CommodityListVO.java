@@ -2,21 +2,26 @@ package com.hl.fruitmall.entity.vo;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * @author Hl
- * @create 2021/1/31 9:23
+ * @create 2020/12/29 22:46
  */
 @Data
-public class CommodityPageVO {
+public class CommodityListVO {
 
     private Integer id;
-    private String cname;
-    private Integer varietyId;
-    private String vname;
+
+    private String name;
+
     private Integer isOnShelf;
+
+    private String varietyName;
+
+    private BigDecimal price;
+
     private List<String> urlList;
-    private Date createTime;
+
 }

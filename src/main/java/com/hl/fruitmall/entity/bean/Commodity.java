@@ -3,7 +3,6 @@ package com.hl.fruitmall.entity.bean;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -22,10 +21,8 @@ public class Commodity implements Serializable {
     private Integer shopId;
     //水果名称
     private String name;
-    //价格
-    private BigDecimal price;
-    //库存
-    private Integer stock;
+    //种类id
+    private Integer varietyId;
     //是否上架 0 上架 1 下架
     private Integer isOnShelf;
     //创建时间
@@ -33,4 +30,9 @@ public class Commodity implements Serializable {
     //修改时间
     private Date updateTime;
 
+    public Commodity(Integer shopId, String name, Integer varietyId) {
+        this.shopId = shopId;
+        this.name = name;
+        this.varietyId = varietyId;
+    }
 }

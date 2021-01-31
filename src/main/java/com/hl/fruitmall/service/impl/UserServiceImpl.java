@@ -12,6 +12,7 @@ import com.hl.fruitmall.entity.bean.Shop;
 import com.hl.fruitmall.entity.bean.User;
 import com.hl.fruitmall.entity.vo.LoginVO;
 import com.hl.fruitmall.entity.vo.UserPageVO;
+import com.hl.fruitmall.mapper.CommodityMapper;
 import com.hl.fruitmall.mapper.MerchantInfoMapper;
 import com.hl.fruitmall.mapper.ShopMapper;
 import com.hl.fruitmall.mapper.UserMapper;
@@ -48,6 +49,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private CommodityMapper commodityMapper;
 
     @Autowired
     private GlobalUtils globalUtils;
@@ -140,9 +144,11 @@ public class UserServiceImpl implements UserService {
                             shop.getViolation(),
                             GlobalUtils.PUNISHMENT.length - 1);
                     shopMapper.updateBanTime(shop.getId(), banTime, shop.getViolation());
+                    commodityMapper.updateByField("shop_id", shop.getId(), "is_on_shelf", 0);
                 } else {
                     if (user.getBanTime().after(shop.getBanTime())) {
                         shopMapper.updateBanTime(shop.getId(), user.getBanTime(), shop.getViolation());
+                        commodityMapper.updateByField("shop_id", shop.getId(), "is_on_shelf", 0);
                     }
                 }
             }

@@ -6,8 +6,8 @@
 
 
     <insert id="insert">
-        INSERT INTO withdrawal_record(user_id,account,amount,status)
-            VALUES (#{bo.userId},#{bo.account},#{bo.amount}, #{bo.status})
+        INSERT INTO withdrawal_record(phone,account,amount,status)
+            VALUES (#{bo.phone},#{bo.account},#{bo.amount}, #{bo.status})
     </insert>
     <select id="page" resultType="com.hl.fruitmall.entity.vo.WithdrawRecordVO">
         SELECT phone,account,amount,create_time,status FROM withdrawal_record

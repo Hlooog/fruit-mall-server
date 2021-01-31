@@ -13,5 +13,5 @@ public interface BalanceMapper {
 
     BalanceVO select(@Param("phone") String phone);
 
-    void update(@Param("id") String phone, @Param("vo") BalanceVO balanceVO);
+    void update(@Param("phone") String phone, @Param("vo") BalanceVO balanceVO);
 }

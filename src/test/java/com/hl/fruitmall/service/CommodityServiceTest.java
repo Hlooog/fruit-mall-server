@@ -1,6 +1,6 @@
 package com.hl.fruitmall.service;
 
-import com.hl.fruitmall.entity.vo.CommodityPageVO;
+import com.hl.fruitmall.entity.vo.CommodityListVO;
 import com.hl.fruitmall.mapper.CommodityMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,8 @@ public class CommodityServiceTest {
 
     @Test
     void test(){
-        List<CommodityPageVO> commodityPageVOS = commodityMapper.selectList(10000);
-        System.out.println(commodityPageVOS);
+        List<CommodityListVO> commodityListVOS = commodityMapper.selectList(10000);
+        System.out.println(commodityListVOS);
     }
 
     @Test
@@ -33,5 +33,12 @@ public class CommodityServiceTest {
         System.out.println("b2 == b1" + b2.compareTo(b1));
         System.out.println("b1 == b3" + b1.compareTo(b3));
         System.out.println(b1.subtract(b2));
+    }
+
+    @Test
+    void test2(){
+        String url = "https://hl-fruit-mall.oss-cn-guangzhou.aliyuncs.com/2020/12/31/a344482f74ba402886fe9bf8dff1e315file";
+        url = url.substring(url.indexOf("/", 8) + 1);
+        System.out.println(url);
     }
 }

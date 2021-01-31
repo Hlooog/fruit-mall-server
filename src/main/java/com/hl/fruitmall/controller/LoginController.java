@@ -24,19 +24,19 @@ public class LoginController {
 
     @PostMapping("/admin/login")
     @PassToken
-    public R adminLogin(@RequestBody LoginVO loginVO){
+    public R adminLogin(@RequestBody LoginVO loginVO) {
         return userService.adminLogin(loginVO);
     }
 
     @GetMapping("/logout")
     @VerificationToken(roleType = RoleEnum.USER)
-    public R logout(HttpServletRequest request){
+    public R logout(HttpServletRequest request) {
         return userService.logout(request);
     }
 
     @PostMapping("/merchant/login")
     @PassToken
-    public R merchantLogin(@RequestBody LoginVO loginVO){
+    public R merchantLogin(@RequestBody LoginVO loginVO) {
         return userService.merchantLogin(loginVO);
     }
 }

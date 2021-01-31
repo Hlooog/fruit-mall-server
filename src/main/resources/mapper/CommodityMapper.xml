@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.CommodityMapper">
 
-    <resultMap id="pageVO" type="com.hl.fruitmall.entity.vo.CommodityPageVO">
+    <resultMap id="infoVO" type="com.hl.fruitmall.entity.vo.CommodityListVO">
         <id column="id" property="id" javaType="int"/>
         <result column="cname" property="name" javaType="string"/>
         <result column="is_on_shelf" property="isOnShelf" javaType="int"/>
@@ -12,16 +12,72 @@
         <result column="price" property="price" javaType="java.math.BigDecimal"/>
         <collection property="urlList" resultMap="urls"></collection>
     </resultMap>
-    
+
     <resultMap id="urls" type="java.lang.String">
         <result column="url"/>
     </resultMap>
+
+    <resultMap id="pageVO" type="com.hl.fruitmall.entity.vo.CommodityPageVO">
+        <id column="id" property="id" javaType="int"/>
+        <result column="cname" property="cname" javaType="string"/>
+        <result column="variety_id" property="varietyId" javaType="int"/>
+        <result column="vname" property="vname" javaType="string"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+        <result column="is_on_shelf" property="isOnShelf" javaType="int"/>
+        <collection property="urlList" column="id" select="getUrl"></collection>
+    </resultMap>
+
+    <resultMap id="commodityInfoList" type="com.hl.fruitmall.entity.vo.CommodityInfoVO">
+        <id column="id" property="id" javaType="int"/>
+        <result column="specification" property="specification" javaType="string"/>
+        <result column="weight" property="weight" javaType="float"/>
+        <result column="stock" property="stock" javaType="int"/>
+        <result column="price" property="price" javaType="java.math.BigDecimal"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.hl.fruitmall.entity.bean.Commodity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO commodity(shop_id,name,variety_id)
+        VALUES (#{commodity.shopId},#{commodity.name},#{commodity.varietyId})
+    </insert>
+    <insert id="insertImage">
+        INSERT INTO commodity_image(commodity_id,url) VALUES
+        <foreach collection="list" item="i" separator=",">
+            (#{id},#{i})
+        </foreach>
+    </insert>
+    <insert id="insertInfo">
+        INSERT INTO commodity_info(commodity_id,specification,weight,stock,price,shop_id)
+        VALUES (#{vo.commodityId},#{vo.specification},#{vo.weight},#{vo.stock},#{vo.price},#{vo.shopId})
+    </insert>
+
     <update id="updateByField">
         UPDATE commodity SET ${filed2} = #{value2}, update_time = CURRENT_TIMESTAMP
         WHERE ${field1} = #{value1}
     </update>
 
-    <select id="selectList" resultMap="pageVO">
+    <update id="update">
+        UPDATE commodity SET name = #{name},variety_id = #{varietyId},update_time = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+    <update id="updateInfo">
+        UPDATE commodity_info SET specification = #{vo.specification},
+                weight = #{vo.weight},stock = #{vo.stock},price = #{vo.price}
+        WHERE id = #{vo.id}
+    </update>
+
+    <delete id="deleteByField">
+        DELETE FROM commodity WHERE ${field} = #{value}
+    </delete>
+    <delete id="deleteImage">
+        DELETE FROM commodity_image WHERE url in
+        <foreach collection="urls" item="u" open="(" separator="," close=")">
+            #{u}
+        </foreach>
+    </delete>
+    <delete id="deleteInfo">
+        DELETE FROM commodity_info WHERE ${field} = #{value}
+    </delete>
+
+    <select id="selectList" resultMap="infoVO">
         SELECT c.id,c.name AS cname, c.is_on_shelf, p.price,v.name AS vname, ci.url FROM commodity c
             LEFT JOIN commodity_image ci on c.id = ci.commodity_id
             LEFT JOIN variety v on c.variety_id = v.id
@@ -33,4 +89,30 @@
     <select id="getTotal" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM commodity WHERE shop_id = #{id}
     </select>
+    <select id="selectPage" resultMap="pageVO">
+        SELECT c.id,c.name cname, v.name vname,c.variety_id,
+               c.is_on_shelf,c.create_time FROM commodity c
+            LEFT JOIN variety v ON c.variety_id = v.id
+        WHERE c.shop_id = #{id}
+        LIMIT 10 OFFSET #{cur}
+    </select>
+    <select id="getUrl" resultMap="urls">
+        SELECT url FROM commodity_image WHERE commodity_id = #{id}
+    </select>
+    <select id="getInfoList" resultMap="commodityInfoList">
+        SELECT id, specification,weight,stock,price
+        FROM commodity_info where commodity_id = #{id}
+    </select>
+    <select id="selectByField" resultMap="pageVO">
+        SELECT c.id,c.name cname, v.name vname,c.variety_id,
+               c.is_on_shelf,c.create_time FROM commodity c
+            LEFT JOIN variety v ON c.variety_id = v.id
+        WHERE ${field} = #{value}
+    </select>
+    <select id="selectInfo" resultType="com.hl.fruitmall.entity.vo.EditCommodityInfoVO">
+        SELECT id,commodity_id,specification,weight,stock,price,shop_id
+        FROM commodity_info
+        WHERE id = #{id}
+    </select>
+
 </mapper>
