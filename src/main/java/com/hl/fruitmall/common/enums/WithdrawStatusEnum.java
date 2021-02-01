@@ -6,11 +6,11 @@ import com.hl.fruitmall.common.interfaces.EnumInterface;
  * @author Hl
  * @create 2021/1/30 16:56
  */
-public enum  WithdrawStatusEnum implements EnumInterface {
+public enum WithdrawStatusEnum implements EnumInterface {
     REVIEW(0, "审核中"),
     MARKING_MONEY(1, "打款中"),
-    FINISH(2, "完成提现")
-    ;
+    FINISH(2, "完成提现"),
+    REFUSE(3, "拒绝提现");
 
     private Integer code;
     private String msg;

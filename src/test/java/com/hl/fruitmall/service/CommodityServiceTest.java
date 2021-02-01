@@ -1,13 +1,16 @@
 package com.hl.fruitmall.service;
 
+import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.entity.vo.CommodityListVO;
 import com.hl.fruitmall.mapper.CommodityMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Hl
@@ -17,6 +20,13 @@ import java.util.List;
 public class CommodityServiceTest {
     @Autowired
     private CommodityMapper commodityMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
 
     @Test
     void test(){
@@ -37,8 +47,60 @@ public class CommodityServiceTest {
 
     @Test
     void test2(){
-        String url = "https://hl-fruit-mall.oss-cn-guangzhou.aliyuncs.com/2020/12/31/a344482f74ba402886fe9bf8dff1e315file";
-        url = url.substring(url.indexOf("/", 8) + 1);
-        System.out.println(url);
+        /*redisTemplate.opsForZSet().add("key", "1",10);
+        redisTemplate.opsForZSet().add("key", "2",20);
+        redisTemplate.opsForZSet().add("key", "3",30);
+        redisTemplate.opsForZSet().add("key", "5",40);*/
+        /*Set set = redisTemplate.opsForZSet().reverseRange("key", 0, 0);
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }*/
+        /*Set<Map<String,String>> set = redisTemplate.opsForZSet()
+                .reverseRange(RedisKeyEnum.SERVICE_LINK_USER.getKey(), 0, 49);
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }*/
+        Map<String,Integer> map = redisTemplate.opsForHash().entries(RedisKeyEnum.CHAT_UNREAD_NUMBER_KEY.getKey());
+        Set set = map.entrySet();
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+    }
+
+    @Test
+    void test3(){
+        Map<String,String> map = new HashMap<>();
+        map.put("name", "000");
+        map.put("avatar", "21111");
+        map.put("phone", "333");
+        redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER.getKey(), map, new Date().getTime());
+    }
+    @Test
+    void test4(){
+        String cityStr = (String) redisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
+        System.out.println(cityStr);
+    }
+
+    @Test
+    void test5(){
+        /*String str = stringRedisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
+        List list = JSON.parseObject(str, List.class);
+        redisTemplate.opsForValue().set(RedisKeyEnum.CITY.getKey(), list);*/
+        List list = (List) redisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
+        System.out.println(list);
+    }
+
+    @Test
+    void test6(){
+        String key = String.format(RedisKeyEnum.CHAT_READ_RECORD_KEY.getKey(), "18211461717");
+        Set set = redisTemplate.opsForZSet().reverseRange(key, 20, 30);
+        System.out.println(set.size());
+        /*Iterator iterator = set.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }*/
     }
 }

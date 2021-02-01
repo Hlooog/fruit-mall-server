@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.WithdrawMapper">
+    <resultMap id="withdraw" type="com.hl.fruitmall.entity.vo.WithdrawRecordVO">
+        <id column="id" property="id" javaType="int"/>
+        <result column="phone" property="phone" javaType="string"/>
+        <result column="account" property="account" javaType="string"/>
+        <result column="amount" property="amount" javaType="java.math.BigDecimal"/>
+        <result column="status" property="status" javaType="int"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO withdraw(phone,account,amount,status)
+            VALUES (#{bo.phone},#{bo.account},#{bo.amount}, #{bo.status})
+    </insert>
+    <update id="updateById">
+        UPDATE withdraw SET status = #{code} WHERE id = #{id}
+    </update>
+    <select id="page" resultMap="withdraw">
+        SELECT id,phone,account,amount,create_time,status FROM withdraw
+        <where>
+            <if test="phone != null and phone.trim != ''">
+                phone = #{phone}
+            </if>
+            <if test="start != null">
+                AND create_time BETWEEN #{start} AND #{end}
+            </if>
+            AND status = #{status}
+        </where>
+        LIMIT 10 OFFSET #{cur}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM withdraw
+        <where>
+            <if test="phone != null and phone.trim != ''">
+                phone = #{phone}
+            </if>
+            <if test="start != null">
+                AND create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+    </select>
+    <select id="selectByFiled" resultMap="withdraw">
+        SELECT id,phone,account,amount,create_time,status FROM withdraw WHERE ${field} = #{value}
+    </select>
+</mapper>

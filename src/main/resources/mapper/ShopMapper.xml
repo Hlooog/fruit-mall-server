@@ -49,7 +49,7 @@
             LEFT JOIN merchant_info mi ON s.owner_id = mi.user_id
             LEFT JOIN city c ON s.city_id = c.id
             <where>
-                <if test="key != ''">
+                <if test="key != null and key.trim != ''">
                     AND (s.id = #{key} OR s.owner_id = #{key} OR s.name like #{toKey})
                 </if>
                 <if test="start != null">

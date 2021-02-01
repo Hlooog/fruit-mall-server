@@ -1,12 +1,11 @@
 package com.hl.fruitmall.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.mapper.CityMapper;
 import com.hl.fruitmall.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,12 +23,11 @@ public class CityServiceImpl implements CityService {
     private CityMapper cityMapper;
 
     @Autowired
-    StringRedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Override
     public R getInfo() {
-        String cityStr = redisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
-        List cityVOList = JSON.parseObject(cityStr,List.class);
-        return R.ok(cityVOList);
+        List list = (List) redisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
+        return R.ok(list);
     }
 }

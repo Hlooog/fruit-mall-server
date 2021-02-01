@@ -18,7 +18,7 @@ import com.hl.fruitmall.mapper.ShopMapper;
 import com.hl.fruitmall.mapper.UserMapper;
 import com.hl.fruitmall.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     private MerchantInfoMapper merchantInfoMapper;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Autowired
     private CommodityMapper commodityMapper;

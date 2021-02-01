@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 public class Message {
-
+    private long id;
     private String toPhone;
     private String toName;
     private String fromPhone;

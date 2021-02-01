@@ -7,14 +7,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 提现记录表(WithdrawalRecord)表实体类
+ * 提现记录表(Withdraw)表实体类
  *
  * @author hl
  * @since 2020-11-21 00:33:47
  */
 @SuppressWarnings("serial")
 @Data
-public class WithdrawalRecord implements Serializable {
+public class Withdraw implements Serializable {
     private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
@@ -29,7 +29,7 @@ public class WithdrawalRecord implements Serializable {
     //创建时间
     private Date createTime;
 
-    public WithdrawalRecord(String phone, String account, Integer status, BigDecimal amount) {
+    public Withdraw(String phone, String account, Integer status, BigDecimal amount) {
         this.phone = phone;
         this.account = account;
         this.status = status;

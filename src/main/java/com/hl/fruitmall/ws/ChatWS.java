@@ -1,6 +1,7 @@
 package com.hl.fruitmall.ws;
 
 import com.alibaba.fastjson.JSON;
+import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,9 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,8 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ChatWS {
 
+    private static RedisTemplate redisTemplate;
+
     @Autowired
-    private RedisTemplate redisTemplate;
+    public void setRedisTemplate(RedisTemplate redisTemplate){
+        ChatWS.redisTemplate = redisTemplate;
+    }
 
     private Session session;
 
@@ -39,18 +47,37 @@ public class ChatWS {
     public void onMessage(Session session, String msg) {
         Message message = JSON.parseObject(msg, Message.class);
         // 后面等客户端写出来了  完成客服功能  记录聊天记录  转发消息
-        ChatWS chatWS = map.get(message.getFromPhone());
-        Message message1 = new Message();
-        message1.setFromPhone("18211461718");
-        message1.setFromPhone(message.getFromName());
-        message1.setContent("我很好");
-        message1.setAvatar("https://hl-fruit-mall.oss-cn-guangzhou.aliyuncs.com/2020/12/01/358d6b989d554015ba230e441f0d60e1avatar.jpg");
-        message1.setToPhone("18211461717");
-        message1.setToName("message");
-        try {
-            chatWS.session.getBasicRemote().sendText(JSON.toJSONString(message1));
-        } catch (IOException e) {
-            e.printStackTrace();
+        String toPhone = message.getToPhone();
+        String fromPhone = message.getFromPhone();
+        ChatWS chatWS = map.get(toPhone);
+        // 记录聊天记录
+        String key = toPhone.equals("service") ? fromPhone : toPhone;
+        long time = new Date().getTime();
+        key = String.format(RedisKeyEnum.CHAT_READ_RECORD_KEY.getKey(), key);
+        redisTemplate.opsForZSet().add(key, msg, time);
+        Map<String,String> map = new HashMap<>();
+        map.put("name", message.getFromName());
+        map.put("avatar", message.getAvatar());
+        map.put("phone", fromPhone);
+        if (toPhone.equals("service")) {
+            redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER.getKey(), map, time);
+            try {
+                chatWS.session.getBasicRemote().sendText(JSON.toJSONString(map));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (chatWS == null) {
+            // 记录客服不在线记录聊天数
+            if (toPhone.equals("service")) {
+                redisTemplate.opsForHash().increment(RedisKeyEnum.CHAT_UNREAD_NUMBER_KEY.getKey(), fromPhone, 1);
+            }
+        } else {
+            try {
+                chatWS.session.getBasicRemote().sendText(JSON.toJSONString(message));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

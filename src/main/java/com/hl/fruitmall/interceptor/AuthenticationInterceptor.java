@@ -13,7 +13,7 @@ import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
-    StringRedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -69,7 +69,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 }
 
                 String key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), id, phoneNumber);
-                String cache = redisTemplate.opsForValue().get(key);
+                String cache = (String) redisTemplate.opsForValue().get(key);
                 if (cache == null) {
                     throw new GlobalException(ExceptionEnum.TOKEN_INVALIDATION);
                 }

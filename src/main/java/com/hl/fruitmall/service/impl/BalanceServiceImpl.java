@@ -6,11 +6,11 @@ import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.enums.WithdrawStatusEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.R;
-import com.hl.fruitmall.entity.bean.WithdrawalRecord;
+import com.hl.fruitmall.entity.bean.Withdraw;
 import com.hl.fruitmall.entity.vo.BalanceVO;
 import com.hl.fruitmall.entity.vo.WithdrawVO;
 import com.hl.fruitmall.mapper.BalanceMapper;
-import com.hl.fruitmall.mapper.WithdrawalRecordMapper;
+import com.hl.fruitmall.mapper.WithdrawMapper;
 import com.hl.fruitmall.service.BalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,7 +33,7 @@ public class BalanceServiceImpl implements BalanceService {
     private BalanceMapper balanceMapper;
 
     @Autowired
-    private WithdrawalRecordMapper withdrawalRecordMapper;
+    private WithdrawMapper withdrawMapper;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -63,14 +63,14 @@ public class BalanceServiceImpl implements BalanceService {
         }
         balanceVO.setWithdrawAble(balanceVO.getWithdrawAble().subtract(withdrawVO.getAmount()));
         balanceVO.setFrozen(balanceVO.getFrozen().add(withdrawVO.getAmount()));
-        WithdrawalRecord withdrawalRecord = new WithdrawalRecord(
+        Withdraw withdraw = new Withdraw(
                 withdrawVO.getPhone(),
                 withdrawVO.getAccount(),
                 WithdrawStatusEnum.REVIEW.getCode(),
                 withdrawVO.getAmount()
         );
         balanceMapper.update(withdrawVO.getPhone(), balanceVO);
-        withdrawalRecordMapper.insert(withdrawalRecord);
+        withdrawMapper.insert(withdraw);
         return R.ok();
     }
 }
