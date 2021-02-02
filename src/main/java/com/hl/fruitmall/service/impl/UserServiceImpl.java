@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
         Date[] dates = globalUtils.strToDate(startTime, endTime);
         Date start = dates[0], end = dates[1];
         List<UserPageVO> list = userMapper.page((cur - 1) * 10, key, start, end);
-        Integer total = userMapper.getTotal(key, start, end,3);
+        Integer total = userMapper.getTotal(key, start, end, 3);
         return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
@@ -139,16 +139,18 @@ public class UserServiceImpl implements UserService {
         Shop shop = shopMapper.selectByFiled("owner_id", id);
         if (shop != null) {
             if (!shop.getBanTime().before(shop.getCreateTime())) {
+                if (!shop.getBanTime().after(new Date())) {
+                    commodityMapper.updateByField("id", shop.getId(), "is_on_shelf", 0);
+                    globalUtils.delCache(shop.getId());
+                }
                 if (user.getBanTime().before(user.getCreateTime())) {
                     Date banTime = globalUtils.getBanTime(shop.getCreateTime(),
                             shop.getViolation(),
                             GlobalUtils.PUNISHMENT.length - 1);
                     shopMapper.updateBanTime(shop.getId(), banTime, shop.getViolation());
-                    commodityMapper.updateByField("shop_id", shop.getId(), "is_on_shelf", 0);
                 } else {
                     if (user.getBanTime().after(shop.getBanTime())) {
                         shopMapper.updateBanTime(shop.getId(), user.getBanTime(), shop.getViolation());
-                        commodityMapper.updateByField("shop_id", shop.getId(), "is_on_shelf", 0);
                     }
                 }
             }
@@ -210,7 +212,7 @@ public class UserServiceImpl implements UserService {
         String phone = loginVO.getPhone();
         String password = loginVO.getPassword();
         User user = checkUser("phone", phone);
-        if (!user.getPassword().equals(password)){
+        if (!user.getPassword().equals(password)) {
             throw new GlobalException(ExceptionEnum.INCORRECT_PASSWORD);
         }
         if (!user.getRoleType().equals(RoleEnum.MERCHANT.getCode())) {
@@ -218,19 +220,19 @@ public class UserServiceImpl implements UserService {
         }
         String token = keyCache(user);
         Shop shop = shopMapper.selectByFiled("owner_id", user.getId());
-        return R.ok(new HashMap<String,Object>(){
+        return R.ok(new HashMap<String, Object>() {
             {
                 put("token", token);
                 put("id", user.getId());
                 put("name", user.getNickname());
                 put("avatar", user.getAvatar());
                 put("phone", user.getPhone());
-                put("shop_id", shop == null? 0:shop.getId());
+                put("shop_id", shop == null ? 0 : shop.getId());
             }
         });
     }
 
-    private String keyCache(User user){
+    private String keyCache(User user) {
         String key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), user.getId(), user.getPhone());
         String token = TokenUtils.getToken(user);
         String cache = String.format(STR_TO_JSON, token, user.getPassword());

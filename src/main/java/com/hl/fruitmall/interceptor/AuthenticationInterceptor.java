@@ -80,7 +80,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256((String) jsonObject.get("password"))).build();
                 try {
                     jwtVerifier.verify(token);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     throw new GlobalException(ExceptionEnum.TOKEN_VERIFICATION_FAIL);
                 }
                 redisTemplate.opsForValue().set(key, cache, TokenUtils.SAVE_TIME, TimeUnit.SECONDS);

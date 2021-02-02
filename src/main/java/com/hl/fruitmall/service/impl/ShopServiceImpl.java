@@ -9,10 +9,13 @@ import com.hl.fruitmall.entity.bean.Shop;
 import com.hl.fruitmall.entity.vo.ShopInfoVO;
 import com.hl.fruitmall.entity.vo.ShopPageVO;
 import com.hl.fruitmall.entity.vo.ShopVO;
+import com.hl.fruitmall.mapper.CommodityMapper;
 import com.hl.fruitmall.mapper.ShopMapper;
 import com.hl.fruitmall.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -32,6 +35,9 @@ public class ShopServiceImpl implements ShopService {
     private ShopMapper shopMapper;
 
     @Autowired
+    private CommodityMapper commodityMapper;
+
+    @Autowired
     private GlobalUtils globalUtils;
 
     @Override
@@ -41,22 +47,26 @@ public class ShopServiceImpl implements ShopService {
                   String endTime,
                   Integer cityId) {
         Date[] dates = globalUtils.strToDate(startTime, endTime);
-        Date start = dates[0],end = dates[1];
-        List<ShopPageVO> list = shopMapper.selectPage((cur - 1) * 10, key, start,end, cityId);
-        Integer total = shopMapper.getTotal(key,start,end,cityId);
-        return R.ok(new HashMap<String,Object>() {
+        Date start = dates[0], end = dates[1];
+        List<ShopPageVO> list = shopMapper.selectPage((cur - 1) * 10, key, start, end, cityId);
+        Integer total = shopMapper.getTotal(key, start, end, cityId);
+        return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
                 put("total", total);
             }
         });
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public R ban(Integer id, Integer days) {
         Shop shop = checkShop("id", id);
         shop.addViolation();
         Date banTime = globalUtils.getBanTime(shop.getCreateTime(), shop.getViolation(), days);
         shopMapper.updateBanTime(id, banTime, shop.getViolation());
+        commodityMapper.updateByField("shop_id", shop.getId(), "is_on_shelf", 0);
+        globalUtils.delCache(id);
         return R.ok();
     }
 
@@ -82,7 +92,7 @@ public class ShopServiceImpl implements ShopService {
         Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
         if (shopVO.getId() == null) {
             // 创建
-            shopMapper.create(shopVO,id);
+            shopMapper.create(shopVO, id);
         } else {
             // 修改
             shopMapper.update(shopVO);
@@ -90,13 +100,14 @@ public class ShopServiceImpl implements ShopService {
         return R.ok();
     }
 
-    private Shop checkShop(String field,Object value){
-        Shop shop = shopMapper.selectByFiled(field,value);
+    @Override
+    public Shop checkShop(String field, Object value) {
+        Shop shop = shopMapper.selectByFiled(field, value);
         if (shop == null) {
             throw new GlobalException(ExceptionEnum.HAS_NOT_SHOP_RECORDS);
         }
         if (shop.getCreateTime().after(shop.getBanTime())
-                || shop.getBanTime().after(new Date())){
+                || shop.getBanTime().after(new Date())) {
             throw new GlobalException(ExceptionEnum.SHOP_HAS_BEEN_BAN);
         }
         return shop;

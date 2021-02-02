@@ -14,7 +14,7 @@ public class ShopInfoVO {
     private String description;
     private Integer heat;
 
-    public static ShopInfoVO create(Shop shop){
+    public static ShopInfoVO create(Shop shop) {
         ShopInfoVO shopInfoVO = new ShopInfoVO();
         shopInfoVO.setId(shop.getId());
         shopInfoVO.setName(shop.getName());

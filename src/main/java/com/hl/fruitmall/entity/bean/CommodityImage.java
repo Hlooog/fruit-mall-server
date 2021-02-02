@@ -22,6 +22,4 @@ public class CommodityImage implements Serializable {
     private String url;
 
 
-
-
 }

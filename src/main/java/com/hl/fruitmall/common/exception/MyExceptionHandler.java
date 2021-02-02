@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class MyExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
-    public R handlerException(Throwable e){
+    public R handlerException(Throwable e) {
         log.error(e.getMessage());
         return R.error();
     }
 
     @ExceptionHandler(GlobalException.class)
-    public R handlerException(GlobalException e){
+    public R handlerException(GlobalException e) {
         return R.error(e.getCode(), e.getMsg());
     }
 

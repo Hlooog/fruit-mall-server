@@ -31,16 +31,16 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public R review(Integer id) {
-        merchantInfoMapper.updateByField("user_id",id,"status", ReviewStatusEnum.REVIEWED.getCode());
+        merchantInfoMapper.updateByField("user_id", id, "status", ReviewStatusEnum.REVIEWED.getCode());
         userMapper.updateByField("id", id, "role_type", RoleEnum.MERCHANT.getCode());
         return R.ok();
     }
 
     @Override
-    public R getListReview(Integer cur,Integer status) {
-        List<ApplyVO> list = merchantInfoMapper.getList((cur - 1) * 10,status);
+    public R getListReview(Integer cur, Integer status) {
+        List<ApplyVO> list = merchantInfoMapper.getList((cur - 1) * 10, status);
         Integer total = merchantInfoMapper.getTotal(status);
-        return R.ok(new HashMap<String,Object>(){
+        return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
                 put("total", total);
@@ -50,7 +50,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     @Override
     public R refuse(Integer id) {
-        merchantInfoMapper.updateByField("id",id, "status", ReviewStatusEnum.REFUSE.getCode());
+        merchantInfoMapper.updateByField("id", id, "status", ReviewStatusEnum.REFUSE.getCode());
         return R.ok();
     }
 

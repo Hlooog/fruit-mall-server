@@ -21,9 +21,9 @@ public enum ExceptionEnum {
     INSUFFICIENT_PERMISSIONS(10013, "权限不够"),
     OPERATION_FAILED(10014, "操作失败"),
     VERIFICATION_CODE_ERROR(10015, "验证码错误"),
-    WITHDRAW_THAN_WITHDRAWABLE(10016,"提现金额大于可提现金额"),
-    PHONE_NUMBER_HAS_ERROR(10017,"输入手机号码和店主手机号码不一致")
-    ;
+    WITHDRAW_THAN_WITHDRAWABLE(10016, "提现金额大于可提现金额"),
+    PHONE_NUMBER_HAS_ERROR(10017, "输入手机号码和店主手机号码不一致"),
+    SPECIFICATION_CAN_NOT_NULL(10018, "请先添加规格在上架");
     private Integer code;
     private String msg;
 

@@ -1,10 +1,7 @@
 package com.hl.fruitmall.mapper;
 
 import com.hl.fruitmall.entity.bean.Commodity;
-import com.hl.fruitmall.entity.vo.CommodityInfoVO;
-import com.hl.fruitmall.entity.vo.CommodityListVO;
-import com.hl.fruitmall.entity.vo.CommodityPageVO;
-import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
+import com.hl.fruitmall.entity.vo.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -26,29 +23,23 @@ public interface CommodityMapper {
                        @Param("filed2") String field2,
                        @Param("value2") Object value2);
 
-    List<CommodityPageVO> selectPage(@Param("id") Integer id,@Param("cur") int cur);
+    List<Commodity> selectByShopId(@Param("id") Integer id);
+
+    List<CommodityPageVO> selectPage(@Param("id") Integer id, @Param("cur") int cur);
 
     List<String> getUrl(@Param("id") Integer ic);
 
-    List<CommodityInfoVO> getInfoList(@Param("id") Integer id);
-
     CommodityPageVO selectByField(@Param("field") String filed, @Param("value") Object value);
 
-    void deleteByField(@Param("field") String id,@Param("value") Object value);
+    void deleteByField(@Param("field") String id, @Param("value") Object value);
 
     void deleteImage(@Param("urls") List<String> urlList);
 
-    void deleteInfo(@Param("field") String field, @Param("value") Object value);
+    void insert(@Param("commodity") Commodity commodity);
 
-    void insert(@Param("commodity")Commodity commodity);
+    void insertImage(@Param("id") Integer id, @Param("list") List<String> urlList);
 
-    void insertImage(@Param("id") Integer id,@Param("list") List<String> urlList);
+    void update(@Param("id") Integer id, @Param("name") String name, @Param("varietyId") Integer varietyId);
 
-    void update(@Param("id") Integer id,@Param("name") String name,@Param("varietyId") Integer varietyId);
-
-    void insertInfo(@Param("vo") EditCommodityInfoVO vo);
-
-    void updateInfo(@Param("vo") EditCommodityInfoVO vo);
-
-    EditCommodityInfoVO selectInfo(@Param("id") Integer id);
+    CommodityVO select(@Param("id") Integer id);
 }

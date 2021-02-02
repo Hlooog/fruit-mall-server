@@ -4,6 +4,8 @@ import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
 import com.hl.fruitmall.entity.vo.EditCommodityVO;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 水果商品表(Commodity)表服务接口
  *
@@ -22,7 +24,7 @@ public interface CommodityService {
 
     R get(Integer id);
 
-    R up(Integer id);
+    R up(Integer id, HttpServletRequest request);
 
     R delete(Integer id);
 

@@ -46,9 +46,9 @@ public class MyRabbitListener {
 
     @RabbitListener(queues = {RabbitConfig.QUEUE_SMS_SEND})
     @RabbitHandler
-    public void smsListener(Map<String,String> msg, Channel channel, Message message) throws IOException {
+    public void smsListener(Map<String, String> msg, Channel channel, Message message) throws IOException {
         try {
-            smsService.invoke(msg.get("phone"),msg.get("code"));
+            smsService.invoke(msg.get("phone"), msg.get("code"));
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             if (message.getMessageProperties().getRedelivered()) {

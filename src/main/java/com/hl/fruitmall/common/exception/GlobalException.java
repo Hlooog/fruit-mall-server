@@ -16,7 +16,7 @@ public class GlobalException extends RuntimeException {
         this.msg = msg;
     }
 
-    public GlobalException(ExceptionEnum exceptionEnum){
+    public GlobalException(ExceptionEnum exceptionEnum) {
         this.code = exceptionEnum.getCode();
         this.msg = exceptionEnum.getMsg();
     }

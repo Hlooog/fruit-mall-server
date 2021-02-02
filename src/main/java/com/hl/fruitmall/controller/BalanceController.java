@@ -34,8 +34,8 @@ public class BalanceController {
 
     @PostMapping("/withdraw")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R withdraw(@RequestBody WithdrawVO withdrawVO,HttpServletRequest request) {
-        return balanceService.withdraw(withdrawVO,request);
+    public R withdraw(@RequestBody WithdrawVO withdrawVO, HttpServletRequest request) {
+        return balanceService.withdraw(withdrawVO, request);
     }
 
 }

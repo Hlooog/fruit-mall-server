@@ -11,6 +11,7 @@ import com.hl.fruitmall.service.CommodityService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 水果商品表(Commodity)表控制层
@@ -41,80 +42,80 @@ public class CommodityController {
 
     @PutMapping("/up/{id}")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R up(@PathVariable("id") Integer id) {
-        return commodityService.up(id);
+    public R up(@PathVariable("id") Integer id, HttpServletRequest request) {
+        return commodityService.up(id, request);
     }
 
     @GetMapping("/page")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
     public R page(@RequestParam("id") Integer id,
-                  @RequestParam("cur") Integer cur){
-        return commodityService.page(id,cur);
+                  @RequestParam("cur") Integer cur) {
+        return commodityService.page(id, cur);
     }
 
     @GetMapping("/info/list/{id}")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R getInfoList(@PathVariable("id") Integer id){
+    public R getInfoList(@PathVariable("id") Integer id) {
         return commodityService.getInfoList(id);
     }
 
     @GetMapping("/get/{id}")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R get(@PathVariable("id") Integer id){
-        return  commodityService.get(id);
+    public R get(@PathVariable("id") Integer id) {
+        return commodityService.get(id);
     }
 
     @DeleteMapping("/delete/{id}")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R delete(@PathVariable("id") Integer id){
+    public R delete(@PathVariable("id") Integer id) {
         return commodityService.delete(id);
     }
 
     @GetMapping("/variety/get")
     @PassToken
-    public R getVariety(){
+    public R getVariety() {
         return commodityService.getVariety();
     }
 
     @PutMapping("/edit")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R edit(@RequestBody EditCommodityVO vo){
+    public R edit(@RequestBody EditCommodityVO vo) {
         return commodityService.edit(vo);
     }
 
     @PostMapping("/create")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R create(@RequestBody EditCommodityVO vo){
+    public R create(@RequestBody EditCommodityVO vo) {
         return commodityService.create(vo);
     }
 
     @PostMapping("/variety/insert")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R insertVariety(@RequestParam("name")String name){
+    public R insertVariety(@RequestParam("name") String name) {
         return commodityService.insertVariety(name);
     }
 
     @PostMapping("/info/create")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R infoCreate(@RequestBody EditCommodityInfoVO vo){
+    public R infoCreate(@RequestBody EditCommodityInfoVO vo) {
         return commodityService.infoCreate(vo);
     }
 
     @PutMapping("/info/edit")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R infoEdit(@RequestBody EditCommodityInfoVO vo){
+    public R infoEdit(@RequestBody EditCommodityInfoVO vo) {
         return commodityService.infoEdit(vo);
     }
 
     @DeleteMapping("/info/delete/{id}")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R infoDelete(@PathVariable("id") Integer id){
+    public R infoDelete(@PathVariable("id") Integer id) {
         return commodityService.infoDelete(id);
     }
 
     @GetMapping("/info/get/{id}")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R infoGet(@PathVariable("id") Integer id){
+    public R infoGet(@PathVariable("id") Integer id) {
         return commodityService.infoGet(id);
     }
 }

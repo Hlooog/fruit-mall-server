@@ -25,12 +25,12 @@ import java.util.List;
 @EnableSwagger2
 public class Swagger2Config {
 
-    public static final String SWAGGER_SCAN_BASE_PACKAGE="com.hl.fruitmall.controller";
+    public static final String SWAGGER_SCAN_BASE_PACKAGE = "com.hl.fruitmall.controller";
 
     public static final String VERSION = "1.0.0";
 
     @Bean
-    public Docket createRestApi(){
+    public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
@@ -63,7 +63,7 @@ public class Swagger2Config {
         return new AuthorizationScope[]{new AuthorizationScope("global", "accessAnything")};
     }
 
-    private ApiInfo apiInfo(){
+    private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("农夫果园网店系统")
                 .description("农夫果园网店API接口文档")

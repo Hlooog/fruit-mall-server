@@ -32,21 +32,21 @@ public class WithdrawController {
                   @RequestParam(value = "startTime", required = false) String startTime,
                   @RequestParam(value = "endTime", required = false) String endTime,
                   @RequestParam("status") Integer status) {
-        return withdrawService.page(phone,cur,startTime,endTime,status);
+        return withdrawService.page(phone, cur, startTime, endTime, status);
     }
 
     @PutMapping("/review")
     @VerificationToken
     public R review(@RequestParam("id") Integer id,
-                    @RequestParam("phone") String phone){
-        return withdrawService.review(id,phone);
+                    @RequestParam("phone") String phone) {
+        return withdrawService.review(id, phone);
     }
 
     @PutMapping("/refuse")
     @VerificationToken
     public R refuse(@RequestParam("id") Integer id,
-                    @RequestParam("phone") String phone){
-        return withdrawService.refuse(id,phone);
+                    @RequestParam("phone") String phone) {
+        return withdrawService.refuse(id, phone);
     }
 
 }

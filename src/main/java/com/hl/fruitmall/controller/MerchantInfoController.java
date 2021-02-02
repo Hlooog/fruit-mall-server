@@ -19,20 +19,20 @@ public class MerchantInfoController {
 
     @PutMapping("/review/{id}")
     @VerificationToken
-    public R review(@PathVariable("id") Integer id){
+    public R review(@PathVariable("id") Integer id) {
         return merchantInfoService.review(id);
     }
 
     @GetMapping("/list/review")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
     public R getListReview(@RequestParam("cur") Integer cur,
-                           @RequestParam("status") Integer status){
-        return merchantInfoService.getListReview(cur,status);
+                           @RequestParam("status") Integer status) {
+        return merchantInfoService.getListReview(cur, status);
     }
 
     @PutMapping("/refuse/{id}")
     @VerificationToken
-    public R refuse(@PathVariable("id") Integer id){
+    public R refuse(@PathVariable("id") Integer id) {
         return merchantInfoService.refuse(id);
     }
 }

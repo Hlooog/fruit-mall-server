@@ -76,7 +76,7 @@ public class CommodityServiceTest {
         map.put("name", "000");
         map.put("avatar", "21111");
         map.put("phone", "333");
-        redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER.getKey(), map, new Date().getTime());
+        redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), map, new Date().getTime());
     }
     @Test
     void test4(){
@@ -95,12 +95,20 @@ public class CommodityServiceTest {
 
     @Test
     void test6(){
-        String key = String.format(RedisKeyEnum.CHAT_READ_RECORD_KEY.getKey(), "18211461717");
+        /*String key = String.format(RedisKeyEnum.CHAT_READ_RECORD_KEY.getKey(), "18211461717");
         Set set = redisTemplate.opsForZSet().reverseRange(key, 20, 30);
-        System.out.println(set.size());
+        System.out.println(set.size());*/
         /*Iterator iterator = set.iterator();
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }*/
+        /*long time = new Date().getTime();
+        Double d = Double.valueOf(time * 1000000);
+        System.out.println(d);
+        System.out.println(Double.MAX_VALUE);*/
+//        redisTemplate.opsForZSet().incrementScore("key", "123", 0);
+        BigDecimal bigDecimal = new BigDecimal(28.5);
+        Double d = bigDecimal.doubleValue();
+        System.out.println(d);
     }
 }

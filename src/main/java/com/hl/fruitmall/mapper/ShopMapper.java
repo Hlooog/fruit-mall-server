@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface ShopMapper {
 
-    Shop selectByFiled(@Param("field") String field,@Param("value") Object value);
+    Shop selectByFiled(@Param("field") String field, @Param("value") Object value);
 
     void updateBanTime(@Param("id") Integer id,
                        @Param("banTime") Date banTime,
@@ -38,7 +38,7 @@ public interface ShopMapper {
                      @Param("end") Date end,
                      @Param("cityId") Integer cityId);
 
-    void create(@Param("shopVO") ShopVO shopVO,@Param("id") Integer id);
+    void create(@Param("shopVO") ShopVO shopVO, @Param("id") Integer id);
 
     void update(@Param("shopVO") ShopVO shopVO);
 }

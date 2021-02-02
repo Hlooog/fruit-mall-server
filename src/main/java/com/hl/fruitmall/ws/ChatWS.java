@@ -26,7 +26,7 @@ public class ChatWS {
     private static RedisTemplate redisTemplate;
 
     @Autowired
-    public void setRedisTemplate(RedisTemplate redisTemplate){
+    public void setRedisTemplate(RedisTemplate redisTemplate) {
         ChatWS.redisTemplate = redisTemplate;
     }
 
@@ -55,12 +55,12 @@ public class ChatWS {
         long time = new Date().getTime();
         key = String.format(RedisKeyEnum.CHAT_READ_RECORD_KEY.getKey(), key);
         redisTemplate.opsForZSet().add(key, msg, time);
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         map.put("name", message.getFromName());
         map.put("avatar", message.getAvatar());
         map.put("phone", fromPhone);
         if (toPhone.equals("service")) {
-            redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER.getKey(), map, time);
+            redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), map, time);
             try {
                 chatWS.session.getBasicRemote().sendText(JSON.toJSONString(map));
             } catch (IOException e) {

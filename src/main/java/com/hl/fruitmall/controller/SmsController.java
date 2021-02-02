@@ -22,7 +22,7 @@ public class SmsController {
 
     @GetMapping("/send")
     @PassToken
-    public R send(@RequestParam("phone") String phone){
+    public R send(@RequestParam("phone") String phone) {
         return smsService.send(phone);
     }
 }

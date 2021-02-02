@@ -26,7 +26,7 @@ public interface UserService {
 
     R banMerchant(Integer id, Integer days);
 
-    User checkUser(String field,Object value);
+    User checkUser(String field, Object value);
 
     R cancelMerchant(Integer id);
 

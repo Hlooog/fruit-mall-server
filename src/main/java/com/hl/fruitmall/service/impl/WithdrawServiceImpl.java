@@ -18,12 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 提现记录表(Withdraw)表服务实现类
- *
- * @author hl
- * @since 2020-11-21 00:33:48
+ * @author Hl
+ * @create 2021/2/2 22:56
  */
-@Service("withdrawalRecordService")
+@Service("withdrawService")
 public class WithdrawServiceImpl implements WithdrawService {
 
     @Autowired
@@ -39,9 +37,9 @@ public class WithdrawServiceImpl implements WithdrawService {
     public R page(String phone, Integer cur, String startTime, String endTime, Integer status) {
         Date[] dates = globalUtils.strToDate(startTime, endTime);
         Date start = dates[0], end = dates[1];
-        List<WithdrawRecordVO> list = withdrawMapper.page(phone, (cur - 1) * 10,start,end,status);
-        Integer total = withdrawMapper.getTotal(phone,start,end);
-        return R.ok(new HashMap<String,Object>(){
+        List<WithdrawRecordVO> list = withdrawMapper.page(phone, (cur - 1) * 10, start, end, status);
+        Integer total = withdrawMapper.getTotal(phone, start, end);
+        return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
                 put("total", total);
@@ -53,10 +51,10 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Override
     public R review(Integer id, String phone) {
         BalanceVO balanceVO = balanceMapper.select(phone);
-        WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id",id);
+        WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id", id);
         balanceVO.setFrozen(balanceVO.getFrozen().subtract(withdraw.getAmount()));
         balanceVO.setWithdraw(balanceVO.getWithdraw().add(withdraw.getAmount()));
-        withdrawMapper.updateById(id, WithdrawStatusEnum.MARKING_MONEY.getCode());
+        withdrawMapper.updateById(id, WithdrawStatusEnum.FINISH.getCode());
         balanceMapper.update(phone, balanceVO);
         return R.ok();
     }
@@ -64,7 +62,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     @Override
     public R refuse(Integer id, String phone) {
         BalanceVO balanceVO = balanceMapper.select(phone);
-        WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id",id);
+        WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id", id);
         balanceVO.setFrozen(balanceVO.getFrozen().subtract(withdraw.getAmount()));
         balanceVO.setWithdrawAble(balanceVO.getWithdrawAble().add(withdraw.getAmount()));
         withdrawMapper.updateById(id, WithdrawStatusEnum.REFUSE.getCode());

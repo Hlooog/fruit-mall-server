@@ -28,7 +28,7 @@ public interface WithdrawMapper {
                      @Param("end") Date end);
 
     WithdrawRecordVO selectByFiled(@Param("field") String field,
-                           @Param("value") Object value);
+                                   @Param("value") Object value);
 
-    void updateById(@Param("id") Integer id,@Param("code") Integer code);
+    void updateById(@Param("id") Integer id, @Param("code") Integer code);
 }

@@ -6,5 +6,6 @@ package com.hl.fruitmall.common.interfaces;
  */
 public interface EnumInterface {
     Integer getCode();
+
     String getMsg();
 }

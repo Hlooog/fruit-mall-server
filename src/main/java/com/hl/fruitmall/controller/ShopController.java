@@ -29,35 +29,35 @@ public class ShopController {
     @GetMapping("/page")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
     public R page(@RequestParam("cur") Integer cur,
-                  @RequestParam(value = "key",required = false) String key,
-                  @RequestParam(value = "startTime",required = false) String startTime,
-                  @RequestParam(value = "endTime",required = false) String endTime,
-                  @RequestParam(value = "cityId",required = false) Integer cityId) {
-        return shopService.page(cur,key,startTime,endTime,cityId);
+                  @RequestParam(value = "key", required = false) String key,
+                  @RequestParam(value = "startTime", required = false) String startTime,
+                  @RequestParam(value = "endTime", required = false) String endTime,
+                  @RequestParam(value = "cityId", required = false) Integer cityId) {
+        return shopService.page(cur, key, startTime, endTime, cityId);
     }
 
     @PutMapping("/ban")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
     public R ban(@RequestParam("id") Integer id,
-                 @RequestParam("days") Integer days){
-        return shopService.ban(id,days);
+                 @RequestParam("days") Integer days) {
+        return shopService.ban(id, days);
     }
 
     @GetMapping("/get/{id}")
     @VerificationToken(roleType = RoleEnum.USER)
-    public R get(@PathVariable("id") Integer id){
+    public R get(@PathVariable("id") Integer id) {
         return shopService.get(id);
     }
 
     @GetMapping("/getInfo/{id}")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R getInfo(@PathVariable("id") Integer id){
+    public R getInfo(@PathVariable("id") Integer id) {
         return shopService.getInfo(id);
     }
 
     @PostMapping("/createOrUpdate")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R createOrUpdate(@RequestBody ShopVO shopVO, HttpServletRequest request){
-        return shopService.createOrUpdate(shopVO,request);
+    public R createOrUpdate(@RequestBody ShopVO shopVO, HttpServletRequest request) {
+        return shopService.createOrUpdate(shopVO, request);
     }
 }

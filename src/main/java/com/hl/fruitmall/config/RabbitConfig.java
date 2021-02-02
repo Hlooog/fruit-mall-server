@@ -87,7 +87,7 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding smsRoutingKey(){
+    public Binding smsRoutingKey() {
         return BindingBuilder.bind(smsQueue()).to(smsExchange()).with(ROUTING_SMS_SEND);
     }
 

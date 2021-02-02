@@ -20,14 +20,14 @@ public class ChatController {
 
     @GetMapping("/link/get")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
-    public R linkGet(){
+    public R linkGet() {
         return chatService.getLinkUser();
     }
 
     @GetMapping("/record/get")
     @VerificationToken(roleType = RoleEnum.USER)
     public R recordGet(@RequestParam("phone") String phone,
-                       @RequestParam("cur") Integer cur){
-        return chatService.recordGet(phone,cur);
+                       @RequestParam("cur") Integer cur) {
+        return chatService.recordGet(phone, cur);
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.CommodityInfoMapper">
+    <resultMap id="commodityInfoList" type="com.hl.fruitmall.entity.vo.CommodityInfoVO">
+        <id column="id" property="id" javaType="int"/>
+        <result column="specification" property="specification" javaType="string"/>
+        <result column="weight" property="weight" javaType="float"/>
+        <result column="stock" property="stock" javaType="int"/>
+        <result column="price" property="price" javaType="java.math.BigDecimal"/>
+    </resultMap>
+
+    <select id="getInfoList" resultMap="commodityInfoList">
+        SELECT id, specification,weight,stock,price
+        FROM commodity_info where commodity_id = #{id}
+    </select>
+
+    <select id="selectInfo" resultType="com.hl.fruitmall.entity.vo.EditCommodityInfoVO">
+        SELECT id,commodity_id,specification,weight,stock,price,shop_id
+        FROM commodity_info
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertInfo">
+        INSERT INTO commodity_info(commodity_id,specification,weight,stock,price,shop_id)
+        VALUES (#{vo.commodityId},#{vo.specification},#{vo.weight},#{vo.stock},#{vo.price},#{vo.shopId})
+    </insert>
+
+    <delete id="deleteInfo">
+        DELETE FROM commodity_info WHERE ${field} = #{value}
+    </delete>
+
+    <update id="updateInfo">
+        UPDATE commodity_info SET specification = #{vo.specification},
+                weight = #{vo.weight},stock = #{vo.stock},price = #{vo.price}
+        WHERE id = #{vo.id}
+    </update>
+</mapper>

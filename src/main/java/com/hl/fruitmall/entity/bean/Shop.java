@@ -40,7 +40,7 @@ public class Shop implements Serializable {
     //修改时间
     private Date updateTime;
 
-    public void addViolation(){
+    public void addViolation() {
         this.violation++;
     }
 }

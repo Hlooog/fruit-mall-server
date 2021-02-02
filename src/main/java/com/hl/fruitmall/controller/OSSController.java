@@ -36,7 +36,7 @@ public class OSSController {
 
     @DeleteMapping("/delete")
     @VerificationToken(roleType = RoleEnum.USER)
-    public R delete(@RequestBody List<String> list){
+    public R delete(@RequestBody List<String> list) {
         return ossService.delete(list);
     }
 }
