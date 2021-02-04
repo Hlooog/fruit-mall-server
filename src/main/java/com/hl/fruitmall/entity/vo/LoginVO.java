@@ -10,4 +10,5 @@ import lombok.Data;
 public class LoginVO {
     private String phone;
     private String password;
+    private String code;
 }

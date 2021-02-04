@@ -111,4 +111,10 @@ public class CommodityServiceTest {
         Double d = bigDecimal.doubleValue();
         System.out.println(d);
     }
+
+    @Test
+    void test7(){
+        String str = "https://thirdwx.qlogo.cn/mmopen/vi_32/DriaNd1wecVkpK7QvMyHDxrqvtNWUzlMia5QySMooniaS5sXTVABUuMTceCuaoKsiayZribXr2D8Nq3icEsBxufSKT2w/132";
+        System.out.println(str.length());
+    }
 }

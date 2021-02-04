@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 @Service("smsService")
 public class SmsService {
 
-    public static final long TIME = 60 * 15;
+    public static final long TIME = 60 * 5;
 
     @Value("${aliyun.sms.key-id}")
     private String keyId;
@@ -46,8 +46,7 @@ public class SmsService {
     @Autowired
     RedisTemplate redisTemplate;
 
-    public R send(String phone) {
-        String key = String.format(RedisKeyEnum.WITHDRAW_CODE_KEY.getKey(), phone);
+    private void send(String key,String phone) {
         String code = (String) redisTemplate.opsForValue().get(key);
         if (code == null) {
             Random random = new Random();
@@ -62,7 +61,6 @@ public class SmsService {
         map.put("phone", phone);
         map.put("code", code);
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_SMS_SEND, RabbitConfig.ROUTING_SMS_SEND, map);
-        return R.ok();
     }
 
     public void invoke(String phone, String code) throws ClientException {
@@ -100,5 +98,17 @@ public class SmsService {
 
         //请求失败这里会抛ClientException异常
         SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+    }
+
+    public R withdrawSend(String phone) {
+        String key = String.format(RedisKeyEnum.WITHDRAW_CODE_KEY.getKey(), phone);
+        send(key, phone);
+        return R.ok();
+    }
+
+    public R loginSend(String phone) {
+        String key = String.format(RedisKeyEnum.LOGIN_CODE_KEY.getKey(), phone);
+        send(key, phone);
+        return R.ok();
     }
 }

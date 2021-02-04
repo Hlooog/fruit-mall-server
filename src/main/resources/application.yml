@@ -32,7 +32,7 @@ spring:
 server:
   servlet:
     context-path: /fruit-mall
-  port: 8150
+  port: 8080
 
 
 mybatis:

@@ -21,8 +21,8 @@ public class User implements Serializable {
     private String phone;
     //密码
     private String password;
-    //appid
-    private String appId;
+    //openId
+    private String openId;
     //头像
     private String avatar;
     //昵称

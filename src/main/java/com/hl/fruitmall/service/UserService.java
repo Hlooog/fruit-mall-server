@@ -3,6 +3,7 @@ package com.hl.fruitmall.service;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.bean.User;
 import com.hl.fruitmall.entity.vo.LoginVO;
+import com.hl.fruitmall.entity.vo.RegisterVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,4 +38,12 @@ public interface UserService {
     R pageMerchant(Integer cur, String key, String startTime, String endTime);
 
     R merchantLogin(LoginVO loginVO);
+
+    R generalLogin(LoginVO loginVO);
+
+    R smsLogin(LoginVO loginVO);
+
+    R wxLogin(String uuid);
+
+    R register(RegisterVO registerVO);
 }

@@ -13,6 +13,11 @@
         <result column="name" property="name" javaType="string"/>
         <result column="id_card" property="idCard" javaType="string"/>
     </resultMap>
+    <insert id="insert" parameterType="com.hl.fruitmall.entity.bean.User"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user(phone,nickname,password,open_id,avatar,role_type)
+        VALUES (#{user.phone},#{user.nickname},#{user.password},#{user.openId},#{user.avatar},#{user.roleType})
+    </insert>
 
     <update id="updateBanTime">
         UPDATE user SET ban_time = #{banTime}, violation = #{violation},update_time = CURRENT_TIMESTAMP
@@ -22,9 +27,14 @@
         UPDATE user SET ${field2} = #{value2}, update_time = CURRENT_TIMESTAMP
          WHERE ${field1} = #{value1};
     </update>
+    <update id="update">
+        UPDATE user SET password = #{user.password},
+                nickname = #{user.nickname}, avatar = #{user.avatar}, open_id = #{user.openId}
+        WHERE id = #{user.id}
+    </update>
 
     <select id="selectByField" resultType="com.hl.fruitmall.entity.bean.User">
-        SELECT id,phone,password,app_id,avatar,nickname,
+        SELECT id,phone,password,open_id,avatar,nickname,
                 role_type,ban_time,is_delete,violation,create_time,update_time
         FROM user WHERE ${field} = #{value}
     </select>
@@ -57,7 +67,7 @@
         </where>
     </select>
     <select id="getListByFiled" resultType="com.hl.fruitmall.entity.vo.UserPageVO">
-        SELECT id,phone,password,app_id,avatar,nickname,
+        SELECT id,phone,password,open_id,avatar,nickname,
                 role_type,ban_time,is_delete,violation,create_time,update_time FROM user
         WHERE ${field} = #{value}
     </select>

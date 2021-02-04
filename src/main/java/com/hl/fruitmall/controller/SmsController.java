@@ -4,10 +4,7 @@ import com.hl.fruitmall.common.annotation.PassToken;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.service.impl.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Hl
@@ -20,9 +17,17 @@ public class SmsController {
     @Autowired
     private SmsService smsService;
 
-    @GetMapping("/send")
+    @GetMapping("/withdraw/send")
     @PassToken
-    public R send(@RequestParam("phone") String phone) {
-        return smsService.send(phone);
+    public R withdrawSend(@RequestParam("phone") String phone) {
+        return smsService.withdrawSend(phone);
     }
+
+    @GetMapping("/login/send")
+    @PassToken
+    public R loginSend(@RequestParam("phone") String phone){
+        return smsService.loginSend(phone);
+    }
+
+
 }
