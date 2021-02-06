@@ -2,6 +2,7 @@ package com.hl.fruitmall.service;
 
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.bean.Shop;
+import com.hl.fruitmall.entity.vo.CloseShopVO;
 import com.hl.fruitmall.entity.vo.ShopVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,4 +26,6 @@ public interface ShopService {
     R createOrUpdate(ShopVO shopVO, HttpServletRequest request);
 
     Shop checkShop(String field, Object value);
+
+    R close(CloseShopVO vo, HttpServletRequest request);
 }

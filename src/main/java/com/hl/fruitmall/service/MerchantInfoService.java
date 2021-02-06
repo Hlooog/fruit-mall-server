@@ -1,6 +1,9 @@
 package com.hl.fruitmall.service;
 
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.entity.vo.ApplyMerchantVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Hl
@@ -13,4 +16,9 @@ public interface MerchantInfoService {
     R getListReview(Integer cur, Integer isReview);
 
     R refuse(Integer id);
+
+    R apply(ApplyMerchantVO vo);
+
+    R get(HttpServletRequest request);
+
 }

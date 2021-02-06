@@ -48,4 +48,6 @@ public interface UserMapper {
 
     void update(@Param("user") User user);
 
+    void insertBatch(@Param("list") List<User> list);
+
 }

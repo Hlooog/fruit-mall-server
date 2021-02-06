@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -136,8 +135,7 @@ public class CommodityServiceImpl implements CommodityService {
         String key = String.format(RedisKeyEnum.VARIETY_KEY.getKey(), commodityVO.getVarietyId());
         redisTemplate.opsForZSet().add(RedisKeyEnum.COMMODITY_Z_SET.getKey(), id, score == null ? 0 : score);
         redisTemplate.opsForZSet().incrementScore(key, id, 0);
-        redisTemplate.opsForZSet().add(RedisKeyEnum.PRICE, id,
-                price.multiply(new BigDecimal(new Date().getTime())).doubleValue());
+        redisTemplate.opsForZSet().add(RedisKeyEnum.PRICE, id, price.doubleValue());
         scoreMapper.delete(id);
     }
 

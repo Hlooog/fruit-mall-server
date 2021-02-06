@@ -2,17 +2,22 @@ package com.hl.fruitmall.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.hl.fruitmall.common.enums.ExceptionEnum;
+import com.hl.fruitmall.common.enums.RedisKeyEnum;
+import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.GlobalUtils;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.bean.Shop;
+import com.hl.fruitmall.entity.vo.CloseShopVO;
 import com.hl.fruitmall.entity.vo.ShopInfoVO;
 import com.hl.fruitmall.entity.vo.ShopPageVO;
 import com.hl.fruitmall.entity.vo.ShopVO;
 import com.hl.fruitmall.mapper.CommodityMapper;
 import com.hl.fruitmall.mapper.ShopMapper;
+import com.hl.fruitmall.mapper.UserMapper;
 import com.hl.fruitmall.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +44,12 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private GlobalUtils globalUtils;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public R page(Integer cur,
@@ -91,8 +102,14 @@ public class ShopServiceImpl implements ShopService {
     public R createOrUpdate(ShopVO shopVO, HttpServletRequest request) {
         Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
         if (shopVO.getId() == null) {
-            // 创建
-            shopMapper.create(shopVO, id);
+            Shop shop = shopMapper.selectByFiled("owner_id", id);
+            if (shop == null) {
+                // 创建
+                shopMapper.create(shopVO, id);
+            } else {
+                shopVO.setId(shop.getId());
+                shopMapper.update(shopVO);
+            }
         } else {
             // 修改
             shopMapper.update(shopVO);
@@ -111,5 +128,24 @@ public class ShopServiceImpl implements ShopService {
             throw new GlobalException(ExceptionEnum.SHOP_HAS_BEEN_BAN);
         }
         return shop;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public R close(CloseShopVO vo, HttpServletRequest request) {
+        String phone = JWT.decode(request.getHeader("X-Token")).getAudience().get(1);
+        if (!phone.equals(vo.getPhone())) {
+            throw new GlobalException(ExceptionEnum.PHONE_NUMBER_HAS_ERROR);
+        }
+        String key = String.format(RedisKeyEnum.CLOSE_SHOP_KEY.getKey(), phone);
+        String code = (String) redisTemplate.opsForValue().get(key);
+        if (!vo.getCode().equals(code)) {
+            throw new GlobalException(ExceptionEnum.VERIFICATION_CODE_ERROR);
+        }
+        shopMapper.updateByField("shop_id", vo.getShop_id(), "is_delete", 1);
+        commodityMapper.updateByField("shop_id", vo.getShop_id(), "is_on_shelf", 0);
+        userMapper.updateByField("phone", phone, "role_type", RoleEnum.USER.getCode());
+        globalUtils.delCache(vo.getShop_id());
+        return R.ok();
     }
 }

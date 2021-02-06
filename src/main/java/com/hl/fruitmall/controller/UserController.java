@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 /**
  * 用户表(User)表控制层
  *
@@ -80,5 +83,23 @@ public class UserController {
     @VerificationToken
     public R cancelService(@PathVariable("id") Integer id) {
         return userService.cancelService(id);
+    }
+
+    @GetMapping("/get")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R get(HttpServletRequest request){
+       return userService.get(request);
+    }
+
+    @PutMapping("/edit")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R edit(@RequestBody Map<String,String> map, HttpServletRequest request){
+        return userService.edit(map, request);
+    }
+
+    @PutMapping("/delete")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R delete(@RequestBody Map<String,String> map){
+        return userService.delete(map);
     }
 }

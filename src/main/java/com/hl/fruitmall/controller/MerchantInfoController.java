@@ -3,9 +3,12 @@ package com.hl.fruitmall.controller;
 import com.hl.fruitmall.common.annotation.VerificationToken;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.entity.vo.ApplyMerchantVO;
 import com.hl.fruitmall.service.MerchantInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Hl
@@ -34,5 +37,17 @@ public class MerchantInfoController {
     @VerificationToken
     public R refuse(@PathVariable("id") Integer id) {
         return merchantInfoService.refuse(id);
+    }
+
+    @PostMapping("/apply")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R apply(@RequestBody ApplyMerchantVO vo){
+        return merchantInfoService.apply(vo);
+    }
+
+    @GetMapping("/get")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R get(HttpServletRequest request){
+        return merchantInfoService.get(request);
     }
 }

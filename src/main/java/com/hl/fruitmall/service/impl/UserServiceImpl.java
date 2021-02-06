@@ -28,9 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -313,11 +311,20 @@ public class UserServiceImpl implements UserService {
             // 直接注册
             // 如果用户已经存在 返回用户已经存在错误
             if (user != null) {
-                throw new GlobalException(ExceptionEnum.USER_EXIST);
+                if (user.getIsDelete().equals(0)) {
+                    throw new GlobalException(ExceptionEnum.USER_EXIST);
+                } else {
+                    // 用户存在但是已经注销
+                    user.setNickname(registerVO.getName());
+                    user.setAvatar(registerVO.getAvatar());
+                    user.setPassword(registerVO.getPassword());
+                    userMapper.update(user);
+                }
+            } else  {
+                user = registerVO.toUser();
+                // 用户不存在
+                userMapper.insert(user);
             }
-            // 用户不存在
-            user = registerVO.toUser();
-            userMapper.insert(user);
         } else {
             // 微信扫码
             key = String.format(RedisKeyEnum.WX_LOGIN_KEY.getKey(), registerVO.getUuid());
@@ -351,6 +358,60 @@ public class UserServiceImpl implements UserService {
                 put("phone", finalUser.getPhone());
             }
         });
+    }
+
+    @Override
+    public R get(HttpServletRequest request) {
+        Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        User user = userMapper.selectByField("id", id);
+        return R.ok(new HashMap<String,String>(){
+            {
+                put("name", user.getNickname());
+                put("avatar", user.getAvatar());
+            }
+        });
+    }
+
+    @Override
+    public R edit(Map<String, String> map, HttpServletRequest request) {
+        Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        User user = checkUser("id", id);
+        if (map.containsKey("name")) {
+            userMapper.updateByField("id", id, "nickname", map.get("name"));
+        } else if (map.containsKey("avatar")) {
+            userMapper.updateByField("id", id, "avatar", map.get("avatar"));
+            List<String> list = new ArrayList<>();
+            list.add(user.getAvatar());
+            rabbitTemplate.convertAndSend(RabbitConfig.ROUTING_OSS_DELETE,
+                    RabbitConfig.ROUTING_OSS_DELETE, list);
+        } else if (map.containsKey("password")) {
+            String key = String.format(RedisKeyEnum.UPDATE_PASSWORD_KEY.getKey(), map.get("phone"));
+            String code = (String) redisTemplate.opsForValue().get(key);
+            if (!map.get("code").equals(code)) {
+                throw new GlobalException(ExceptionEnum.VERIFICATION_CODE_ERROR);
+            }
+            userMapper.updateByField("id", id, "password", map.get("password"));
+            key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), id,map.get("phone"));
+            redisTemplate.delete(key);
+        }
+        return R.ok();
+    }
+
+    @Override
+    public R delete(Map<String, String> map) {
+        String phone = map.get("phone");
+        User user = checkUser("phone", phone);
+        String key = String.format(RedisKeyEnum.UPDATE_PASSWORD_KEY.getKey(), phone);
+        String code = (String) redisTemplate.opsForValue().get(key);
+        if (!code.equals(map.get("code"))) {
+            throw new GlobalException(ExceptionEnum.VERIFICATION_CODE_ERROR);
+        }
+        userMapper.updateByField("phone", phone, "is_delete", 1);
+        List<String> list = new ArrayList<>();
+        list.add(user.getAvatar());
+        rabbitTemplate.convertAndSend(RabbitConfig.ROUTING_OSS_DELETE,
+                RabbitConfig.ROUTING_OSS_DELETE, list);
+        return R.ok();
     }
 
     private String keyCache(User user) {

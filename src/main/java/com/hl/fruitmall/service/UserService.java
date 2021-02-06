@@ -6,6 +6,7 @@ import com.hl.fruitmall.entity.vo.LoginVO;
 import com.hl.fruitmall.entity.vo.RegisterVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 用户表(User)表服务接口
@@ -46,4 +47,10 @@ public interface UserService {
     R wxLogin(String uuid);
 
     R register(RegisterVO registerVO);
+
+    R get(HttpServletRequest request);
+
+    R edit(Map<String, String> map, HttpServletRequest request);
+
+    R delete(Map<String, String> map);
 }

@@ -3,6 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.MerchantInfoMapper">
+    <insert id="insert">
+        INSERT INTO merchant_info(user_id,id_card,name,positive,negative,status)
+        VALUES (#{vo.id},#{vo.idCard},#{vo.name},#{vo.positive},#{vo.negative},0)
+    </insert>
 
     <update id="updateByField">
         UPDATE merchant_info SET ${field2}= #{value2} WHERE ${field1} = #{value1}
@@ -13,5 +17,12 @@
     </select>
     <select id="getTotal" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM merchant_info WHERE status = #{status}
+    </select>
+    <select id="select" resultType="com.hl.fruitmall.entity.bean.MerchantInfo">
+        SELECT id,user_id,id_card,positive,negative,status,apply_time FROM merchant_info
+        WHERE (id = #{id} OR id_card = #{idCard}) AND status IN (0,1)
+    </select>
+    <select id="selectStatus" resultType="java.lang.Integer">
+        SELECT status FROM merchant_info WHERE user_id = #{id} ORDER BY apply_time DESC LIMIT 1
     </select>
 </mapper>

@@ -24,7 +24,9 @@ public enum ExceptionEnum {
     WITHDRAW_THAN_WITHDRAWABLE(10016, "提现金额大于可提现金额"),
     PHONE_NUMBER_HAS_ERROR(10017, "输入手机号码和店主手机号码不一致"),
     SPECIFICATION_CAN_NOT_NULL(10018, "请先添加规格在上架"),
-    USER_EXIST(10020,"用户已经存在");
+    USER_EXIST(10020,"用户已经存在"),
+    REPEAT_APPLICATION(10021,"重复申请")
+    ;
 
 
     private Integer code;

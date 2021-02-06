@@ -111,4 +111,16 @@ public class SmsService {
         send(key, phone);
         return R.ok();
     }
+
+    public R closeSend(String phone) {
+        String key = String.format(RedisKeyEnum.CLOSE_SHOP_KEY.getKey(), phone);
+        send(key, phone);
+        return R.ok();
+    }
+
+    public R editSend(String phone) {
+        String key = String.format(RedisKeyEnum.UPDATE_PASSWORD_KEY.getKey(), phone);
+        send(key, phone);
+        return R.ok();
+    }
 }

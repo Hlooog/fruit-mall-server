@@ -19,6 +19,13 @@
         VALUES (#{user.phone},#{user.nickname},#{user.password},#{user.openId},#{user.avatar},#{user.roleType})
     </insert>
 
+    <insert id="insertBatch">
+        INSERT INTO user(phone,password,nickname,avatar) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.phone},#{item.password},#{item.nickname},#{item.avatar})
+        </foreach>
+    </insert>
+
     <update id="updateBanTime">
         UPDATE user SET ban_time = #{banTime}, violation = #{violation},update_time = CURRENT_TIMESTAMP
          WHERE id = #{id}
@@ -29,7 +36,7 @@
     </update>
     <update id="update">
         UPDATE user SET password = #{user.password},
-                nickname = #{user.nickname}, avatar = #{user.avatar}, open_id = #{user.openId}
+                nickname = #{user.nickname}, avatar = #{user.avatar}, open_id = #{user.openId},is_delete = 0
         WHERE id = #{user.id}
     </update>
 

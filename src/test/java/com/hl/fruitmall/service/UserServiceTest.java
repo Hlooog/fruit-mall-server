@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Hl
@@ -38,5 +40,24 @@ public class UserServiceTest {
         User user = userMapper.selectByField("id", 10009);
         System.out.println(!user.getBanTime().before(user.getCreateTime()));
         System.out.println(!user.getBanTime().after(user.getCreateTime()));
+    }
+
+    @Test
+    void test2(){
+        List<User> list = new ArrayList<>();
+        long phone = 12345678950l;
+        for (int i = 0; i < 100; i++) {
+            User user = new User();
+            user.setPhone(String.valueOf(phone + i));
+            user.setPassword("e10adc3949ba59abbe56e057f20f883e");
+            user.setAvatar("https://hl-fruit-mall.oss-cn-guangzhou.aliyuncs.com/2020/12/01/358d6b989d554015ba230e441f0d60e1avatar.jpg");
+            user.setNickname("user" + (i + 41));
+            list.add(user);
+        }
+        userMapper.insertBatch(list);
+    }
+
+    @Test
+    void test3(){
     }
 }

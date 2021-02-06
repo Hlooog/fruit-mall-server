@@ -79,6 +79,7 @@ public class GlobalUtils {
             ids.add(c.getId());
         });
         redisTemplate.opsForZSet().remove(key, ids);
+        redisTemplate.opsForHash().delete(RedisKeyEnum.COMMODITY_HASH.getKey(), ids);
     }
 }
 

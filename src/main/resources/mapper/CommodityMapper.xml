@@ -7,7 +7,7 @@
     <resultMap id="vo" type="com.hl.fruitmall.entity.vo.CommodityVO">
         <id column="id" property="id" javaType="int"/>
         <result column="name" property="name" javaType="string"/>
-        <result column="variety_id" property="varietyId" javaType="int"/>
+        <result column="varietyId" property="varietyId" javaType="int"/>
         <result column="varietyName" property="varietyName" javaType="string"/>
         <result column="url" property="url" javaType="string"/>
         <result column="shopName" property="shopName" javaType="string"/>
@@ -111,7 +111,7 @@
                 ci.url,s.name shopName
             FROM commodity c
             LEFT JOIN variety v ON c.variety_id = v.id
-            LEFT JOIN commodity_image ci ON c.id = ci.commodity_id
+            LEFT JOIN (SELECT commodity_id, MIN(url) url FROM commodity_image WHERE commodity_id = #{id}) ci ON c.id = ci.commodity_id
             LEFT JOIN shop s on c.shop_id = s.id WHERE c.id = #{id};
     </select>
     <select id="selectByShopId" resultType="com.hl.fruitmall.entity.bean.Commodity">

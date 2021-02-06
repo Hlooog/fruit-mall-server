@@ -4,6 +4,7 @@ package com.hl.fruitmall.controller;
 import com.hl.fruitmall.common.annotation.VerificationToken;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.entity.vo.CloseShopVO;
 import com.hl.fruitmall.entity.vo.ShopVO;
 import com.hl.fruitmall.service.ShopService;
 import org.springframework.web.bind.annotation.*;
@@ -59,5 +60,11 @@ public class ShopController {
     @VerificationToken(roleType = RoleEnum.MERCHANT)
     public R createOrUpdate(@RequestBody ShopVO shopVO, HttpServletRequest request) {
         return shopService.createOrUpdate(shopVO, request);
+    }
+
+    @PutMapping("/close")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R close(@RequestBody CloseShopVO vo, HttpServletRequest request){
+        return shopService.close(vo,request);
     }
 }

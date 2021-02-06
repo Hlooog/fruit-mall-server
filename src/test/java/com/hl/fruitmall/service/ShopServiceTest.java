@@ -1,6 +1,7 @@
 package com.hl.fruitmall.service;
 
 import com.hl.fruitmall.entity.vo.ShopPageVO;
+import com.hl.fruitmall.mapper.MerchantInfoMapper;
 import com.hl.fruitmall.mapper.ShopMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,19 @@ import java.util.List;
 public class ShopServiceTest {
     @Autowired
     private ShopMapper shopMapper;
+
+    @Autowired
+    private MerchantInfoMapper merchantInfoMapper;
+
     @Test
     void test(){
         List<ShopPageVO> list = shopMapper.selectPage(0, "", null, null, 117);
         System.out.println(list);
+    }
+
+    @Test
+    void test1(){
+        Integer status = merchantInfoMapper.selectStatus(10054);
+        System.out.println(status);
     }
 }

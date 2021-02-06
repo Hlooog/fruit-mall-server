@@ -62,12 +62,14 @@ public class CommodityServiceTest {
         while (iterator.hasNext()){
             System.out.println(iterator.next());
         }*/
-        Map<String,Integer> map = redisTemplate.opsForHash().entries(RedisKeyEnum.CHAT_UNREAD_NUMBER_KEY.getKey());
+        /*Map<String,Integer> map = redisTemplate.opsForHash().entries(RedisKeyEnum.CHAT_UNREAD_NUMBER_KEY.getKey());
         Set set = map.entrySet();
         Iterator iterator = set.iterator();
         while (iterator.hasNext()){
             System.out.println(iterator.next());
-        }
+        }*/
+        /*Set set = redisTemplate.opsForZSet().reverseRange("key", 0, -1);
+        System.out.println(set.size());*/
     }
 
     @Test

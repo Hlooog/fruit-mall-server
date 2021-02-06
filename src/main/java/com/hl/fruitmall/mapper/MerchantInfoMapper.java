@@ -1,5 +1,7 @@
 package com.hl.fruitmall.mapper;
 
+import com.hl.fruitmall.entity.bean.MerchantInfo;
+import com.hl.fruitmall.entity.vo.ApplyMerchantVO;
 import com.hl.fruitmall.entity.vo.ApplyVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,4 +20,10 @@ public interface MerchantInfoMapper {
     List<ApplyVO> getList(@Param("cur") Integer cur, @Param("status") Integer status);
 
     Integer getTotal(@Param("status") Integer status);
+
+    void insert(@Param("vo") ApplyMerchantVO vo);
+
+    MerchantInfo select(@Param("id") Integer ic,@Param("idCard") String idCard);
+
+    Integer selectStatus(@Param("id") Integer id);
 }
