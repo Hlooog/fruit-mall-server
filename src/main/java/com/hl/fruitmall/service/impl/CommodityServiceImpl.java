@@ -17,6 +17,7 @@ import com.hl.fruitmall.service.ShopService;
 import com.hl.fruitmall.service.UserService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,9 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 水果商品表(Commodity)表服务实现类
@@ -44,16 +44,16 @@ public class CommodityServiceImpl implements CommodityService {
     private VarietyMapper varietyMapper;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ShopService shopService;
-
-    @Autowired
     private CommodityInfoMapper commodityInfoMapper;
 
     @Autowired
     private ScoreMapper scoreMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ShopService shopService;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -211,6 +211,7 @@ public class CommodityServiceImpl implements CommodityService {
         VarietyVO varietyVO = new VarietyVO();
         varietyVO.setName(name);
         varietyMapper.insert(varietyVO);
+        redisTemplate.opsForZSet().add(RedisKeyEnum.VARIETY_SET.getKey(), varietyVO, 0);
         return R.ok(varietyVO.getId());
     }
 
@@ -236,6 +237,109 @@ public class CommodityServiceImpl implements CommodityService {
     public R infoGet(Integer id) {
         EditCommodityInfoVO vo = commodityInfoMapper.selectInfo(id);
         return R.ok(vo);
+    }
+
+    @Override
+    public R varietyList() {
+        Set set = redisTemplate.opsForZSet().
+                reverseRange(RedisKeyEnum.VARIETY_SET.getKey(), 0, -1);
+        return R.ok(set);
+    }
+
+    @Override
+    public R getList(Map<String, Object> map, HttpServletRequest request) {
+        // 取出参数
+        Integer cur = (Integer) map.get("cur");
+        List<Integer> select = (List<Integer>) map.get("select");
+        String minStr = (String) map.get("min");
+        String maxStr = (String) map.get("max");
+        Double min = minStr.equals("") ? 0 : Double.valueOf(minStr);
+        Double max = maxStr.equals("") ? Double.POSITIVE_INFINITY : Double.valueOf(maxStr);
+
+        String token = request.getHeader("X-Token");
+        // 全局key
+        StringBuilder allKey = new StringBuilder("ALL_KEY");
+        Integer id = null;
+        // 用户是否登录
+        if (token != null) {
+            id = Integer.valueOf(JWT.decode(token).getAudience().get(0));
+            allKey.append(":" + id);
+        }
+        // 价格区间key
+        String priceKey = String.format(RedisKeyEnum.PRICE_INTERVAL.getKey(), min, max);
+        allKey.append(":" + priceKey);
+        // 水果类型key
+        StringBuilder varietyKey = new StringBuilder("VARIETY_UNION");
+        List<String> varietyList = new ArrayList<>();
+        String innerKey = null;
+        // 选择了水果类型 填补数据
+        if (select.size() > 0) {
+            Collections.sort(select);
+            innerKey = String.format(RedisKeyEnum.VARIETY_KEY.getKey(), select.get(0));
+            varietyKey.append(":").append(select.get(0));
+            if (select.size() >= 1) {
+                for (int i = 1; i < select.size(); i++) {
+                    varietyKey.append(":").append(select.get(i));
+                    varietyList.add(String.format(RedisKeyEnum.VARIETY_KEY.getKey(), select.get(i)));
+                }
+            }
+            allKey.append(":" + varietyKey.toString());
+        }
+        // 查看redis 中是否有全局key 如果有就直接取 没有就加入
+        if (redisTemplate.keys(allKey).size() == 0) {
+            String destKey = null;
+            // 取价格区间内的水果id存为一个zset
+            Set priceSet = redisTemplate.opsForZSet()
+                    .rangeByScoreWithScores(RedisKeyEnum.PRICE.getKey(), min, max);
+            redisTemplate.opsForZSet().add(priceKey, priceSet);
+            redisTemplate.expire(priceKey, 300, TimeUnit.SECONDS);
+            // 选择了水果类型以后 求并集
+            if (select.size() > 0) {
+                destKey = varietyKey + ":" + priceKey;
+                redisTemplate.opsForZSet().unionAndStore(innerKey, varietyList, varietyKey.toString());
+                redisTemplate.expire(varietyKey, 300, TimeUnit.SECONDS);
+                redisTemplate.opsForZSet().intersectAndStore(varietyKey, priceKey, destKey);
+            } else {
+                destKey = priceKey;
+            }
+            redisTemplate.expire(destKey, 300, TimeUnit.SECONDS);
+            // 用户登录了
+            if (id != null) {
+                String userKey = String.format(RedisKeyEnum.BROWSE_RECORDS.getKey(), id);
+                String userDestKey = null;
+                userDestKey = destKey + ":" + userKey;
+                // 先求用户和destKey的交集
+                redisTemplate.opsForZSet().intersectAndStore(userKey, destKey, userDestKey);
+                // 然后再用destKey和用户的交集和destKey按分数1：100求并集 目的是为了使用户点击过的尽量靠前
+                redisTemplate.opsForZSet().unionAndStore(destKey,
+                        Arrays.asList(userDestKey),
+                        destKey,
+                        RedisZSetCommands.Aggregate.SUM,
+                        RedisZSetCommands.Weights.of(1, 100));
+            }
+            // 用destKey 和 总的分数求交集
+            redisTemplate.opsForZSet().intersectAndStore(destKey, RedisKeyEnum.COMMODITY_Z_SET.getKey(), allKey);
+            redisTemplate.expire(allKey, 300, TimeUnit.SECONDS);
+        }
+        // 取出allKey内的值 分页取
+        Set set = redisTemplate.opsForZSet().reverseRange(allKey, (cur - 1) * 8, ((cur * 8) - 1));
+        // 取出hash中的真实值
+        List<CommodityVO> list = (List<CommodityVO>) redisTemplate.opsForHash()
+                .multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
+        return R.ok(list);
+    }
+
+    @Override
+    public R getHome(HttpServletRequest request) {
+        Set set = redisTemplate.opsForZSet()
+                .reverseRange(RedisKeyEnum.COMMODITY_Z_SET.getKey(), 0, 9);
+        List list = redisTemplate.opsForHash()
+                .multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
+        return R.ok(new HashMap<String, Object>() {
+            {
+                put("hot", list);
+            }
+        });
     }
 
     private void deleteImage(List<String> list) {

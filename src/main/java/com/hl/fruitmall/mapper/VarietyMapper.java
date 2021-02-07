@@ -13,4 +13,7 @@ public interface VarietyMapper {
     List<VarietyVO> get();
 
     void insert(@Param("variety") VarietyVO variety);
+
+    List<VarietyVO> list();
+
 }

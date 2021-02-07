@@ -10,4 +10,7 @@
     <select id="get" resultType="com.hl.fruitmall.entity.vo.VarietyVO">
         SELECT id,name FROM variety
     </select>
+    <select id="list" resultType="com.hl.fruitmall.entity.vo.VarietyVO">
+        SELECT id,name FROM variety
+    </select>
 </mapper>

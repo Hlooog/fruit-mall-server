@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 水果商品表(Commodity)表控制层
@@ -117,5 +118,23 @@ public class CommodityController {
     @VerificationToken(roleType = RoleEnum.MERCHANT)
     public R infoGet(@PathVariable("id") Integer id) {
         return commodityService.infoGet(id);
+    }
+
+    @GetMapping("/variety/list")
+    @PassToken
+    public R varietyList() {
+        return commodityService.varietyList();
+    }
+
+    @PostMapping("/list")
+    @PassToken
+    public R getList(@RequestBody Map<String, Object> map, HttpServletRequest request) {
+        return commodityService.getList(map, request);
+    }
+
+    @GetMapping("/home")
+    @PassToken
+    public R getHot(HttpServletRequest request) {
+        return commodityService.getHome(request);
     }
 }

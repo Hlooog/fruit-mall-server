@@ -2,12 +2,16 @@ package com.hl.fruitmall.service;
 
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.entity.vo.CommodityListVO;
+import com.hl.fruitmall.entity.vo.VarietyVO;
 import com.hl.fruitmall.mapper.CommodityMapper;
+import com.hl.fruitmall.mapper.VarietyMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.connection.RedisZSetCommands;
+import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -25,7 +29,7 @@ public class CommodityServiceTest {
     private RedisTemplate redisTemplate;
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private VarietyMapper varietyMapper;
 
 
     @Test
@@ -118,5 +122,106 @@ public class CommodityServiceTest {
     void test7(){
         String str = "https://thirdwx.qlogo.cn/mmopen/vi_32/DriaNd1wecVkpK7QvMyHDxrqvtNWUzlMia5QySMooniaS5sXTVABUuMTceCuaoKsiayZribXr2D8Nq3icEsBxufSKT2w/132";
         System.out.println(str.length());
+    }
+
+    @Test
+    void test8(){
+        List<VarietyVO> list = varietyMapper.list();
+        Set<ZSetOperations.TypedTuple<VarietyVO>> set = new HashSet<>();
+        for (int i = 0; i < list.size(); i++) {
+            ZSetOperations.TypedTuple<VarietyVO>
+                    varietyVOTypedTuple = new DefaultTypedTuple(list.get(i),0d);
+            set.add(varietyVOTypedTuple);
+        }
+        redisTemplate.opsForZSet().add(RedisKeyEnum.VARIETY_SET.getKey(), set);
+    }
+
+    @Test
+    void test9(){
+//        Set set = redisTemplate.opsForZSet().reverseRange(RedisKeyEnum.COMMODITY_Z_SET.getKey(), 0, 9);
+//        List<Integer> idList = new ArrayList<>(set);
+        /*List list =  redisTemplate.opsForHash()
+                .multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
+        System.out.println(list);*/
+        redisTemplate.opsForValue().set("key", 1);
+        redisTemplate.opsForValue().set("key:1", 1.1);
+    }
+
+    @Test
+    void test10(){
+        Set<ZSetOperations.TypedTuple<VarietyVO>> set = new HashSet<>();
+        for (int i = 0; i < 30; i++) {
+            ZSetOperations.TypedTuple<VarietyVO>
+                    varietyVOTypedTuple = new DefaultTypedTuple(i,(double)i);
+            set.add(varietyVOTypedTuple);
+        }
+        redisTemplate.opsForZSet().add("key1", set);
+
+        /*set = new HashSet<>();
+        for (int i = 5; i < 15; i++) {
+            ZSetOperations.TypedTuple<VarietyVO>
+                    varietyVOTypedTuple = new DefaultTypedTuple(i,(double)(i * 2));
+            set.add(varietyVOTypedTuple);
+        }
+        redisTemplate.opsForZSet().add("key2", set);*/
+
+        /*set = new HashSet<>();
+        for (int i = 0; i < 20; i++) {
+            ZSetOperations.TypedTuple<VarietyVO>
+                    varietyVOTypedTuple = new DefaultTypedTuple(i,0d);
+            set.add(varietyVOTypedTuple);
+        }
+        redisTemplate.opsForZSet().add("key3", set);*/
+    }
+    @Test
+    void test11(){
+//        List<String> list = new ArrayList<>(Arrays.asList("key1","key2"));
+//        redisTemplate.opsForZSet().unionAndStore("key1","key2", "key4");
+        List<String> list = new ArrayList<>();
+        list.add("key2");
+        list.add("key3");
+        /**
+         * RedisZSetCommands.Aggregate.MAX 表示要最大的分数
+         * RedisZSetCommands.Aggregate.MIN 表示要最小的分数
+         * RedisZSetCommands.Aggregate.SUM 表示要分数之和的分数
+         *
+         * redisTemplate.opsForZSet().intersectAndStore("key1", list, "key3", RedisZSetCommands.Aggregate.MAX);
+         */
+//        redisTemplate.opsForZSet().intersectAndStore("key1", list, "key3", RedisZSetCommands.Aggregate.MAX);
+        /**
+         * 配置权重  1:2:3
+         * List<String> list = new ArrayList<>();
+         * list.add("key2");
+         * list.add("key3");
+         * RedisZSetCommands.Weights weights = RedisZSetCommands.Weights.of(1, 2, 3);
+         * redisTemplate.opsForZSet().intersectAndStore("key1", list, "key4", RedisZSetCommands.Aggregate.SUM,weights);
+         */
+        /*RedisZSetCommands.Weights weights = RedisZSetCommands.Weights.of(1, 2, 3);
+        redisTemplate.opsForZSet().intersectAndStore("key1", list, "key4", RedisZSetCommands.Aggregate.SUM,weights);*/
+
+        redisTemplate.opsForZSet().unionAndStore("key1", Arrays.asList("key2"), "key5", RedisZSetCommands.Aggregate.SUM, RedisZSetCommands.Weights.of(3,1));
+
+    }
+
+    @Test
+    void test12(){
+//        redisTemplate.exec();
+//        System.out.println(priceSet == null);
+//        System.out.println(priceSet);
+        Set priceSet = redisTemplate.opsForZSet()
+                .rangeByScoreWithScores(RedisKeyEnum.PRICE.getKey(), 0, Double.POSITIVE_INFINITY);
+        Iterator iterator = priceSet.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+    }
+
+    @Test
+    void test13(){
+        Set set = redisTemplate.opsForZSet().reverseRange("key1", 0, 9);
+        Iterator iterator = set.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
     }
 }

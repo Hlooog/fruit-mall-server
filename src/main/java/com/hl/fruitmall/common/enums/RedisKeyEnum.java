@@ -18,7 +18,11 @@ public enum RedisKeyEnum {
     COMMODITY_HASH("COMMODITY_HASH"),
     COMMODITY_Z_SET("COMMODITY_Z_SET"),
     VARIETY_KEY("VARIETY_%s"),
-    PRICE("PRICE");
+    VARIETY_SET("VARIETY_SET"),
+    PRICE("PRICE"),
+    PRICE_INTERVAL("PRICE:%s:%s"),
+    BROWSE_RECORDS("BROWSE_RECORDS_%s")
+    ;
 
     private String key;
 

@@ -5,6 +5,7 @@ import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
 import com.hl.fruitmall.entity.vo.EditCommodityVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 水果商品表(Commodity)表服务接口
@@ -43,4 +44,11 @@ public interface CommodityService {
     R infoDelete(Integer id);
 
     R infoGet(Integer id);
+
+    R varietyList();
+
+    R getList(Map<String, Object> map, HttpServletRequest request);
+
+    R getHome(HttpServletRequest request);
+
 }
