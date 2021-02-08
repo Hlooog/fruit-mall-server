@@ -137,4 +137,10 @@ public class CommodityController {
     public R getHot(HttpServletRequest request) {
         return commodityService.getHome(request);
     }
+
+    @GetMapping("/get/info/{id}")
+    @PassToken
+    public R getInfo(@PathVariable("id") Integer id){
+        return commodityService.getInfo(id);
+    }
 }

@@ -342,6 +342,12 @@ public class CommodityServiceImpl implements CommodityService {
         });
     }
 
+    @Override
+    public R getInfo(Integer id) {
+        FrontCommodityVO vo = commodityMapper.selectInfo(id);
+        return R.ok(vo);
+    }
+
     private void deleteImage(List<String> list) {
         commodityMapper.deleteImage(list);
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_OSS_DELETE,

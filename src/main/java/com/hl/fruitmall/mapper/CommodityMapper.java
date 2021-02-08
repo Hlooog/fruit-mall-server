@@ -42,4 +42,6 @@ public interface CommodityMapper {
     void update(@Param("id") Integer id, @Param("name") String name, @Param("varietyId") Integer varietyId);
 
     CommodityVO select(@Param("id") Integer id);
+
+    FrontCommodityVO selectInfo(@Param("id") Integer id);
 }

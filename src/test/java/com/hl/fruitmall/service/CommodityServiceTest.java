@@ -2,6 +2,7 @@ package com.hl.fruitmall.service;
 
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.entity.vo.CommodityListVO;
+import com.hl.fruitmall.entity.vo.FrontCommodityVO;
 import com.hl.fruitmall.entity.vo.VarietyVO;
 import com.hl.fruitmall.mapper.CommodityMapper;
 import com.hl.fruitmall.mapper.VarietyMapper;
@@ -33,13 +34,13 @@ public class CommodityServiceTest {
 
 
     @Test
-    void test(){
+    void test() {
         List<CommodityListVO> commodityListVOS = commodityMapper.selectList(10000);
         System.out.println(commodityListVOS);
     }
 
     @Test
-    void test1(){
+    void test1() {
         BigDecimal b1 = new BigDecimal(1);
         BigDecimal b2 = new BigDecimal(2);
         BigDecimal b3 = new BigDecimal(1);
@@ -50,7 +51,7 @@ public class CommodityServiceTest {
     }
 
     @Test
-    void test2(){
+    void test2() {
         /*redisTemplate.opsForZSet().add("key", "1",10);
         redisTemplate.opsForZSet().add("key", "2",20);
         redisTemplate.opsForZSet().add("key", "3",30);
@@ -77,21 +78,22 @@ public class CommodityServiceTest {
     }
 
     @Test
-    void test3(){
-        Map<String,String> map = new HashMap<>();
+    void test3() {
+        Map<String, String> map = new HashMap<>();
         map.put("name", "000");
         map.put("avatar", "21111");
         map.put("phone", "333");
         redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), map, new Date().getTime());
     }
+
     @Test
-    void test4(){
+    void test4() {
         String cityStr = (String) redisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
         System.out.println(cityStr);
     }
 
     @Test
-    void test5(){
+    void test5() {
         /*String str = stringRedisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
         List list = JSON.parseObject(str, List.class);
         redisTemplate.opsForValue().set(RedisKeyEnum.CITY.getKey(), list);*/
@@ -100,7 +102,7 @@ public class CommodityServiceTest {
     }
 
     @Test
-    void test6(){
+    void test6() {
         /*String key = String.format(RedisKeyEnum.CHAT_READ_RECORD_KEY.getKey(), "18211461717");
         Set set = redisTemplate.opsForZSet().reverseRange(key, 20, 30);
         System.out.println(set.size());*/
@@ -119,25 +121,25 @@ public class CommodityServiceTest {
     }
 
     @Test
-    void test7(){
+    void test7() {
         String str = "https://thirdwx.qlogo.cn/mmopen/vi_32/DriaNd1wecVkpK7QvMyHDxrqvtNWUzlMia5QySMooniaS5sXTVABUuMTceCuaoKsiayZribXr2D8Nq3icEsBxufSKT2w/132";
         System.out.println(str.length());
     }
 
     @Test
-    void test8(){
+    void test8() {
         List<VarietyVO> list = varietyMapper.list();
         Set<ZSetOperations.TypedTuple<VarietyVO>> set = new HashSet<>();
         for (int i = 0; i < list.size(); i++) {
             ZSetOperations.TypedTuple<VarietyVO>
-                    varietyVOTypedTuple = new DefaultTypedTuple(list.get(i),0d);
+                    varietyVOTypedTuple = new DefaultTypedTuple(list.get(i), 0d);
             set.add(varietyVOTypedTuple);
         }
         redisTemplate.opsForZSet().add(RedisKeyEnum.VARIETY_SET.getKey(), set);
     }
 
     @Test
-    void test9(){
+    void test9() {
 //        Set set = redisTemplate.opsForZSet().reverseRange(RedisKeyEnum.COMMODITY_Z_SET.getKey(), 0, 9);
 //        List<Integer> idList = new ArrayList<>(set);
         /*List list =  redisTemplate.opsForHash()
@@ -148,11 +150,11 @@ public class CommodityServiceTest {
     }
 
     @Test
-    void test10(){
+    void test10() {
         Set<ZSetOperations.TypedTuple<VarietyVO>> set = new HashSet<>();
         for (int i = 0; i < 30; i++) {
             ZSetOperations.TypedTuple<VarietyVO>
-                    varietyVOTypedTuple = new DefaultTypedTuple(i,(double)i);
+                    varietyVOTypedTuple = new DefaultTypedTuple(i, (double) i);
             set.add(varietyVOTypedTuple);
         }
         redisTemplate.opsForZSet().add("key1", set);
@@ -173,8 +175,9 @@ public class CommodityServiceTest {
         }
         redisTemplate.opsForZSet().add("key3", set);*/
     }
+
     @Test
-    void test11(){
+    void test11() {
 //        List<String> list = new ArrayList<>(Arrays.asList("key1","key2"));
 //        redisTemplate.opsForZSet().unionAndStore("key1","key2", "key4");
         List<String> list = new ArrayList<>();
@@ -185,7 +188,8 @@ public class CommodityServiceTest {
          * RedisZSetCommands.Aggregate.MIN 表示要最小的分数
          * RedisZSetCommands.Aggregate.SUM 表示要分数之和的分数
          *
-         * redisTemplate.opsForZSet().intersectAndStore("key1", list, "key3", RedisZSetCommands.Aggregate.MAX);
+         * redisTemplate.opsForZSet().intersectAndStore("key1", list, "key3",
+         * RedisZSetCommands.Aggregate.MAX);
          */
 //        redisTemplate.opsForZSet().intersectAndStore("key1", list, "key3", RedisZSetCommands.Aggregate.MAX);
         /**
@@ -194,34 +198,54 @@ public class CommodityServiceTest {
          * list.add("key2");
          * list.add("key3");
          * RedisZSetCommands.Weights weights = RedisZSetCommands.Weights.of(1, 2, 3);
-         * redisTemplate.opsForZSet().intersectAndStore("key1", list, "key4", RedisZSetCommands.Aggregate.SUM,weights);
+         * redisTemplate.opsForZSet().intersectAndStore("key1", list, "key4",
+         * RedisZSetCommands.Aggregate.SUM,weights);
          */
         /*RedisZSetCommands.Weights weights = RedisZSetCommands.Weights.of(1, 2, 3);
         redisTemplate.opsForZSet().intersectAndStore("key1", list, "key4", RedisZSetCommands.Aggregate.SUM,weights);*/
 
-        redisTemplate.opsForZSet().unionAndStore("key1", Arrays.asList("key2"), "key5", RedisZSetCommands.Aggregate.SUM, RedisZSetCommands.Weights.of(3,1));
+        redisTemplate.opsForZSet().unionAndStore("key1", Arrays.asList("key2"), "key5", RedisZSetCommands.Aggregate.SUM, RedisZSetCommands.Weights.of(3, 1));
 
     }
 
     @Test
-    void test12(){
+    void test12() {
 //        redisTemplate.exec();
 //        System.out.println(priceSet == null);
 //        System.out.println(priceSet);
         Set priceSet = redisTemplate.opsForZSet()
                 .rangeByScoreWithScores(RedisKeyEnum.PRICE.getKey(), 0, Double.POSITIVE_INFINITY);
         Iterator iterator = priceSet.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
     }
 
     @Test
-    void test13(){
+    void test13() {
         Set set = redisTemplate.opsForZSet().reverseRange("key1", 0, 9);
         Iterator iterator = set.iterator();
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
         }
+    }
+
+    @Test
+    void test14() {
+        Double b1 = Double.POSITIVE_INFINITY;
+        Double b2 = Double.POSITIVE_INFINITY + 5;
+        System.out.println(b1.compareTo(b2));
+    }
+
+    @Test
+    void test15(){
+        FrontCommodityVO frontCommodityVO = commodityMapper.selectInfo(10020);
+        System.out.println(frontCommodityVO);
+    }
+
+    @Test
+    void test16(){
+        Long key = redisTemplate.opsForValue().increment("key",5);
+        System.out.println(key);
     }
 }

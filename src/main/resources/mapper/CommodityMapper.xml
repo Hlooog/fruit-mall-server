@@ -36,6 +36,15 @@
         <collection property="urlList" column="id" select="getUrl"></collection>
     </resultMap>
 
+    <resultMap id="frontVO" type="com.hl.fruitmall.entity.vo.FrontCommodityVO">
+        <id property="id" column="mid" javaType="int"/>
+        <result property="shopId" column="shop_id"  javaType="int"/>
+        <result property="name" column="name"   javaType="string"/>
+        <result property="shopName" column="shopName" javaType="string"/>
+        <collection property="urlList" resultMap="urls"/>
+        <collection property="voList" resultMap="com.hl.fruitmall.mapper.CommodityInfoMapper.info"/>
+    </resultMap>
+
 
     <insert id="insert" parameterType="com.hl.fruitmall.entity.bean.Commodity"
             useGeneratedKeys="true" keyProperty="id">
@@ -116,6 +125,15 @@
     </select>
     <select id="selectByShopId" resultType="com.hl.fruitmall.entity.bean.Commodity">
         SELECT id,shop_id,name,variety_id,is_on_shelf FROM commodity WHERE shop_id = #{id}
+    </select>
+
+    <select id="selectInfo"  resultMap="frontVO">
+        SELECT c.id mid,c.shop_id,c.name,cig.url,ci.id,ci.specification,ci.weight,ci.stock,ci.price,s.name shopName
+        FROM commodity c
+        LEFT JOIN commodity_image cig ON  c.id = cig.commodity_id
+        LEFT JOIN commodity_info ci ON c.id = ci.commodity_id
+        LEFT JOIN shop s ON s.id = c.shop_id
+        WHERE c.id = #{id}
     </select>
 
 </mapper>

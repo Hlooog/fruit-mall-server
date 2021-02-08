@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.CommodityInfoMapper">
-    <resultMap id="commodityInfoList" type="com.hl.fruitmall.entity.vo.CommodityInfoVO">
+    <resultMap id="info" type="com.hl.fruitmall.entity.vo.CommodityInfoVO">
         <id column="id" property="id" javaType="int"/>
         <result column="specification" property="specification" javaType="string"/>
         <result column="weight" property="weight" javaType="float"/>
@@ -11,7 +11,7 @@
         <result column="price" property="price" javaType="java.math.BigDecimal"/>
     </resultMap>
 
-    <select id="getInfoList" resultMap="commodityInfoList">
+    <select id="getInfoList" resultMap="info">
         SELECT id, specification,weight,stock,price
         FROM commodity_info where commodity_id = #{id}
     </select>

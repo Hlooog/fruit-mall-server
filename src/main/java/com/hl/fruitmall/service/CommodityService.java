@@ -51,4 +51,5 @@ public interface CommodityService {
 
     R getHome(HttpServletRequest request);
 
+    R getInfo(Integer id);
 }
