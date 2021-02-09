@@ -3,6 +3,7 @@ package com.hl.fruitmall.entity.vo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author Hl
@@ -16,5 +17,5 @@ public class CommodityVO {
     private String url;
     private String varietyName;
     private BigDecimal price;
-    private String shopName;
+    private Date createTime;
 }

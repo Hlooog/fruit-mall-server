@@ -24,7 +24,7 @@ public class Commodity implements Serializable {
     //种类id
     private Integer varietyId;
     //是否上架 0 上架 1 下架
-    private Integer isOnShelf;
+    private Integer isUp;
     //创建时间
     private Date createTime;
     //修改时间

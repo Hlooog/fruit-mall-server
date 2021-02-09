@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
         if (shop != null) {
             if (!shop.getBanTime().before(shop.getCreateTime())) {
                 if (!shop.getBanTime().after(new Date())) {
-                    commodityMapper.updateByField("id", shop.getId(), "is_on_shelf", 0);
+                    commodityMapper.updateByField("id", shop.getId(), "is_up", 0);
                     globalUtils.delCache(shop.getId());
                 }
                 if (user.getBanTime().before(user.getCreateTime())) {

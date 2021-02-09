@@ -20,19 +20,19 @@ public class Comment implements Serializable {
     //评论者id
     private Integer userId;
     //评论的水果id
-    private Integer fruitId;
+    private Integer commodityId;
     //评论内容
     private String content;
-    //点赞数
-    private Integer like;
-    //回复评论id
-    private Integer toCommentId;
-    //回复评论人
-    private Integer toUserId;
+    // 评分
+    private Float score;
+    // 规格
+    private String specification;
+    // 重量
+    private Float weight;
+    // 数量
+    private Integer num;
     //创建时间
     private Date createTime;
-    //修改时间
-    private Date updateTime;
 
 
 }

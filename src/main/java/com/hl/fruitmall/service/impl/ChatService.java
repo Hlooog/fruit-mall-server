@@ -22,7 +22,8 @@ public class ChatService {
     public R getLinkUser() {
         Set<Map<String, String>> set = redisTemplate.opsForZSet()
                 .reverseRange(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), 0, 49);
-        Map<String, Integer> map = redisTemplate.opsForHash().entries(RedisKeyEnum.CHAT_UNREAD_NUMBER_KEY.getKey());
+        Map<String, Integer> map = redisTemplate.opsForHash()
+                .entries(RedisKeyEnum.CHAT_UNREAD_NUMBER_KEY.getKey());
         return R.ok(new HashMap<String, Object>() {
             {
                 put("link", set);

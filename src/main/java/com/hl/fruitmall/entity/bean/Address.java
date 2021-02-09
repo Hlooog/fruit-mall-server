@@ -5,21 +5,21 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 收货信息表(AddressInfo)表实体类
+ * 收货信息表(Address)表实体类
  *
  * @author hl
  * @since 2020-11-21 00:33:33
  */
 @SuppressWarnings("serial")
 @Data
-public class AddressInfo implements Serializable {
+public class Address implements Serializable {
     private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
     //用户id
     private Integer userId;
     //收货人姓名
-    private Integer name;
+    private String name;
     //收货人手机号码
     private String phone;
     //收货地址

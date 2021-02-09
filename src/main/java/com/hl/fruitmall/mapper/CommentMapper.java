@@ -1,5 +1,10 @@
 package com.hl.fruitmall.mapper;
 
+import com.hl.fruitmall.entity.vo.CommentVO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
 /**
  * 评论表(Comment)表数据库访问层
  *
@@ -8,4 +13,7 @@ package com.hl.fruitmall.mapper;
  */
 public interface CommentMapper {
 
+    List<CommentVO> selectPage(@Param("id") Integer id,@Param("cur") Integer cur);
+
+    Integer getTotal(@Param("id") Integer id);
 }

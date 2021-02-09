@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.hl.fruitmall.entity.bean.User;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author Hl
  * @create 2020/12/21 19:52
@@ -19,5 +21,13 @@ public class TokenUtils {
                 String.valueOf(user.getRoleType()))
                 .sign(Algorithm.HMAC256(user.getPassword()));
         return token;
+    }
+
+    public static Integer getId(HttpServletRequest request){
+        return Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+    }
+
+    public static String getPhone(HttpServletRequest request){
+        return JWT.decode(request.getHeader("X-Token")).getAudience().get(1);
     }
 }

@@ -73,7 +73,7 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public R off(Integer id) {
-        commodityMapper.updateByField("id", id, "is_on_shelf", 0);
+        commodityMapper.updateByField("id", id, "is_up", 0);
         removeCache(id);
         return R.ok();
     }
@@ -115,7 +115,7 @@ public class CommodityServiceImpl implements CommodityService {
         if (infoList.size() == 0) {
             throw new GlobalException(ExceptionEnum.SPECIFICATION_CAN_NOT_NULL);
         }
-        commodityMapper.updateByField("id", id, "is_on_shelf", 1);
+        commodityMapper.updateByField("id", id, "is_up", 1);
         addCache(id, infoList);
         return R.ok();
     }
@@ -133,7 +133,8 @@ public class CommodityServiceImpl implements CommodityService {
         commodityVO.setPrice(price);
         redisTemplate.opsForHash().put(RedisKeyEnum.COMMODITY_HASH.getKey(), id, commodityVO);
         String key = String.format(RedisKeyEnum.VARIETY_KEY.getKey(), commodityVO.getVarietyId());
-        redisTemplate.opsForZSet().add(RedisKeyEnum.COMMODITY_Z_SET.getKey(), id, score == null ? 0 : score);
+        redisTemplate.opsForZSet().add(RedisKeyEnum.COMMODITY_Z_SET.getKey(), id,
+                score == null ? commodityVO.getCreateTime().getTime() : score);
         redisTemplate.opsForZSet().incrementScore(key, id, 0);
         redisTemplate.opsForZSet().add(RedisKeyEnum.PRICE, id, price.doubleValue());
         scoreMapper.delete(id);
@@ -302,7 +303,6 @@ public class CommodityServiceImpl implements CommodityService {
             } else {
                 destKey = priceKey;
             }
-            redisTemplate.expire(destKey, 300, TimeUnit.SECONDS);
             // 用户登录了
             if (id != null) {
                 String userKey = String.format(RedisKeyEnum.BROWSE_RECORDS.getKey(), id);
@@ -317,6 +317,7 @@ public class CommodityServiceImpl implements CommodityService {
                         RedisZSetCommands.Aggregate.SUM,
                         RedisZSetCommands.Weights.of(1, 100));
             }
+            redisTemplate.expire(destKey, 300, TimeUnit.SECONDS);
             // 用destKey 和 总的分数求交集
             redisTemplate.opsForZSet().intersectAndStore(destKey, RedisKeyEnum.COMMODITY_Z_SET.getKey(), allKey);
             redisTemplate.expire(allKey, 300, TimeUnit.SECONDS);

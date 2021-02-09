@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.CommentMapper">
+
+    <resultMap id="vo" type="com.hl.fruitmall.entity.vo.CommentVO">
+        <id property="id" column="id" javaType="int"/>
+        <result property="nickname" column="nickname" javaType="string"/>
+        <result property="avatar" column="avatar" javaType="string"/>
+        <result property="score" column="score" javaType="float"/>
+        <result property="content" column="content" javaType="string"/>
+        <result property="specification" column="specification" javaType="string"/>
+        <result property="weight" column="weight" javaType="float"/>
+        <result property="num" column="num" javaType="int"/>
+        <result property="createTime" column="create_time" javaType="java.util.Date"/>
+    </resultMap>
+
+    <select id="selectPage" resultMap="vo">
+        SELECT c.id,c.score,c.content,c.specification,c.weight,c.num,c.create_time,u.nickname,u.avatar
+        FROM comment c LEFT JOIN user u ON c.user_id = u.id
+        WHERE c.commodity_id = #{id}
+        ORDER BY create_time DESC
+        LIMIT 10 OFFSET #{cur}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM comment WHERE commodity_id = #{id}
+    </select>
+</mapper>

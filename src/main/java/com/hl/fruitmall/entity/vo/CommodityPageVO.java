@@ -16,7 +16,7 @@ public class CommodityPageVO {
     private String cname;
     private Integer varietyId;
     private String vname;
-    private Integer isOnShelf;
+    private Integer isUp;
     private List<String> urlList;
     private Date createTime;
 }

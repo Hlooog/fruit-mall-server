@@ -15,7 +15,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Hl
@@ -31,6 +34,9 @@ public class CommodityServiceTest {
 
     @Autowired
     private VarietyMapper varietyMapper;
+
+    @Autowired
+    private CommodityService commodityService;
 
 
     @Test
@@ -247,5 +253,34 @@ public class CommodityServiceTest {
     void test16(){
         Long key = redisTemplate.opsForValue().increment("key",5);
         System.out.println(key);
+    }
+
+    @Test
+    void test17(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date parse = format.parse("2021-01-09 09:12:32");
+            Date parse1 = format.parse("2021-02-09 09:12:32");
+            long time = parse.getTime() + (28 * TimeUnit.DAYS.toMillis(1));
+            long time1 = parse1.getTime();
+            System.out.println(time1-time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void test18(){
+        /*List<Integer> list = new ArrayList<>();
+        list.add(10001);
+        list.add(10002);
+        for (int i = 10005; i < 100040; i++) {
+            list.add(i);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            commodityService.up(list.get(i));
+        }*/
+        redisTemplate.opsForZSet().add("PRICE:0.0:Infinity", 1, 1);
+        redisTemplate.expire("PRICE:0.0:Infinity", 300, TimeUnit.SECONDS);
     }
 }

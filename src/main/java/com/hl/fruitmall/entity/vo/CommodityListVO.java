@@ -16,7 +16,7 @@ public class CommodityListVO {
 
     private String name;
 
-    private Integer isOnShelf;
+    private Integer isUp;
 
     private String varietyName;
 

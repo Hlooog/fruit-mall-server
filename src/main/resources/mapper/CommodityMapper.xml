@@ -10,13 +10,13 @@
         <result column="varietyId" property="varietyId" javaType="int"/>
         <result column="varietyName" property="varietyName" javaType="string"/>
         <result column="url" property="url" javaType="string"/>
-        <result column="shopName" property="shopName" javaType="string"/>
+        <result column="create_time" property="createTime" javaType="java.util.Date"/>
     </resultMap>
 
     <resultMap id="infoVO" type="com.hl.fruitmall.entity.vo.CommodityListVO">
         <id column="id" property="id" javaType="int"/>
         <result column="cname" property="name" javaType="string"/>
-        <result column="is_on_shelf" property="isOnShelf" javaType="int"/>
+        <result column="is_up" property="isUp" javaType="int"/>
         <result column="vname" property="varietyName" javaType="string"/>
         <result column="price" property="price" javaType="java.math.BigDecimal"/>
         <collection property="urlList" resultMap="urls"></collection>
@@ -32,7 +32,7 @@
         <result column="variety_id" property="varietyId" javaType="int"/>
         <result column="vname" property="vname" javaType="string"/>
         <result column="create_time" property="createTime" javaType="java.util.Date"/>
-        <result column="is_on_shelf" property="isOnShelf" javaType="int"/>
+        <result column="is_up" property="isUp" javaType="int"/>
         <collection property="urlList" column="id" select="getUrl"></collection>
     </resultMap>
 
@@ -41,6 +41,8 @@
         <result property="shopId" column="shop_id"  javaType="int"/>
         <result property="name" column="name"   javaType="string"/>
         <result property="shopName" column="shopName" javaType="string"/>
+        <result property="score" column="score" javaType="float"/>
+        <result property="number" column="number" javaType="int"/>
         <collection property="urlList" resultMap="urls"/>
         <collection property="voList" resultMap="com.hl.fruitmall.mapper.CommodityInfoMapper.info"/>
     </resultMap>
@@ -83,7 +85,7 @@
 
 
     <select id="selectList" resultMap="infoVO">
-        SELECT c.id,c.name AS cname, c.is_on_shelf, p.price,v.name AS vname, ci.url FROM commodity c
+        SELECT c.id,c.name AS cname, c.is_up, p.price,v.name AS vname, ci.url FROM commodity c
             LEFT JOIN commodity_image ci on c.id = ci.commodity_id
             LEFT JOIN variety v on c.variety_id = v.id
             LEFT JOIN (SELECT commodity_id,MIN(price) AS price
@@ -98,7 +100,7 @@
 
     <select id="selectPage" resultMap="pageVO">
         SELECT c.id,c.name cname, v.name vname,c.variety_id,
-               c.is_on_shelf,c.create_time FROM commodity c
+               c.is_up,c.create_time FROM commodity c
             LEFT JOIN variety v ON c.variety_id = v.id
         WHERE c.shop_id = #{id}
         LIMIT 10 OFFSET #{cur}
@@ -110,25 +112,26 @@
 
     <select id="selectByField" resultMap="pageVO">
         SELECT c.id,c.name cname, v.name vname,c.variety_id,
-               c.is_on_shelf,c.create_time FROM commodity c
+               c.is_up,c.create_time FROM commodity c
             LEFT JOIN variety v ON c.variety_id = v.id
         WHERE ${field} = #{value}
     </select>
 
     <select id="select" resultMap="vo">
-        SELECT c.id,c.name,c.variety_id varietyId,v.name varietyName,
-                ci.url,s.name shopName
+        SELECT c.id,c.name,c.variety_id varietyId,c.create_time,v.name varietyName,ci.url
             FROM commodity c
             LEFT JOIN variety v ON c.variety_id = v.id
-            LEFT JOIN (SELECT commodity_id, MIN(url) url FROM commodity_image WHERE commodity_id = #{id}) ci ON c.id = ci.commodity_id
-            LEFT JOIN shop s on c.shop_id = s.id WHERE c.id = #{id};
+            LEFT JOIN (SELECT commodity_id, MIN(url) url FROM commodity_image
+             WHERE commodity_id = #{id}) ci ON c.id = ci.commodity_id
+            WHERE c.id = #{id};
     </select>
     <select id="selectByShopId" resultType="com.hl.fruitmall.entity.bean.Commodity">
-        SELECT id,shop_id,name,variety_id,is_on_shelf FROM commodity WHERE shop_id = #{id}
+        SELECT id,shop_id,name,variety_id,is_up FROM commodity WHERE shop_id = #{id}
     </select>
 
     <select id="selectInfo"  resultMap="frontVO">
-        SELECT c.id mid,c.shop_id,c.name,cig.url,ci.id,ci.specification,ci.weight,ci.stock,ci.price,s.name shopName
+        SELECT c.id mid,c.shop_id,c.name,c.score,c.number,cig.url,
+        ci.id,ci.specification,ci.weight,ci.stock,ci.price,s.name shopName
         FROM commodity c
         LEFT JOIN commodity_image cig ON  c.id = cig.commodity_id
         LEFT JOIN commodity_info ci ON c.id = ci.commodity_id

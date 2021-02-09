@@ -61,16 +61,16 @@ public class ChatWS {
         map.put("phone", fromPhone);
         if (toPhone.equals("service")) {
             redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), map, time);
-            try {
-                chatWS.session.getBasicRemote().sendText(JSON.toJSONString(map));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (chatWS == null) {
-            // 记录客服不在线记录聊天数
-            if (toPhone.equals("service")) {
+            if (chatWS == null) {
+                // 记录客服不在线记录聊天数
                 redisTemplate.opsForHash().increment(RedisKeyEnum.CHAT_UNREAD_NUMBER_KEY.getKey(), fromPhone, 1);
+            } else {
+                try {
+                    chatWS.session.getBasicRemote().sendText(JSON.toJSONString(message));
+                    chatWS.session.getBasicRemote().sendText(JSON.toJSONString(map));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             try {
@@ -79,6 +79,7 @@ public class ChatWS {
                 e.printStackTrace();
             }
         }
+
     }
 
     /**
@@ -88,7 +89,8 @@ public class ChatWS {
     }
 
     @OnClose
-    public void onClose(Session session, @PathParam("phone") String phone) {
+    public void onClose(@PathParam("phone") String phone,
+                        Session session) {
         if (map.containsKey(phone)) {
             map.remove(phone);
         }

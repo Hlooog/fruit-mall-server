@@ -76,7 +76,7 @@ public class ShopServiceImpl implements ShopService {
         shop.addViolation();
         Date banTime = globalUtils.getBanTime(shop.getCreateTime(), shop.getViolation(), days);
         shopMapper.updateBanTime(id, banTime, shop.getViolation());
-        commodityMapper.updateByField("shop_id", shop.getId(), "is_on_shelf", 0);
+        commodityMapper.updateByField("shop_id", shop.getId(), "is_up", 0);
         globalUtils.delCache(id);
         return R.ok();
     }
@@ -143,7 +143,7 @@ public class ShopServiceImpl implements ShopService {
             throw new GlobalException(ExceptionEnum.VERIFICATION_CODE_ERROR);
         }
         shopMapper.updateByField("shop_id", vo.getShop_id(), "is_delete", 1);
-        commodityMapper.updateByField("shop_id", vo.getShop_id(), "is_on_shelf", 0);
+        commodityMapper.updateByField("shop_id", vo.getShop_id(), "is_up", 0);
         userMapper.updateByField("phone", phone, "role_type", RoleEnum.USER.getCode());
         globalUtils.delCache(vo.getShop_id());
         return R.ok();

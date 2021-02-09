@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.AddressMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO address(user_id, name, phone, address)
+        VALUES (#{address.userId},#{address.name},#{address.phone},#{address.address})
+    </insert>
+    <update id="update">
+        UPDATE address SET
+            name = #{address.name},
+            phone = #{address.phone},
+            address = #{address.address}
+        WHERE id = #{address.id}
+    </update>
+    <delete id="delete">
+        DELETE FROM address WHERE id = #{id}
+    </delete>
+
+    <select id="list" resultType="com.hl.fruitmall.entity.bean.Address">
+        SELECT id,user_id, name, phone, address FROM address WHERE user_id = #{id}
+    </select>
+</mapper>
