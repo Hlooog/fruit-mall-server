@@ -89,7 +89,8 @@ public class CommodityServiceTest {
         map.put("name", "000");
         map.put("avatar", "21111");
         map.put("phone", "333");
-        redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), map, new Date().getTime());
+//        redisTemplate.opsForZSet().add(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), map, new Date().getTime());
+        redisTemplate.opsForZSet().remove(RedisKeyEnum.SERVICE_LINK_USER_KEY.getKey(), map);
     }
 
     @Test
@@ -244,33 +245,39 @@ public class CommodityServiceTest {
     }
 
     @Test
-    void test15(){
+    void test15() {
         FrontCommodityVO frontCommodityVO = commodityMapper.selectInfo(10020);
         System.out.println(frontCommodityVO);
     }
 
     @Test
-    void test16(){
-        Long key = redisTemplate.opsForValue().increment("key",5);
+    void test16() {
+        Long key = redisTemplate.opsForValue().increment("key", 5);
         System.out.println(key);
     }
 
     @Test
-    void test17(){
+    void test17() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
-            Date parse = format.parse("2021-01-09 09:12:32");
-            Date parse1 = format.parse("2021-02-09 09:12:32");
-            long time = parse.getTime() + (28 * TimeUnit.DAYS.toMillis(1));
+            Date parse = format.parse("2021-02-02 09:12:32");
+            Date parse1 = format.parse("2021-02-18 09:12:32");
+            /*long time = parse.getTime() + (28 * TimeUnit.DAYS.toMillis(1));
             long time1 = parse1.getTime();
-            System.out.println(time1-time);
+            System.out.println(time1-time);*/
+            long time = parse.getTime() / TimeUnit.DAYS.toMillis(7);
+            long time1 = TimeUnit.DAYS.toMillis(1) / 40;
+            System.out.println(time);
+            System.out.println(time1);
+//            System.out.println(time / 15);
+//            System.out.println(time1 / 15);
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    void test18(){
+    void test18() {
         /*List<Integer> list = new ArrayList<>();
         list.add(10001);
         list.add(10002);
@@ -280,7 +287,13 @@ public class CommodityServiceTest {
         for (int i = 0; i < list.size(); i++) {
             commodityService.up(list.get(i));
         }*/
-        redisTemplate.opsForZSet().add("PRICE:0.0:Infinity", 1, 1);
-        redisTemplate.expire("PRICE:0.0:Infinity", 300, TimeUnit.SECONDS);
+    }
+
+    @Test
+    void test19(){
+        /*String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), 10049);
+        Double score = redisTemplate.opsForZSet().score(key, 10027);
+        System.out.println(score);*/
+        redisTemplate.opsForZSet().incrementScore("key", 1, -1);
     }
 }

@@ -1,6 +1,7 @@
 package com.hl.fruitmall.service;
 
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.entity.bean.IScore;
 import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
 import com.hl.fruitmall.entity.vo.EditCommodityVO;
 
@@ -49,7 +50,18 @@ public interface CommodityService {
 
     R getList(Map<String, Object> map, HttpServletRequest request);
 
-    R getHome(HttpServletRequest request);
+    R getMonthly();
 
-    R getInfo(Integer id);
+    R getInfo(Integer id, HttpServletRequest request);
+
+    void insertScore(IScore iScore);
+
+    R getLike(HttpServletRequest request);
+
+    R keep(Integer id, HttpServletRequest request);
+
+    R keepList(Integer cur, HttpServletRequest request);
+
+    R cancel(Integer id, HttpServletRequest request);
+
 }

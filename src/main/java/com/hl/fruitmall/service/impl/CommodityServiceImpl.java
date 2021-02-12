@@ -1,12 +1,16 @@
 package com.hl.fruitmall.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
 import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.common.uitls.TokenUtils;
 import com.hl.fruitmall.config.RabbitConfig;
 import com.hl.fruitmall.entity.bean.Commodity;
+import com.hl.fruitmall.entity.bean.IScore;
 import com.hl.fruitmall.entity.vo.*;
 import com.hl.fruitmall.mapper.CommodityInfoMapper;
 import com.hl.fruitmall.mapper.CommodityMapper;
@@ -17,7 +21,6 @@ import com.hl.fruitmall.service.ShopService;
 import com.hl.fruitmall.service.UserService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -310,12 +314,11 @@ public class CommodityServiceImpl implements CommodityService {
                 userDestKey = destKey + ":" + userKey;
                 // 先求用户和destKey的交集
                 redisTemplate.opsForZSet().intersectAndStore(userKey, destKey, userDestKey);
+                redisTemplate.expire(userDestKey, 300, TimeUnit.SECONDS);
                 // 然后再用destKey和用户的交集和destKey按分数1：100求并集 目的是为了使用户点击过的尽量靠前
                 redisTemplate.opsForZSet().unionAndStore(destKey,
                         Arrays.asList(userDestKey),
-                        destKey,
-                        RedisZSetCommands.Aggregate.SUM,
-                        RedisZSetCommands.Weights.of(1, 100));
+                        destKey);
             }
             redisTemplate.expire(destKey, 300, TimeUnit.SECONDS);
             // 用destKey 和 总的分数求交集
@@ -331,22 +334,151 @@ public class CommodityServiceImpl implements CommodityService {
     }
 
     @Override
-    public R getHome(HttpServletRequest request) {
-        Set set = redisTemplate.opsForZSet()
-                .reverseRange(RedisKeyEnum.COMMODITY_Z_SET.getKey(), 0, 9);
-        List list = redisTemplate.opsForHash()
-                .multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
-        return R.ok(new HashMap<String, Object>() {
+    public R getMonthly() {
+        String key = String.format(RedisKeyEnum.MONTHLY_LIST.getKey(),
+                new SimpleDateFormat("yyyy-MM").format(new Date()));
+        Set set = redisTemplate.opsForZSet().reverseRange(key, 0, 9);
+        List monthlyList = redisTemplate.opsForHash().multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
+        return R.ok(monthlyList);
+    }
+
+    @Override
+    public R getInfo(Integer id, HttpServletRequest request) {
+        FrontCommodityVO vo = commodityMapper.selectInfo(id);
+        Map<String,Object> map = new HashMap<>();
+        Integer userId = TokenUtils.getId(request);
+        if (userId != null) {
+            String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), userId);
+            vo.setIsKeep(redisTemplate.opsForZSet().score(key, id) == null ? false: true);
+        }
+        long day = TimeUnit.DAYS.toMillis(1);
+        IScore iScore = new IScore(id,
+                userId,
+                (day / 40),
+                new Date().getTime(),
+                1,
+                day);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_RECORD,
+                RabbitConfig.ROUTING_RECORD,  JSON.toJSONString(iScore));
+        return R.ok(vo);
+    }
+
+    @Override
+    public R getLike(HttpServletRequest request) {
+        Integer id = TokenUtils.getId(request);
+        String key = null;
+        List likeList = null;
+        if (id != null) {
+            key = String.format(RedisKeyEnum.BROWSE_RECORD_VARIETY.getKey(), id);
+            Set set = redisTemplate.opsForZSet().reverseRange(key, 0, 0);
+            Iterator iterator = set.iterator();
+            if (iterator.hasNext()) {
+                Integer varietyId = (Integer) iterator.next();
+                key = String.format(RedisKeyEnum.VARIETY_KEY.getKey(), varietyId);
+                set = redisTemplate.opsForZSet().reverseRange(key, 0, 7);
+                likeList = redisTemplate.opsForHash().multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
+            }
+        }
+
+        if (likeList == null) {
+            Set set = redisTemplate.opsForZSet().reverseRange(RedisKeyEnum.COMMODITY_Z_SET, 0, 7);
+            likeList = redisTemplate.opsForHash().multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
+        }
+        return R.ok(likeList);
+    }
+
+    @Override
+    public R keep(Integer id, HttpServletRequest request) {
+        FrontCommodityVO commodityVO = commodityMapper.selectInfo(id);
+        Integer userId = TokenUtils.getId(request);
+        String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), userId);
+        redisTemplate.opsForZSet().add(key, id,new Date().getTime());
+
+        long day = TimeUnit.DAYS.toMillis(1);
+        IScore iScore = new IScore(id,
+                userId,
+                (day / 4),
+                new Date().getTime() * 5,
+                5,
+                day * 5);
+        commodityMapper.updateByField("id",id,"keep",commodityVO.getKeep()+1);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_RECORD,
+                RabbitConfig.ROUTING_RECORD, JSON.toJSONString(iScore));
+        return R.ok();
+    }
+
+    @Override
+    public void insertScore(IScore iScore) {
+        Integer commodityId = iScore.getId();
+        Integer userId = iScore.getUserId();
+        JSONObject object = (JSONObject) redisTemplate
+                .opsForHash().get(RedisKeyEnum.COMMODITY_HASH.getKey(), commodityId);
+        CommodityVO commodityVO = object.toJavaObject(CommodityVO.class);
+        String key = null;
+        if (userId != null) {
+            // 用户登录浏览
+            double time = iScore.getUserScore();
+            // 浏览记录
+            key = String.format(RedisKeyEnum.BROWSE_RECORDS.getKey(), userId);
+            redisTemplate.opsForZSet().incrementScore(key, commodityId, time);
+            // 喜欢种类
+            key = String.format(RedisKeyEnum.BROWSE_RECORD_VARIETY.getKey(), userId);
+            redisTemplate.opsForZSet().incrementScore(key, commodityVO.getVarietyId(), time);
+        }
+        // 总记录
+        redisTemplate.opsForZSet().incrementScore(RedisKeyEnum.COMMODITY_Z_SET,
+                commodityId,
+                iScore.getAllScore());
+        double varietyScore = iScore.getVarietyScore();
+        // 分类
+        key = String.format(RedisKeyEnum.VARIETY_KEY.getKey(), commodityVO.getVarietyId());
+        redisTemplate.opsForZSet().incrementScore(key, commodityId,varietyScore );
+        VarietyVO varietyVO = new VarietyVO(commodityVO.getVarietyId(),commodityVO.getVarietyName());
+        redisTemplate.opsForZSet().incrementScore(RedisKeyEnum.VARIETY_SET.getKey(), varietyVO, varietyScore);
+        // 月榜
+        double monthlyScore = iScore.getMonthlyScore();
+        key = String.format(RedisKeyEnum.MONTHLY_LIST.getKey(),
+                new SimpleDateFormat("yyyy-MM").format(new Date()));
+        if (redisTemplate.keys(key).size() == 0) {
+            redisTemplate.opsForZSet().add(key, commodityId, monthlyScore);
+            redisTemplate.expire(key, 32, TimeUnit.DAYS);
+        }
+        redisTemplate.opsForZSet().incrementScore(key, commodityId, monthlyScore);
+    }
+
+    @Override
+    public R keepList(Integer cur, HttpServletRequest request) {
+        Integer id = TokenUtils.getId(request);
+        String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), id);
+        Set set = redisTemplate.opsForZSet().reverseRange(key, (cur - 1) * 10, (cur * 10 - 1));
+        List list = redisTemplate.opsForHash().multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
+        Long total = redisTemplate.opsForZSet().zCard(key);
+        return R.ok(new HashMap<String,Object>() {
             {
-                put("hot", list);
+                put("data", list);
+                put("total", total);
             }
         });
     }
 
     @Override
-    public R getInfo(Integer id) {
-        FrontCommodityVO vo = commodityMapper.selectInfo(id);
-        return R.ok(vo);
+    public R cancel(Integer id, HttpServletRequest request) {
+        FrontCommodityVO commodityVO = commodityMapper.selectInfo(id);
+        Integer userId = TokenUtils.getId(request);
+        String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), userId);
+        redisTemplate.opsForZSet().remove(key, id);
+
+        long day = TimeUnit.DAYS.toMillis(1);
+        IScore iScore = new IScore(id,
+                userId,
+                -(day / 8),
+                -(new Date().getTime() * 3),
+                -5,
+                -(day * 5));
+        commodityMapper.updateByField("id",id,"keep",commodityVO.getKeep()-1);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_RECORD,
+                RabbitConfig.ROUTING_RECORD, JSON.toJSONString(iScore));
+        return R.ok();
     }
 
     private void deleteImage(List<String> list) {
@@ -357,7 +489,7 @@ public class CommodityServiceImpl implements CommodityService {
     }
 
     private void check(HttpServletRequest request) {
-        Integer userId = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        Integer userId = TokenUtils.getId(request);
         userService.checkUser("id", userId);
         shopService.checkShop("owner_id", userId);
     }

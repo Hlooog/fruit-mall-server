@@ -1,11 +1,11 @@
 package com.hl.fruitmall.service.impl;
 
-import com.auth0.jwt.JWT;
 import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.enums.ReviewStatusEnum;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.common.uitls.TokenUtils;
 import com.hl.fruitmall.config.RabbitConfig;
 import com.hl.fruitmall.entity.bean.MerchantInfo;
 import com.hl.fruitmall.entity.vo.ApplyMerchantVO;
@@ -85,7 +85,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
 
     @Override
     public R get(HttpServletRequest request) {
-        Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        Integer id = TokenUtils.getId(request);
         Integer status = merchantInfoMapper.selectStatus(id);
         return R.ok(status);
     }

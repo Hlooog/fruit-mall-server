@@ -20,14 +20,16 @@ public class RabbitConfig {
 
     public static final String EXCHANGE_OSS_DELETE = "fruit.mall.oss.delete";
     public static final String EXCHANGE_SMS_SEND = "fruit.mall.sms.send";
+    public static final String EXCHANGE_RECORD = "fruit.mall.record";
 
     public static final String QUEUE_OSS_DELETE = "fruit.mall.oss.delete";
     public static final String QUEUE_SMS_SEND = "fruit.mall.sms.send";
+    public static final String QUEUE_RECORD = "fruit.mall.record";
 
 
     public static final String ROUTING_OSS_DELETE = "fruit.mall.oss.delete.key";
     public static final String ROUTING_SMS_SEND = "fruit.mall.sms.send.key";
-
+    public static final String ROUTING_RECORD = "fruit.mall.record.key";
 
     /**
      * 消息的Confirm机制和Returns机制
@@ -72,6 +74,11 @@ public class RabbitConfig {
     }
 
     @Bean
+    public DirectExchange recordExchange() {
+        return new DirectExchange(EXCHANGE_RECORD);
+    }
+
+    @Bean
     public Queue ossQueue() {
         return new Queue(QUEUE_OSS_DELETE, true);
     }
@@ -82,6 +89,11 @@ public class RabbitConfig {
     }
 
     @Bean
+    public Queue recordQueue(){
+        return new Queue(QUEUE_RECORD, true);
+    }
+
+    @Bean
     public Binding ossRoutingKey() {
         return BindingBuilder.bind(ossQueue()).to(ossExchange()).with(ROUTING_OSS_DELETE);
     }
@@ -89,6 +101,11 @@ public class RabbitConfig {
     @Bean
     public Binding smsRoutingKey() {
         return BindingBuilder.bind(smsQueue()).to(smsExchange()).with(ROUTING_SMS_SEND);
+    }
+
+    @Bean
+    public Binding recordRoutingKey(){
+        return BindingBuilder.bind(recordQueue()).to(recordExchange()).with(ROUTING_RECORD);
     }
 
     @Bean

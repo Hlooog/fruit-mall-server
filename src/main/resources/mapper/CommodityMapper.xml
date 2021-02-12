@@ -43,6 +43,7 @@
         <result property="shopName" column="shopName" javaType="string"/>
         <result property="score" column="score" javaType="float"/>
         <result property="number" column="number" javaType="int"/>
+        <result property="keep" column="keep" javaType="int"/>
         <collection property="urlList" resultMap="urls"/>
         <collection property="voList" resultMap="com.hl.fruitmall.mapper.CommodityInfoMapper.info"/>
     </resultMap>
@@ -130,7 +131,7 @@
     </select>
 
     <select id="selectInfo"  resultMap="frontVO">
-        SELECT c.id mid,c.shop_id,c.name,c.score,c.number,cig.url,
+        SELECT c.id mid,c.shop_id,c.name,c.score,c.number,c.keep,cig.url,
         ci.id,ci.specification,ci.weight,ci.stock,ci.price,s.name shopName
         FROM commodity c
         LEFT JOIN commodity_image cig ON  c.id = cig.commodity_id

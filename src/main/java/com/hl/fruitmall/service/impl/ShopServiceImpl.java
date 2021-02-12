@@ -1,12 +1,12 @@
 package com.hl.fruitmall.service.impl;
 
-import com.auth0.jwt.JWT;
 import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.GlobalUtils;
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.common.uitls.TokenUtils;
 import com.hl.fruitmall.entity.bean.Shop;
 import com.hl.fruitmall.entity.vo.CloseShopVO;
 import com.hl.fruitmall.entity.vo.ShopInfoVO;
@@ -100,7 +100,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     public R createOrUpdate(ShopVO shopVO, HttpServletRequest request) {
-        Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        Integer id = TokenUtils.getId(request);
         if (shopVO.getId() == null) {
             Shop shop = shopMapper.selectByFiled("owner_id", id);
             if (shop == null) {
@@ -133,7 +133,7 @@ public class ShopServiceImpl implements ShopService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public R close(CloseShopVO vo, HttpServletRequest request) {
-        String phone = JWT.decode(request.getHeader("X-Token")).getAudience().get(1);
+        String phone = TokenUtils.getPhone(request);
         if (!phone.equals(vo.getPhone())) {
             throw new GlobalException(ExceptionEnum.PHONE_NUMBER_HAS_ERROR);
         }

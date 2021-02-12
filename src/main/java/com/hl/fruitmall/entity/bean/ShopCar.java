@@ -3,18 +3,17 @@ package com.hl.fruitmall.entity.bean;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 购物车表(ShopCart)表实体类
+ * 购物车表(ShopCar)表实体类
  *
  * @author hl
  * @since 2020-11-21 00:33:40
  */
 @SuppressWarnings("serial")
 @Data
-public class ShopCart implements Serializable {
+public class ShopCar implements Serializable {
     private static final long serialVersionUID = 1L;
     //主键id
     private Integer id;
@@ -25,16 +24,16 @@ public class ShopCart implements Serializable {
     //店铺名称
     private String shopName;
     //水果id
-    private Integer fruitId;
+    private Integer commodityId;
     //水果名称
-    private String fruitName;
-    //价格
-    private BigDecimal price;
+    private String commodityName;
+    //详情id
+    private Integer infoId;
     //数量
     private Integer quantity;
     //创建时间
     private Date createTime;
-    //修改时间
-    private Date updateTime;
+    // 图片地址
+    private String url;
 
 }

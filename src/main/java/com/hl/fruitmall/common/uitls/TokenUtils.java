@@ -24,10 +24,14 @@ public class TokenUtils {
     }
 
     public static Integer getId(HttpServletRequest request){
-        return Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        String token = request.getHeader("X-Token");
+        if (token == null) return null;
+        return Integer.valueOf(JWT.decode(token).getAudience().get(0));
     }
 
     public static String getPhone(HttpServletRequest request){
-        return JWT.decode(request.getHeader("X-Token")).getAudience().get(1);
+        String token = request.getHeader("X-Token");
+        if (token == null) return null;
+        return JWT.decode(token).getAudience().get(1);
     }
 }

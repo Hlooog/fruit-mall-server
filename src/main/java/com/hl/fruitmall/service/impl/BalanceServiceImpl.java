@@ -1,11 +1,11 @@
 package com.hl.fruitmall.service.impl;
 
-import com.auth0.jwt.JWT;
 import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.enums.WithdrawStatusEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.common.uitls.TokenUtils;
 import com.hl.fruitmall.entity.bean.Withdraw;
 import com.hl.fruitmall.entity.vo.BalanceVO;
 import com.hl.fruitmall.entity.vo.WithdrawVO;
@@ -40,7 +40,7 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public R get(HttpServletRequest request) {
-        String phone = JWT.decode(request.getHeader("X-Token")).getAudience().get(1);
+        String phone = TokenUtils.getPhone(request);
         BalanceVO balanceVO = balanceMapper.select(phone);
         return R.ok(balanceVO);
     }
@@ -48,7 +48,7 @@ public class BalanceServiceImpl implements BalanceService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public R withdraw(WithdrawVO withdrawVO, HttpServletRequest request) {
-        String phone = JWT.decode(request.getHeader("X-Token")).getAudience().get(1);
+        String phone = TokenUtils.getPhone(request);
         if (!phone.equals(withdrawVO.getPhone())) {
             throw new GlobalException(ExceptionEnum.PHONE_NUMBER_HAS_ERROR);
         }

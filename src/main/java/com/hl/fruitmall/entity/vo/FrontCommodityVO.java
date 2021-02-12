@@ -16,6 +16,8 @@ public class FrontCommodityVO {
     private String name;
     private Float score;
     private Integer number;
+    private Integer keep;
+    private Boolean isKeep;
     private String shopName;
     private List<CommodityInfoVO> voList;
     private List<String> urlList;

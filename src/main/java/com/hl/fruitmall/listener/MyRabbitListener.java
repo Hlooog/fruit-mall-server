@@ -1,6 +1,9 @@
 package com.hl.fruitmall.listener;
 
+import com.alibaba.fastjson.JSON;
 import com.hl.fruitmall.config.RabbitConfig;
+import com.hl.fruitmall.entity.bean.IScore;
+import com.hl.fruitmall.service.CommodityService;
 import com.hl.fruitmall.service.OSSService;
 import com.hl.fruitmall.service.impl.SmsService;
 import com.rabbitmq.client.Channel;
@@ -29,6 +32,9 @@ public class MyRabbitListener {
     @Autowired
     private SmsService smsService;
 
+    @Autowired
+    private CommodityService commodityService;
+
     @RabbitListener(queues = {RabbitConfig.QUEUE_OSS_DELETE})
     @RabbitHandler
     public void ossListener(List<String> msg, Channel channel, Message message) throws IOException {
@@ -49,6 +55,22 @@ public class MyRabbitListener {
     public void smsListener(Map<String, String> msg, Channel channel, Message message) throws IOException {
         try {
             smsService.invoke(msg.get("phone"), msg.get("code"));
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            if (message.getMessageProperties().getRedelivered()) {
+                channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+            } else {
+                channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
+            }
+        }
+    }
+
+    @RabbitListener(queues = {RabbitConfig.QUEUE_RECORD})
+    @RabbitHandler
+    public void recordListener(String msg, Channel channel, Message message ) throws IOException{
+        try {
+            IScore iScore = JSON.parseObject(msg, IScore.class);
+            commodityService.insertScore(iScore);
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             if (message.getMessageProperties().getRedelivered()) {

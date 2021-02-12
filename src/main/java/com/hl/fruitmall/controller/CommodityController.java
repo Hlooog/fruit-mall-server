@@ -8,6 +8,8 @@ import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
 import com.hl.fruitmall.entity.vo.EditCommodityVO;
 import com.hl.fruitmall.service.CommodityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,6 +30,9 @@ public class CommodityController {
      */
     @Resource
     private CommodityService commodityService;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @GetMapping("/list/{id}")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)
@@ -132,15 +137,39 @@ public class CommodityController {
         return commodityService.getList(map, request);
     }
 
-    @GetMapping("/home")
+    @GetMapping("/monthly")
     @PassToken
-    public R getHot(HttpServletRequest request) {
-        return commodityService.getHome(request);
+    public R getMonthly() {
+        return commodityService.getMonthly();
+    }
+
+    @GetMapping("/like")
+    @PassToken
+    public R getLike(HttpServletRequest request) {
+        return commodityService.getLike(request);
     }
 
     @GetMapping("/get/info/{id}")
     @PassToken
-    public R getInfo(@PathVariable("id") Integer id){
-        return commodityService.getInfo(id);
+    public R getInfo(@PathVariable("id") Integer id, HttpServletRequest request) {
+        return commodityService.getInfo(id, request);
+    }
+
+    @PutMapping("/keep/{id}")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R keep(@PathVariable("id") Integer id, HttpServletRequest request) {
+        return commodityService.keep(id, request);
+    }
+
+    @GetMapping("/keep/list/{cur}")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R keepList(@PathVariable("cur") Integer cur, HttpServletRequest request) {
+        return commodityService.keepList(cur, request);
+    }
+
+    @PutMapping("/keep/cancel/{id}")
+    @VerificationToken(roleType = RoleEnum.USER)
+    public R cancel(@PathVariable("id") Integer id, HttpServletRequest request){
+        return commodityService.cancel(id, request);
     }
 }

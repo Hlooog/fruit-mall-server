@@ -1,7 +1,6 @@
 package com.hl.fruitmall.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.auth0.jwt.JWT;
 import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.common.enums.RoleEnum;
@@ -91,10 +90,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public R logout(HttpServletRequest request) {
-        String token = request.getHeader("X-Token");
-        List<String> audience = JWT.decode(token).getAudience();
-        String id = audience.get(0);
-        String phone = audience.get(1);
+        Integer id = TokenUtils.getId(request);
+        String phone = TokenUtils.getPhone(request);
         String key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), id, phone);
         redisTemplate.delete(key);
         return R.ok();
@@ -362,7 +359,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public R get(HttpServletRequest request) {
-        Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        Integer id = TokenUtils.getId(request);
         User user = userMapper.selectByField("id", id);
         return R.ok(new HashMap<String,String>(){
             {
@@ -374,7 +371,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public R edit(Map<String, String> map, HttpServletRequest request) {
-        Integer id = Integer.valueOf(JWT.decode(request.getHeader("X-Token")).getAudience().get(0));
+        Integer id = TokenUtils.getId(request);
         User user = checkUser("id", id);
         if (map.containsKey("name")) {
             userMapper.updateByField("id", id, "nickname", map.get("name"));

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.ShopCarMapper">
+
+    <resultMap id="vo" type="com.hl.fruitmall.entity.vo.ShopCarVO">
+        <id property="id" column="id" javaType="int"/>
+        <result property="shopId" column="shop_id" javaType="int"/>
+        <result property="commodityId" column="commodity_id" javaType="int"/>
+        <result property="shopName" column="shop_name" javaType="string"/>
+        <result property="commodityName" column="commodity_name" javaType="string"/>
+        <result property="specification" column="specification" javaType="string"/>
+        <result property="weight" column="weight" javaType="float"/>
+        <result property="price" column="price" javaType="java.math.BigDecimal"/>
+        <result property="quantity" column="quantity" javaType="int"/>
+        <result property="createTime" column="create_time" javaType="java.util.Date"/>
+        <result property="url" column="url" javaType="string"/>
+    </resultMap>
+    <insert id="insert">
+        INSERT INTO
+            shop_car(user_id, shop_id, shop_name,commodity_id, commodity_name, info_id,quantity,url)
+        VALUES (#{vo.userId},#{vo.shopId},#{vo.shopName},#{vo.commodityId}, #{vo.commodityName},#{vo.infoId},#{vo.quantity},#{vo.url})
+    </insert>
+    <update id="updateQuantity">
+        UPDATE shop_car SET quantity = quantity + #{num} WHERE id = #{id} AND user_id = #{userId}
+    </update>
+    <delete id="delete">
+        DELETE FROM shop_car WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <select id="list" resultMap="vo">
+        SELECT sc.id,
+               sc.shop_id,
+               sc.shop_name,
+               sc.commodity_id,
+               sc.commodity_name,
+               sc.quantity,
+               sc.create_time,
+               sc.url,
+               ci.specification,
+               ci.weight,
+               ci.price
+        FROM shop_car sc
+                 LEFT JOIN commodity_info ci on sc.info_id = ci.id
+        WHERE sc.user_id = #{id}
+        ORDER BY sc.create_time ASC
+    </select>
+</mapper>
