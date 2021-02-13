@@ -3,7 +3,6 @@ package com.hl.fruitmall.entity.bean;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * 订单详情表(OrderInfo)表实体类
@@ -27,9 +26,13 @@ public class OrderInfo implements Serializable {
     private Integer commodityId;
     //水果名字
     private String commodityName;
-    //单价
-    private BigDecimal price;
     //数量
     private Integer quantity;
+    // 规格id
+    private Integer infoId;
+    // 状态
+    private Integer status;
+    // 订单号
+    private String trackNumber;
 
 }

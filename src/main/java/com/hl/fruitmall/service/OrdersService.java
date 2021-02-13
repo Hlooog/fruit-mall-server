@@ -1,5 +1,11 @@
 package com.hl.fruitmall.service;
 
+import com.hl.fruitmall.common.uitls.R;
+import com.hl.fruitmall.entity.vo.OrderCarVO;
+import com.hl.fruitmall.entity.vo.OrderVO;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 订单表(Orders)表服务接口
  *
@@ -8,4 +14,9 @@ package com.hl.fruitmall.service;
  */
 public interface OrdersService {
 
+    R createCar(OrderCarVO vo, HttpServletRequest request);
+
+    R create(OrderVO orderVO, HttpServletRequest request);
+
+    R userPage(Integer cur, HttpServletRequest request);
 }

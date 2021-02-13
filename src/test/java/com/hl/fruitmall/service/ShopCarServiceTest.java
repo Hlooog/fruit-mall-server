@@ -17,5 +17,7 @@ public class ShopCarServiceTest {
 
     @Test
     void test(){
+        /*List<ShopCar> shopCarList = shopCarMapper.selectByIds(Arrays.asList(1, 2, 3, 4, 5));
+        System.out.println(shopCarList);*/
     }
 }

@@ -28,6 +28,13 @@
     <delete id="delete">
         DELETE FROM shop_car WHERE id = #{id} AND user_id = #{userId}
     </delete>
+    <delete id="deleteBatch">
+        DELETE FROM shop_car WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND user_id = #{userId}
+    </delete>
 
     <select id="list" resultMap="vo">
         SELECT sc.id,
@@ -45,5 +52,21 @@
                  LEFT JOIN commodity_info ci on sc.info_id = ci.id
         WHERE sc.user_id = #{id}
         ORDER BY sc.create_time ASC
+    </select>
+    <select id="selectByIds" resultType="com.hl.fruitmall.entity.bean.ShopCar">
+        SELECT id,
+               shop_id,
+               shop_name,
+               commodity_id,
+               commodity_name,
+               user_id,
+               info_id,
+               quantity,
+               create_time
+        FROM shop_car
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
     </select>
 </mapper>

@@ -21,12 +21,8 @@ public class Orders implements Serializable {
     private String orderId;
     //用户id
     private Integer userId;
-    // 用户名
-    private String userName;
     // 地址id
     private Integer addressId;
-    // 订单状态
-    private Integer status;
     //创建时间
     private Date createTime;
     //修改时间

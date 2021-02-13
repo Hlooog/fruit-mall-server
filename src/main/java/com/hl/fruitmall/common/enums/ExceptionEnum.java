@@ -25,7 +25,9 @@ public enum ExceptionEnum {
     PHONE_NUMBER_HAS_ERROR(10017, "输入手机号码和店主手机号码不一致"),
     SPECIFICATION_CAN_NOT_NULL(10018, "请先添加规格在上架"),
     USER_EXIST(10020,"用户已经存在"),
-    REPEAT_APPLICATION(10021,"重复申请")
+    REPEAT_APPLICATION(10021,"重复申请"),
+    ORDER_HAS_ERROR(10022,"订单异常"),
+    INVENTORY_SHORTAGE(10023,"库存不足"),
     ;
 
 

@@ -1,5 +1,6 @@
 package com.hl.fruitmall.mapper;
 
+import com.hl.fruitmall.entity.bean.ShopCar;
 import com.hl.fruitmall.entity.vo.CreateCarVO;
 import com.hl.fruitmall.entity.vo.ShopCarVO;
 import org.apache.ibatis.annotations.Param;
@@ -22,4 +23,7 @@ public interface ShopCarMapper {
 
     void delete(@Param("id") Integer id,@Param("userId") Integer userId);
 
+    List<ShopCar> selectByIds(@Param("ids") List<Integer> carIds);
+
+    void deleteBatch(@Param("ids") List<Integer> carIds, @Param("userId") Integer userId);
 }

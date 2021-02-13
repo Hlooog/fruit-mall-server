@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.fruitmall.mapper.OrderInfoMapper">
+
+    <resultMap id="userInfoVO" type="com.hl.fruitmall.entity.vo.UserOrderInfoPageVO">
+        <result property="shopId" column="shop_id" javaType="int"/>
+        <result property="shopName" column="shop_name" javaType="string"/>
+        <result property="commodityId" column="commodity_id" javaType="int"/>
+        <result property="commodityName" column="commodity_name" javaType="string"/>
+        <result property="specification" column="specification" javaType="string"/>
+        <result property="weight" column="weight" javaType="float"/>
+        <result property="price" column="price" javaType="java.math.BigDecimal"/>
+        <result property="quantity" column="quantity" javaType="int"/>
+        <result property="url" column="url" javaType="string"/>
+        <result property="trackNumber" column="track_number" javaType="string"/>
+    </resultMap>
+
+    <insert id="insertBatch">
+        INSERT INTO order_info(order_id,
+                               quantity,
+                               commodity_id,
+                               commodity_name,
+                               shop_id,
+                               shop_name,
+                               status,
+                               info_id) VALUES
+        <foreach collection="list" item="info" separator=",">
+            (#{info.orderId},
+             #{info.quantity},
+             #{info.commodityId},
+             #{info.commodityName},
+             #{info.shopId},
+             #{info.shopName},
+             #{info.status},
+             #{info.infoId})
+        </foreach>
+    </insert>
+    <insert id="insert">
+        INSERT INTO order_info(order_id,
+                                quantity,
+                                commodity_id,
+                                commodity_name,
+                                shop_id,
+                                shop_name,
+                                status,
+                                info_id)
+        VALUES
+                (#{info.orderId},
+                #{info.quantity},
+                #{info.commodityId},
+                #{info.commodityName},
+                #{info.shopId},
+                #{info.shopName},
+                #{info.status},
+                #{info.infoId})
+    </insert>
+    <select id="getInfoList" resultMap="userInfoVO">
+        SELECT oi.shop_id,
+               oi.shop_name,
+               oi.commodity_id,
+               oi.commodity_name,
+               oi.quantity,
+               oi.status,
+               ci.specification,
+               ci.weight,
+               ci.price,
+               (SELECT MIN(url) url FROM commodity_image cim WHERE cim.commodity_id = oi.commodity_id) url
+        FROM order_info oi
+                 LEFT JOIN commodity_info ci ON oi.info_id = ci.id
+        WHERE oi.order_id = #{orderId};
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM orders WHERE ${field} = #{value}
+    </select>
+</mapper>

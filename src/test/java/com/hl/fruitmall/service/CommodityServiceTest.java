@@ -4,6 +4,7 @@ import com.hl.fruitmall.common.enums.RedisKeyEnum;
 import com.hl.fruitmall.entity.vo.CommodityListVO;
 import com.hl.fruitmall.entity.vo.FrontCommodityVO;
 import com.hl.fruitmall.entity.vo.VarietyVO;
+import com.hl.fruitmall.mapper.CommodityInfoMapper;
 import com.hl.fruitmall.mapper.CommodityMapper;
 import com.hl.fruitmall.mapper.VarietyMapper;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,12 @@ import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,6 +40,12 @@ public class CommodityServiceTest {
 
     @Autowired
     private CommodityService commodityService;
+
+    @Autowired
+    private CommodityInfoMapper commodityInfoMapper;
+
+    @Resource(name = "taskExecutor")
+    private Executor taskExecutor;
 
 
     @Test
@@ -290,10 +299,27 @@ public class CommodityServiceTest {
     }
 
     @Test
-    void test19(){
+    void test19() {
         /*String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), 10049);
         Double score = redisTemplate.opsForZSet().score(key, 10027);
         System.out.println(score);*/
         redisTemplate.opsForZSet().incrementScore("key", 1, -1);
     }
+
+    @Test
+    void test20() {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(10033, 1);
+        map.put(10022, 1);
+        map.put(10035, 2);
+        List<HashMap<String,Integer>> maps = commodityInfoMapper.selectByMap(map);
+        maps.stream().forEach(m -> {
+            System.out.println(m.get("id") + "---->" + m.get("stock"));
+        });
+    }
+
+    @Test
+    void test21() {
+    }
+
 }

@@ -21,6 +21,12 @@
         FROM commodity_info
         WHERE id = #{id}
     </select>
+    <select id="selectByMap" resultType="java.util.HashMap">
+        SELECT id,stock FROM commodity_info WHERE
+        <foreach collection="map" index="key"  item="value" separator="OR">
+            (id = #{key} AND stock >= #{value})
+        </foreach>
+    </select>
 
     <insert id="insertInfo">
         INSERT INTO commodity_info(commodity_id,specification,weight,stock,price,shop_id)
@@ -35,5 +41,9 @@
         UPDATE commodity_info SET specification = #{vo.specification},
                 weight = #{vo.weight},stock = #{vo.stock},price = #{vo.price}
         WHERE id = #{vo.id}
+    </update>
+    <update id="decreaseStock">
+        UPDATE commodity_info SET stock = #{stock}
+        WHERE id = #{infoId}
     </update>
 </mapper>
