@@ -28,6 +28,7 @@ public enum ExceptionEnum {
     REPEAT_APPLICATION(10021,"重复申请"),
     ORDER_HAS_ERROR(10022,"订单异常"),
     INVENTORY_SHORTAGE(10023,"库存不足"),
+    CREATE_NATIVE_HAS_ERR(10024,"创建支付二维码异常")
     ;
 
 

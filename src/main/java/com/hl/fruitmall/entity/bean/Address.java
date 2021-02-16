@@ -24,5 +24,4 @@ public class Address implements Serializable {
     private String phone;
     //收货地址
     private String address;
-
 }

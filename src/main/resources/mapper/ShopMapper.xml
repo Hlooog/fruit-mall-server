@@ -15,7 +15,7 @@
         <result column="create_time" property="createTime" javaType="java.util.Date"/>
         <result column="ban_time" property="banTime" javaType="java.util.Date"/>
     </resultMap>
-    <insert id="create" parameterType="com.hl.fruitmall.entity.vo.ShopVO">
+    <insert id="create" parameterType="com.hl.fruitmall.entity.vo.ShopVO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO shop(owner_id,name,description,city_id)
         VALUES (#{id},#{shopVO.name},#{shopVO.description},#{shopVO.cityId})
     </insert>

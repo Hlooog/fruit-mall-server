@@ -50,7 +50,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             VerificationToken verificationToken = method.getAnnotation(VerificationToken.class);
             if (verificationToken.required()) {
                 if (token == null) {
-                    throw new GlobalException(ExceptionEnum.TOKEN_VERIFICATION_FAIL);
+                    throw new GlobalException(ExceptionEnum.TOKEN_INVALIDATION);
                 }
                 String id, phoneNumber, roleType;
                 int intRoleType;

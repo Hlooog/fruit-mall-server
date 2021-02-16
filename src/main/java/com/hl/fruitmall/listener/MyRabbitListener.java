@@ -5,6 +5,7 @@ import com.hl.fruitmall.config.RabbitConfig;
 import com.hl.fruitmall.entity.bean.IScore;
 import com.hl.fruitmall.service.CommodityService;
 import com.hl.fruitmall.service.OSSService;
+import com.hl.fruitmall.service.OrdersService;
 import com.hl.fruitmall.service.impl.SmsService;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,9 @@ public class MyRabbitListener {
 
     @Autowired
     private CommodityService commodityService;
+
+    @Autowired
+    private OrdersService ordersService;
 
     @RabbitListener(queues = {RabbitConfig.QUEUE_OSS_DELETE})
     @RabbitHandler
@@ -71,6 +75,21 @@ public class MyRabbitListener {
         try {
             IScore iScore = JSON.parseObject(msg, IScore.class);
             commodityService.insertScore(iScore);
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        } catch (Exception e) {
+            if (message.getMessageProperties().getRedelivered()) {
+                channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+            } else {
+                channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
+            }
+        }
+    }
+
+    @RabbitListener(queues = {RabbitConfig.QUEUE_ORDER_CANCEL})
+    @RabbitHandler
+    public void cancelListener(String orderId, Channel channel, Message message) throws IOException{
+        try {
+            ordersService.cancelOrder(orderId);
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             if (message.getMessageProperties().getRedelivered()) {

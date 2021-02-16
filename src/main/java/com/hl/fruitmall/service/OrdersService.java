@@ -5,6 +5,7 @@ import com.hl.fruitmall.entity.vo.OrderCarVO;
 import com.hl.fruitmall.entity.vo.OrderVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * 订单表(Orders)表服务接口
@@ -19,4 +20,30 @@ public interface OrdersService {
     R create(OrderVO orderVO, HttpServletRequest request);
 
     R userPage(Integer cur, HttpServletRequest request);
+
+    R get(String orderId);
+
+    void cancelOrder(String orderId);
+
+    R queryOrder(String orderId);
+
+    R applyRefund(Integer id);
+
+    R cancel(String orderId);
+
+    R merchantPage(Integer shopId, Integer cur, Integer userId, String startTime, String endTime, Integer status);
+
+    R ship(Map<String, Object> map);
+
+    R merchantExport(Integer shopId, String startTime, String endTime, Integer status);
+
+    R agree(Integer id);
+
+    R refuse(Integer id);
+
+    R adminExport(String startTime, String endTime);
+
+    R adminPage(Integer id, Integer cur, Integer type, String startTime, String endTime);
+
+    R confirm(Integer id);
 }

@@ -1,6 +1,8 @@
 package com.hl.fruitmall.entity.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +15,8 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Commodity implements Serializable {
     private static final long serialVersionUID = 1L;
     //主键id
@@ -30,9 +34,17 @@ public class Commodity implements Serializable {
     //修改时间
     private Date updateTime;
 
+    private Float score;
+    private Integer number;
+    private Integer keep;
+
     public Commodity(Integer shopId, String name, Integer varietyId) {
         this.shopId = shopId;
         this.name = name;
         this.varietyId = varietyId;
+    }
+
+    public void calScore(Float score){
+        this.score = (this.score + score) / (this.number + 1);
     }
 }

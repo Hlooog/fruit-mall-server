@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.OrdersMapper">
-    <resultMap id="userVO" type="com.hl.fruitmall.entity.vo.UserOrderPageVO">
+    <resultMap id="userVO" type="com.hl.fruitmall.entity.vo.UserOrderVO">
         <id property="id" column="id" javaType="int"/>
         <result property="orderId" column="order_id" javaType="string"/>
         <result property="name" column="name" javaType="string"/>
@@ -20,6 +20,11 @@
         INSERT INTO orders(order_id, user_id, address_id)
         VALUES (#{order.orderId}, #{order.userId}, #{order.addressId})
     </insert>
+
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM orders WHERE ${field} = #{value}
+    </select>
+
     <select id="selectPage" resultMap="userVO">
         SELECT o.id,
                o.order_id,
@@ -30,6 +35,18 @@
         FROM orders o
                  LEFT JOIN address a ON o.address_id = a.id
         WHERE o.user_id = #{userId}
+        ORDER BY create_time DESC
         LIMIT 10 OFFSET #{cur};
+    </select>
+    <select id="selectByOrderId" resultMap="userVO">
+        SELECT o.id,
+               o.order_id,
+               o.create_time,
+               a.name,
+               a.phone,
+               a.address
+        FROM orders o
+                 LEFT JOIN address a ON o.address_id = a.id
+        WHERE o.order_id = #{orderId}
     </select>
 </mapper>

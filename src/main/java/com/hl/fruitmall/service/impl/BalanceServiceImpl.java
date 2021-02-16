@@ -2,11 +2,10 @@ package com.hl.fruitmall.service.impl;
 
 import com.hl.fruitmall.common.enums.ExceptionEnum;
 import com.hl.fruitmall.common.enums.RedisKeyEnum;
-import com.hl.fruitmall.common.enums.WithdrawStatusEnum;
 import com.hl.fruitmall.common.exception.GlobalException;
+import com.hl.fruitmall.common.uitls.BalanceUtils;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.common.uitls.TokenUtils;
-import com.hl.fruitmall.entity.bean.Withdraw;
 import com.hl.fruitmall.entity.vo.BalanceVO;
 import com.hl.fruitmall.entity.vo.WithdrawVO;
 import com.hl.fruitmall.mapper.BalanceMapper;
@@ -36,6 +35,9 @@ public class BalanceServiceImpl implements BalanceService {
     private WithdrawMapper withdrawMapper;
 
     @Autowired
+    private BalanceUtils balanceUtils;
+
+    @Autowired
     private RedisTemplate redisTemplate;
 
     @Override
@@ -57,20 +59,7 @@ public class BalanceServiceImpl implements BalanceService {
         if (!code.equals(withdrawVO.getCode())) {
             throw new GlobalException(ExceptionEnum.VERIFICATION_CODE_ERROR);
         }
-        BalanceVO balanceVO = balanceMapper.select(withdrawVO.getPhone());
-        if (withdrawVO.getAmount().compareTo(balanceVO.getWithdrawAble()) == 1) {
-            throw new GlobalException(ExceptionEnum.WITHDRAW_THAN_WITHDRAWABLE);
-        }
-        balanceVO.setWithdrawAble(balanceVO.getWithdrawAble().subtract(withdrawVO.getAmount()));
-        balanceVO.setFrozen(balanceVO.getFrozen().add(withdrawVO.getAmount()));
-        Withdraw withdraw = new Withdraw(
-                withdrawVO.getPhone(),
-                withdrawVO.getAccount(),
-                WithdrawStatusEnum.REVIEW.getCode(),
-                withdrawVO.getAmount()
-        );
-        balanceMapper.update(withdrawVO.getPhone(), balanceVO);
-        withdrawMapper.insert(withdraw);
+        balanceUtils.withdraw(withdrawVO);
         return R.ok();
     }
 }

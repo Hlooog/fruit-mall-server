@@ -11,7 +11,7 @@ import java.util.List;
  * @create 2021/2/13 10:14
  */
 @Data
-public class UserOrderPageVO {
+public class UserOrderVO {
     private Integer id;
     private String orderId;
     private String phone;
@@ -19,5 +19,5 @@ public class UserOrderPageVO {
     private String address;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
-    private List<UserOrderInfoPageVO> infoList;
+    private List<UserOrderInfoVO> infoList;
 }

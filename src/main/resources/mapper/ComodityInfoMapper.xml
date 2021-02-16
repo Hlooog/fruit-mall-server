@@ -43,7 +43,11 @@
         WHERE id = #{vo.id}
     </update>
     <update id="decreaseStock">
-        UPDATE commodity_info SET stock = #{stock}
+        UPDATE commodity_info SET stock = stock - #{stock}
         WHERE id = #{infoId}
+    </update>
+    <update id="increaseStock">
+        UPDATE commodity_info SET stock = stock + #{stock}
+        WHERE id = #{id}
     </update>
 </mapper>

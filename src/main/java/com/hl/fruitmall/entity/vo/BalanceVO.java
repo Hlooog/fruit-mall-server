@@ -14,4 +14,5 @@ public class BalanceVO {
     private BigDecimal withdrawAble;
     private BigDecimal frozen;
     private BigDecimal lumpSum;
+    private Integer shopId;
 }

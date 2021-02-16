@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.BalanceMapper">
+    <insert id="insert">
+        INSERT INTO balance(phone,shop_id) VALUES (#{phone}, #{shopId})
+    </insert>
     <update id="update">
         UPDATE balance SET withdraw = #{vo.withdraw},
                             withdraw_able = #{vo.withdrawAble},
@@ -11,8 +14,18 @@
                             update_time = CURRENT_TIMESTAMP
         WHERE phone = #{phone}
     </update>
+    <update id="increaseFrozen">
+        UPDATE balance SET frozen = frozen + #{price} WHERE shop_id = #{shopId}
+    </update>
+    <update id="decreaseFrozen">
+        UPDATE balance SET frozen = frozen - #{price} WHERE shop_id = #{shopId}
+    </update>
+    <update id="increaseWithdrawAble">
+        UPDATE balance SET frozen = frozen - #{price}, withdraw_able = withdraw_able + #{price}
+        WHERE shop_id = #{shopId}
+    </update>
 
     <select id="select" resultType="com.hl.fruitmall.entity.vo.BalanceVO">
-        SELECT withdraw,withdraw_able,frozen,lump_sum FROM balance WHERE phone = #{phone}
+        SELECT withdraw,withdraw_able,frozen,lump_sum,shop_id FROM balance WHERE phone = #{phone}
     </select>
 </mapper>

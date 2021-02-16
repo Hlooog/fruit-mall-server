@@ -34,5 +34,22 @@ public class Comment implements Serializable {
     //创建时间
     private Date createTime;
 
+    public Comment() {
+    }
 
+    public Comment(Integer userId,
+                   Integer commodityId,
+                   String content,
+                   Float score,
+                   String specification,
+                   Float weight,
+                   Integer num) {
+        this.userId = userId;
+        this.commodityId = commodityId;
+        this.content = content;
+        this.score = score;
+        this.specification = specification;
+        this.weight = weight;
+        this.num = num;
+    }
 }

@@ -4,12 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.fruitmall.mapper.OrderInfoMapper">
 
-    <resultMap id="userInfoVO" type="com.hl.fruitmall.entity.vo.UserOrderInfoPageVO">
+    <resultMap id="userInfoVO" type="com.hl.fruitmall.entity.vo.UserOrderInfoVO">
+        <id property="id" column="id" javaType="int"/>
         <result property="shopId" column="shop_id" javaType="int"/>
         <result property="shopName" column="shop_name" javaType="string"/>
         <result property="commodityId" column="commodity_id" javaType="int"/>
         <result property="commodityName" column="commodity_name" javaType="string"/>
         <result property="specification" column="specification" javaType="string"/>
+        <result property="infoId" column="info_id" javaType="int"/>
         <result property="weight" column="weight" javaType="float"/>
         <result property="price" column="price" javaType="java.math.BigDecimal"/>
         <result property="quantity" column="quantity" javaType="int"/>
@@ -17,24 +19,44 @@
         <result property="trackNumber" column="track_number" javaType="string"/>
     </resultMap>
 
+    <resultMap id="merchantVO" type="com.hl.fruitmall.entity.vo.BackstageOrderVO">
+        <id property="id" column="id" javaType="int"/>
+        <result property="orderId" column="order_id" javaType="string"/>
+        <result property="commodityId" column="commodity_id" javaType="int"/>
+        <result property="commodityName" column="commodity_name" javaType="string"/>
+        <result property="quantity" column="quantity" javaType="int"/>
+        <result property="createTime" column="create_time" javaType="java.util.Date"/>
+        <result property="infoId" column="info_id" javaType="int"/>
+        <result property="specification" column="specification" javaType="string"/>
+        <result property="shopId" column="shop_id" javaType="int"/>
+        <result property="weight" column="weight" javaType="float"/>
+        <result property="price" column="price" javaType="java.math.BigDecimal"/>
+        <result property="name" column="name" javaType="string"/>
+        <result property="phone" column="phone" javaType="string"/>
+        <result property="address" column="address" javaType="string"/>
+        <result property="status" column="status" javaType="int"/>
+        <result property="userId" column="user_id" javaType="int"/>
+        <result property="trackNumber" column="track_number" javaType="string"/>
+    </resultMap>
+
     <insert id="insertBatch">
         INSERT INTO order_info(order_id,
-                               quantity,
-                               commodity_id,
-                               commodity_name,
-                               shop_id,
-                               shop_name,
-                               status,
-                               info_id) VALUES
+        quantity,
+        commodity_id,
+        commodity_name,
+        shop_id,
+        shop_name,
+        status,
+        info_id) VALUES
         <foreach collection="list" item="info" separator=",">
             (#{info.orderId},
-             #{info.quantity},
-             #{info.commodityId},
-             #{info.commodityName},
-             #{info.shopId},
-             #{info.shopName},
-             #{info.status},
-             #{info.infoId})
+            #{info.quantity},
+            #{info.commodityId},
+            #{info.commodityName},
+            #{info.shopId},
+            #{info.shopName},
+            #{info.status},
+            #{info.infoId})
         </foreach>
     </insert>
     <insert id="insert">
@@ -56,13 +78,22 @@
                 #{info.status},
                 #{info.infoId})
     </insert>
+    <update id="updateStatus">
+        UPDATE order_info SET status = #{code} WHERE ${field} = #{value}
+    </update>
+    <update id="updateTrack">
+        UPDATE order_info SET status = #{code}, track_number = #{trackNumber} WHERE id = #{id}
+    </update>
     <select id="getInfoList" resultMap="userInfoVO">
-        SELECT oi.shop_id,
+        SELECT oi.id,
+               oi.shop_id,
                oi.shop_name,
                oi.commodity_id,
                oi.commodity_name,
                oi.quantity,
+               oi.info_id,
                oi.status,
+               oi.track_number,
                ci.specification,
                ci.weight,
                ci.price,
@@ -71,7 +102,123 @@
                  LEFT JOIN commodity_info ci ON oi.info_id = ci.id
         WHERE oi.order_id = #{orderId};
     </select>
+
+    <select id="selectPage" resultMap="merchantVO">
+        SELECT oi.id,
+        oi.order_id,
+        oi.commodity_id,
+        oi.commodity_name,
+        oi.quantity,
+        oi.info_id,
+        oi.status,
+        oi.shop_id,
+        oi.track_number,
+        ci.specification,
+        ci.weight,
+        ci.price,
+        o.create_time,
+        o.user_id,
+        a.address,
+        a.name,
+        a.phone
+        FROM order_info oi
+        LEFT JOIN orders o on oi.order_id = o.order_id
+        LEFT JOIN address a on o.address_id = a.id
+        LEFT JOIN commodity_info ci on oi.info_id = ci.id
+        <where>
+            <if test="shopId != null">
+                oi.shop_id = #{shopId}
+            </if>
+            <if test="status != null">
+                AND oi.status = #{status}
+            </if>
+            <if test="userId != null">
+                AND o.user_id = #{userId}
+            </if>
+            <if test="start != null">
+                AND o.create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+        ORDER BY o.create_time DESC
+        LIMIT 10 OFFSET #{cur}
+    </select>
     <select id="getTotal" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM orders WHERE ${field} = #{value}
+        SELECT COUNT(1) FROM order_info
+        <where>
+            ${field} = #{value}
+            <if test="start != null">
+               AND create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+    </select>
+    <select id="selectExportData" resultMap="merchantVO">
+        SELECT oi.id,
+        oi.order_id,
+        oi.commodity_id,
+        oi.commodity_name,
+        oi.quantity,
+        oi.info_id,
+        oi.status,
+        oi.shop_id,
+        oi.track_number,
+        ci.specification,
+        ci.weight,
+        ci.price,
+        o.create_time,
+        o.user_id,
+        a.address,
+        a.name,
+        a.phone
+        FROM order_info oi
+        LEFT JOIN orders o on oi.order_id = o.order_id
+        LEFT JOIN address a on o.address_id = a.id
+        LEFT JOIN commodity_info ci on oi.info_id = ci.id
+        <where>
+            <if test="shopId != null">
+                oi.shop_id = #{shopId}
+            </if>
+            <if test="status != null">
+                AND oi.status = #{status}
+            </if>
+            <if test="start != null">
+                AND o.create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
+        ORDER BY o.create_time DESC
+    </select>
+    <select id="selectById" resultMap="merchantVO">
+        SELECT oi.id,
+            oi.order_id,
+            oi.commodity_id,
+            oi.commodity_name,
+            oi.quantity,
+            oi.info_id,
+            oi.status,
+            oi.shop_id,
+            oi.track_number,
+            ci.specification,
+            ci.weight,
+            ci.price,
+            o.create_time,
+            o.user_id,
+            a.address,
+            a.name,
+            a.phone
+            FROM order_info oi
+            LEFT JOIN orders o on oi.order_id = o.order_id
+            LEFT JOIN address a on o.address_id = a.id
+            LEFT JOIN commodity_info ci on oi.info_id = ci.id
+        WHERE oi.id = #{id}
+    </select>
+    <select id="getTotalByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM order_info oi
+        LEFT JOIN orders o on oi.order_id = o.order_id
+        <where>
+            o.user_id = #{userId}
+            <if test="start != null">
+                AND o.create_time BETWEEN #{start} AND #{end}
+            </if>
+        </where>
     </select>
 </mapper>

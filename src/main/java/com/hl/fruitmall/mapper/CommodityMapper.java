@@ -44,4 +44,8 @@ public interface CommodityMapper {
     CommodityVO select(@Param("id") Integer id);
 
     FrontCommodityVO selectInfo(@Param("id") Integer id);
+
+    Commodity selectById(@Param("id") Integer id);
+
+    void updateScore(@Param("id") Integer id,@Param("score") Float score);
 }

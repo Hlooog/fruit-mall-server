@@ -12,6 +12,7 @@ import com.hl.fruitmall.entity.vo.CloseShopVO;
 import com.hl.fruitmall.entity.vo.ShopInfoVO;
 import com.hl.fruitmall.entity.vo.ShopPageVO;
 import com.hl.fruitmall.entity.vo.ShopVO;
+import com.hl.fruitmall.mapper.BalanceMapper;
 import com.hl.fruitmall.mapper.CommodityMapper;
 import com.hl.fruitmall.mapper.ShopMapper;
 import com.hl.fruitmall.mapper.UserMapper;
@@ -50,6 +51,9 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private BalanceMapper balanceMapper;
 
     @Override
     public R page(Integer cur,
@@ -105,7 +109,9 @@ public class ShopServiceImpl implements ShopService {
             Shop shop = shopMapper.selectByFiled("owner_id", id);
             if (shop == null) {
                 // 创建
+                String phone = TokenUtils.getPhone(request);
                 shopMapper.create(shopVO, id);
+                balanceMapper.insert(shopVO.getId(),phone);
             } else {
                 shopVO.setId(shop.getId());
                 shopMapper.update(shopVO);

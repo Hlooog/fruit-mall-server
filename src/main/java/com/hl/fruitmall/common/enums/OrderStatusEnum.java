@@ -13,8 +13,8 @@ public enum OrderStatusEnum implements EnumInterface {
     CONFIRM_RECEIPT(3, "交易完成"),
     REFUNDING(4, "退款中"),
     REFUND(5, "完成退款"),
-    REFUSAL_TO_REFUND(6,"拒绝退款"),
-    CANCEL(7,"交易关闭"),
+    CANCEL(6,"交易关闭"),
+    COMMENTED(7,"已评论")
     ;
 
 

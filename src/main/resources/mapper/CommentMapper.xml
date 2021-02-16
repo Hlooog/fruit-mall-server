@@ -15,6 +15,11 @@
         <result property="num" column="num" javaType="int"/>
         <result property="createTime" column="create_time" javaType="java.util.Date"/>
     </resultMap>
+    <insert id="insert">
+        INSERT INTO comment(commodity_id,user_id, content,score,specification,weight,num)
+        VALUES (#{comment.commodityId}, #{comment.userId}, #{comment.content},
+                #{comment.score},#{comment.specification}, #{comment.weight},#{comment.num})
+    </insert>
 
     <select id="selectPage" resultMap="vo">
         SELECT c.id,c.score,c.content,c.specification,c.weight,c.num,c.create_time,u.nickname,u.avatar

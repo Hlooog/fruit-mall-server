@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -83,5 +85,23 @@ public class OSSServiceImpl implements OSSService {
             ossClient.shutdown();
         }
         return R.ok();
+    }
+
+    @Override
+    public String uploadExcel(ByteArrayOutputStream outputStream, String name) {
+        String format = new SimpleDateFormat("yyyy/MM/dd").
+                format(new Date());
+        String fileName = format + "/" + name;
+        OSS ossClient = null;
+        try {
+            ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+            InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            ossClient.putObject(bucketName, fileName, inputStream);
+            ossClient.shutdown();
+            String url = "https://" + bucketName + "." + endpoint + "/" + fileName;
+            return url;
+        } catch (Exception e) {
+            throw new GlobalException(ExceptionEnum.SYSTEM_UNKNOW_EXCEPTION);
+        }
     }
 }

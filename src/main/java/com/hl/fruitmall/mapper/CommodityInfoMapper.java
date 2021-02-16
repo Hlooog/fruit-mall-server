@@ -2,7 +2,6 @@ package com.hl.fruitmall.mapper;
 
 import com.hl.fruitmall.entity.vo.CommodityInfoVO;
 import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
-import com.hl.fruitmall.entity.vo.UserOrderInfoPageVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
@@ -32,5 +31,5 @@ public interface CommodityInfoMapper {
     List<HashMap<String,Integer>> selectByMap(@Param("map") Map<Integer, Integer> infoIdMap);
 
 
-
+    void increaseStock(@Param("id") Integer id,@Param("stock") Integer stock);
 }

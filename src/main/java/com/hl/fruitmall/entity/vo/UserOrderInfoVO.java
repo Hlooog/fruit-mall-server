@@ -9,7 +9,8 @@ import java.math.BigDecimal;
  * @create 2021/2/13 10:28
  */
 @Data
-public class UserOrderInfoPageVO{
+public class UserOrderInfoVO {
+    private Integer id;
     private String url;
     private Integer shopId;
     private Integer commodityId;
@@ -17,6 +18,7 @@ public class UserOrderInfoPageVO{
     private String commodityName;
     private BigDecimal price;
     private Integer quantity;
+    private Integer infoId;
     private Integer status;
     private String specification;
     private Float weight;

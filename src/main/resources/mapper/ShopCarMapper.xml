@@ -53,18 +53,21 @@
         WHERE sc.user_id = #{id}
         ORDER BY sc.create_time ASC
     </select>
-    <select id="selectByIds" resultType="com.hl.fruitmall.entity.bean.ShopCar">
-        SELECT id,
-               shop_id,
-               shop_name,
-               commodity_id,
-               commodity_name,
-               user_id,
-               info_id,
-               quantity,
-               create_time
-        FROM shop_car
-        WHERE id IN
+    <select id="selectByIds" resultMap="vo">
+        SELECT sc.id,
+                sc.shop_id,
+                sc.shop_name,
+                sc.commodity_id,
+                sc.commodity_name,
+                sc.quantity,
+                sc.create_time,
+                sc.url,
+                ci.specification,
+                ci.weight,
+                ci.price
+        FROM shop_car sc
+        LEFT JOIN commodity_info ci on sc.info_id = ci.id
+        WHERE sc.id IN
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>

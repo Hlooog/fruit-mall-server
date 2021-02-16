@@ -14,6 +14,8 @@ public class ShopCarVO {
     private Integer id;
     private Integer shopId;
     private Integer commodityId;
+    private Integer userId;
+    private Integer infoId;
     private String shopName;
     private String commodityName;
     private String specification;

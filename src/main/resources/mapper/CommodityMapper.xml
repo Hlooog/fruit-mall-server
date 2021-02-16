@@ -48,6 +48,19 @@
         <collection property="voList" resultMap="com.hl.fruitmall.mapper.CommodityInfoMapper.info"/>
     </resultMap>
 
+    <resultMap id="commodity" type="com.hl.fruitmall.entity.bean.Commodity">
+        <id property="id" column="id" javaType="int"/>
+        <result property="shopId" column="shop_id" javaType="int"/>
+        <result property="name" column="name" javaType="string"/>
+        <result property="createTime" column="create_time" javaType="java.util.Date"/>
+        <result property="keep" column="keep" javaType="int"/>
+        <result property="score" column="score" javaType="float"/>
+        <result property="varietyId" column="variety_id" javaType="int"/>
+        <result property="updateTime" column="update_time" javaType="java.util.Date"/>
+        <result property="number" column="number" javaType="int"/>
+        <result property="isUp" column="is_up" javaType="int"/>
+    </resultMap>
+
 
     <insert id="insert" parameterType="com.hl.fruitmall.entity.bean.Commodity"
             useGeneratedKeys="true" keyProperty="id">
@@ -71,6 +84,9 @@
     <update id="update">
         UPDATE commodity SET name = #{name},variety_id = #{varietyId},update_time = CURRENT_TIMESTAMP
         WHERE id = #{id}
+    </update>
+    <update id="updateScore">
+        UPDATE commodity SET score = #{score}, number = number + 1 WHERE id = #{id}
     </update>
 
 
@@ -138,6 +154,9 @@
         LEFT JOIN commodity_info ci ON c.id = ci.commodity_id
         LEFT JOIN shop s ON s.id = c.shop_id
         WHERE c.id = #{id}
+    </select>
+    <select id="selectById" resultMap="commodity">
+        SELECT id,shop_id,name,is_up,create_time,update_time,variety_id,score,number,keep FROM commodity WHERE id = #{id}
     </select>
 
 </mapper>
