@@ -1,6 +1,7 @@
 package com.hl.fruitmall.controller;
 
 
+import com.hl.fruitmall.common.annotation.PassToken;
 import com.hl.fruitmall.common.annotation.VerificationToken;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
@@ -67,4 +68,19 @@ public class ShopController {
     public R close(@RequestBody CloseShopVO vo, HttpServletRequest request){
         return shopService.close(vo,request);
     }
+
+    @GetMapping("/user/page")
+    @PassToken
+    public R userPage(@RequestParam("cur") Integer cur,
+                      @RequestParam(value = "key",required = false) String key,
+                      @RequestParam(value = "cityId", required = false) Integer cityId){
+        return shopService.userPage(cur,key,cityId);
+    }
+
+    @GetMapping("/user/list/{id}")
+    @PassToken
+    public R userList(@PathVariable("id") Integer id){
+        return shopService.userList(id);
+    }
+
 }

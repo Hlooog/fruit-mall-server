@@ -158,5 +158,8 @@
     <select id="selectById" resultMap="commodity">
         SELECT id,shop_id,name,is_up,create_time,update_time,variety_id,score,number,keep FROM commodity WHERE id = #{id}
     </select>
+    <select id="selectIds" resultType="java.lang.Integer">
+        SELECT id FROM commodity WHERE shop_id = #{id} AND is_up = 1
+    </select>
 
 </mapper>

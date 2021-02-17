@@ -8,10 +8,7 @@ import com.hl.fruitmall.common.uitls.GlobalUtils;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.common.uitls.TokenUtils;
 import com.hl.fruitmall.entity.bean.Shop;
-import com.hl.fruitmall.entity.vo.CloseShopVO;
-import com.hl.fruitmall.entity.vo.ShopInfoVO;
-import com.hl.fruitmall.entity.vo.ShopPageVO;
-import com.hl.fruitmall.entity.vo.ShopVO;
+import com.hl.fruitmall.entity.vo.*;
 import com.hl.fruitmall.mapper.BalanceMapper;
 import com.hl.fruitmall.mapper.CommodityMapper;
 import com.hl.fruitmall.mapper.ShopMapper;
@@ -153,5 +150,24 @@ public class ShopServiceImpl implements ShopService {
         userMapper.updateByField("phone", phone, "role_type", RoleEnum.USER.getCode());
         globalUtils.delCache(vo.getShop_id());
         return R.ok();
+    }
+
+    @Override
+    public R userPage(Integer cur, String key, Integer cityId) {
+        List<UserShopVO> list = shopMapper.selectPageToUser((cur - 1) * 10,key, cityId);
+        Integer total = shopMapper.getTotalToUser(key,cityId);
+        return R.ok(new HashMap<String,Object>() {
+            {
+                put("data", list);
+                put("total", total);
+            }
+        });
+    }
+
+    @Override
+    public R userList(Integer id) {
+        List<Integer> ids = commodityMapper.selectIds(id);
+        List list = redisTemplate.opsForHash().multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), ids);
+        return R.ok(list);
     }
 }

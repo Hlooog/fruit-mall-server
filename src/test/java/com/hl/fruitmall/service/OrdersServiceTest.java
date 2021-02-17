@@ -1,6 +1,5 @@
 package com.hl.fruitmall.service;
 
-import com.hl.fruitmall.entity.vo.BackstageOrderVO;
 import com.hl.fruitmall.entity.vo.UserOrderInfoVO;
 import com.hl.fruitmall.entity.vo.UserOrderVO;
 import com.hl.fruitmall.mapper.OrderInfoMapper;
@@ -51,9 +50,8 @@ public class OrdersServiceTest {
         }
         System.out.println(total);*/
 
-        List<BackstageOrderVO> list = orderInfoMapper.selectPage(10004, 0, 10049, null, null, null);
-        System.out.println(list);
-
+        /*List<BackstageOrderVO> list = orderInfoMapper.selectPage(10004, 0, 10049, null, null, null);
+        System.out.println(list);*/
     }
 
 }

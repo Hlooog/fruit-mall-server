@@ -3,6 +3,7 @@ package com.hl.fruitmall.mapper;
 import com.hl.fruitmall.entity.bean.Shop;
 import com.hl.fruitmall.entity.vo.ShopPageVO;
 import com.hl.fruitmall.entity.vo.ShopVO;
+import com.hl.fruitmall.entity.vo.UserShopVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -41,4 +42,10 @@ public interface ShopMapper {
     void create(@Param("shopVO") ShopVO shopVO, @Param("id") Integer id);
 
     void update(@Param("shopVO") ShopVO shopVO);
+
+    void updateHeat(@Param("id") Integer shopId, @Param("heat") Integer heat);
+
+    List<UserShopVO> selectPageToUser(@Param("cur") int cur, @Param("key") String key,@Param("cityId") Integer cityId);
+
+    Integer getTotalToUser(@Param("key") String key, @Param("cityId") Integer cityId);
 }

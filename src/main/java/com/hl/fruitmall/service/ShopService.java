@@ -28,4 +28,9 @@ public interface ShopService {
     Shop checkShop(String field, Object value);
 
     R close(CloseShopVO vo, HttpServletRequest request);
+
+    R userPage(Integer cur, String key, Integer cityId);
+
+    R userList(Integer id);
+
 }

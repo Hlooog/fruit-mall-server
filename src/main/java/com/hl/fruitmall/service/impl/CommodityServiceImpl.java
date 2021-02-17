@@ -12,10 +12,7 @@ import com.hl.fruitmall.config.RabbitConfig;
 import com.hl.fruitmall.entity.bean.Commodity;
 import com.hl.fruitmall.entity.bean.IScore;
 import com.hl.fruitmall.entity.vo.*;
-import com.hl.fruitmall.mapper.CommodityInfoMapper;
-import com.hl.fruitmall.mapper.CommodityMapper;
-import com.hl.fruitmall.mapper.ScoreMapper;
-import com.hl.fruitmall.mapper.VarietyMapper;
+import com.hl.fruitmall.mapper.*;
 import com.hl.fruitmall.service.CommodityService;
 import com.hl.fruitmall.service.ShopService;
 import com.hl.fruitmall.service.UserService;
@@ -58,6 +55,9 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Autowired
     private ShopService shopService;
+
+    @Autowired
+    private ShopMapper shopMapper;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -345,11 +345,11 @@ public class CommodityServiceImpl implements CommodityService {
     @Override
     public R getInfo(Integer id, HttpServletRequest request) {
         FrontCommodityVO vo = commodityMapper.selectInfo(id);
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         Integer userId = TokenUtils.getId(request);
         if (userId != null) {
             String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), userId);
-            vo.setIsKeep(redisTemplate.opsForZSet().score(key, id) == null ? false: true);
+            vo.setIsKeep(redisTemplate.opsForZSet().score(key, id) == null ? false : true);
         }
         long day = TimeUnit.DAYS.toMillis(1);
         IScore iScore = new IScore(id,
@@ -359,7 +359,7 @@ public class CommodityServiceImpl implements CommodityService {
                 1,
                 day);
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_RECORD,
-                RabbitConfig.ROUTING_RECORD,  JSON.toJSONString(iScore));
+                RabbitConfig.ROUTING_RECORD, JSON.toJSONString(iScore));
         return R.ok(vo);
     }
 
@@ -392,7 +392,7 @@ public class CommodityServiceImpl implements CommodityService {
         FrontCommodityVO commodityVO = commodityMapper.selectInfo(id);
         Integer userId = TokenUtils.getId(request);
         String key = String.format(RedisKeyEnum.USER_KEEP_COMMODITY.getKey(), userId);
-        redisTemplate.opsForZSet().add(key, id,new Date().getTime());
+        redisTemplate.opsForZSet().add(key, id, new Date().getTime());
 
         long day = TimeUnit.DAYS.toMillis(1);
         IScore iScore = new IScore(id,
@@ -401,7 +401,8 @@ public class CommodityServiceImpl implements CommodityService {
                 new Date().getTime() * 5,
                 5,
                 day * 5);
-        commodityMapper.updateByField("id",id,"keep",commodityVO.getKeep()+1);
+        commodityMapper.updateByField("id", id, "keep", commodityVO.getKeep() + 1);
+        shopMapper.updateHeat(commodityVO.getShopId(), 1);
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_RECORD,
                 RabbitConfig.ROUTING_RECORD, JSON.toJSONString(iScore));
         return R.ok();
@@ -432,8 +433,8 @@ public class CommodityServiceImpl implements CommodityService {
         double varietyScore = iScore.getVarietyScore();
         // 分类
         key = String.format(RedisKeyEnum.VARIETY_KEY.getKey(), commodityVO.getVarietyId());
-        redisTemplate.opsForZSet().incrementScore(key, commodityId,varietyScore );
-        VarietyVO varietyVO = new VarietyVO(commodityVO.getVarietyId(),commodityVO.getVarietyName());
+        redisTemplate.opsForZSet().incrementScore(key, commodityId, varietyScore);
+        VarietyVO varietyVO = new VarietyVO(commodityVO.getVarietyId(), commodityVO.getVarietyName());
         redisTemplate.opsForZSet().incrementScore(RedisKeyEnum.VARIETY_SET.getKey(), varietyVO, varietyScore);
         // 月榜
         double monthlyScore = iScore.getMonthlyScore();
@@ -453,7 +454,7 @@ public class CommodityServiceImpl implements CommodityService {
         Set set = redisTemplate.opsForZSet().reverseRange(key, (cur - 1) * 10, (cur * 10 - 1));
         List list = redisTemplate.opsForHash().multiGet(RedisKeyEnum.COMMODITY_HASH.getKey(), set);
         Long total = redisTemplate.opsForZSet().zCard(key);
-        return R.ok(new HashMap<String,Object>() {
+        return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
                 put("total", total);
@@ -475,7 +476,8 @@ public class CommodityServiceImpl implements CommodityService {
                 -(new Date().getTime() * 3),
                 -5,
                 -(day * 5));
-        commodityMapper.updateByField("id",id,"keep",commodityVO.getKeep()-1);
+        commodityMapper.updateByField("id", id, "keep", commodityVO.getKeep() - 1);
+        shopMapper.updateHeat(commodityVO.getShopId(), -1);
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_RECORD,
                 RabbitConfig.ROUTING_RECORD, JSON.toJSONString(iScore));
         return R.ok();

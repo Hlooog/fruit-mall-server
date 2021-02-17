@@ -15,6 +15,16 @@
         <result column="create_time" property="createTime" javaType="java.util.Date"/>
         <result column="ban_time" property="banTime" javaType="java.util.Date"/>
     </resultMap>
+
+    <resultMap id="userShopVO" type="com.hl.fruitmall.entity.vo.UserShopVO">
+        <id property="id" column="id" javaType="int"/>
+        <result property="name" column="name" javaType="string"/>
+        <result property="heat" column="heat" javaType="int"/>
+        <result property="userName" column="user_name" javaType="string"/>
+        <result property="description" column="description" javaType="string"/>
+        <result property="city" column="city" javaType="string"/>
+    </resultMap>
+
     <insert id="create" parameterType="com.hl.fruitmall.entity.vo.ShopVO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO shop(owner_id,name,description,city_id)
         VALUES (#{id},#{shopVO.name},#{shopVO.description},#{shopVO.cityId})
@@ -37,6 +47,9 @@
         is_delete = 0,
         update_time = CURRENT_TIMESTAMP
         WHERE id = #{shopVO.id}
+    </update>
+    <update id="updateHeat">
+        UPDATE shop SET heat = heat + #{heat} WHERE id = #{id}
     </update>
     <select id="selectByFiled" resultType="com.hl.fruitmall.entity.bean.Shop">
         SELECT id,owner_id,name,description,heat,is_delete,
@@ -73,6 +86,37 @@
             </if>
             <if test="start != null">
                 AND s.create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="cityId != 0">
+                AND (c.id = #{cityId} OR c.parent_id = #{cityId})
+            </if>
+        </where>
+    </select>
+    <select id="selectPageToUser" resultMap="userShopVO">
+        <bind name="toKey" value="'%' + key + '%'"/>
+        SELECT s.id,s.name,s.description,s.heat,u.nickname AS user_name, c.name AS city FROM shop AS s
+        LEFT JOIN user u ON s.owner_id = u.id
+        LEFT JOIN city c ON s.city_id = c.id
+        <where>
+            s.is_delete = 0
+            <if test="key != null and key.trim != ''">
+                AND s.name like #{toKey})
+            </if>
+            <if test="cityId != 0">
+                AND (c.id = #{cityId} OR c.parent_id = #{cityId})
+            </if>
+        </where>
+        LIMIT 10 OFFSET #{cur}
+    </select>
+
+    <select id="getTotalToUser" resultType="java.lang.Integer">
+        <bind name="toKey" value="'%' + key + '%'"/>
+        SELECT COUNT(1) FROM shop AS s
+        LEFT JOIN city c ON s.city_id = c.id
+        <where>
+            s.is_delete = 0
+            <if test="key != null and key.trim != ''">
+                AND s.name like #{toKey})
             </if>
             <if test="cityId != 0">
                 AND (c.id = #{cityId} OR c.parent_id = #{cityId})

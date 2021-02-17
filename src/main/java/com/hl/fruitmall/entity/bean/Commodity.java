@@ -45,6 +45,6 @@ public class Commodity implements Serializable {
     }
 
     public void calScore(Float score){
-        this.score = (this.score + score) / (this.number + 1);
+        this.score = (this.score * this.number + score) / (this.number + 1);
     }
 }

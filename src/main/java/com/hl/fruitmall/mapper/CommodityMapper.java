@@ -48,4 +48,6 @@ public interface CommodityMapper {
     Commodity selectById(@Param("id") Integer id);
 
     void updateScore(@Param("id") Integer id,@Param("score") Float score);
+
+    List<Integer> selectIds(Integer id);
 }
