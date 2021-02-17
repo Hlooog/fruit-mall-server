@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Hl
@@ -59,5 +60,7 @@ public class UserServiceTest {
 
     @Test
     void test3(){
+        List<Map<Date, Integer>> report = userMapper.getReport();
+        System.out.println(report);
     }
 }

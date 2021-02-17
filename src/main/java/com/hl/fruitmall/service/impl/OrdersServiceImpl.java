@@ -273,7 +273,7 @@ public class OrdersServiceImpl implements OrdersService {
         list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
         });
-        Integer total = orderInfoMapper.getTotal("shop_id", shopId, start,end);
+        Integer total = orderInfoMapper.getTotal("shop_id", shopId, start, end);
         return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
@@ -364,16 +364,16 @@ public class OrdersServiceImpl implements OrdersService {
         if (type.equals(0)) {
             list = orderInfoMapper.
                     selectPage(null, (cur - 1) * 10, id, start, end, null);
-            total = orderInfoMapper.getTotalByUserId(id,start,end);
+            total = orderInfoMapper.getTotalByUserId(id, start, end);
         } else if (type.equals(1)) {
             list = orderInfoMapper.
                     selectPage(id, (cur - 1) * 10, null, start, end, null);
-            total = orderInfoMapper.getTotal("shop_id", id, start,end);
+            total = orderInfoMapper.getTotal("shop_id", id, start, end);
         }
         list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
         });
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("data", list);
         map.put("total", total);
         return R.ok(map);
@@ -392,6 +392,29 @@ public class OrdersServiceImpl implements OrdersService {
         return R.ok();
     }
 
+    @Override
+    public R getNumberReport(Integer id) {
+        List<Map<Date,Integer>> list = ordersMapper.getNumberReport(id);
+        return R.ok(list);
+    }
+
+    @Override
+    public R getPriceReport(Integer id) {
+        List<Map<Date,BigDecimal>> list = ordersMapper.getPriceReport(id);
+        return R.ok(list);
+    }
+
+    @Override
+    public R getAdminNumberReport() {
+        List<Map<Date, Integer>> list = ordersMapper.getNumberReport(null);
+        return R.ok(list);
+    }
+
+    @Override
+    public R getAdminPriceReport() {
+        List<Map<Date, BigDecimal>> list = ordersMapper.getPriceReport(null);
+        return R.ok(list);
+    }
 
     public Map<String, Object> query(String orderId) {
         try {

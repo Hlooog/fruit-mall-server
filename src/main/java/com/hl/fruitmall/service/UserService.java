@@ -53,4 +53,7 @@ public interface UserService {
     R edit(Map<String, String> map, HttpServletRequest request);
 
     R delete(Map<String, String> map);
+
+    R getReport();
+
 }

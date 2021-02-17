@@ -102,4 +102,10 @@ public class UserController {
     public R delete(@RequestBody Map<String,String> map){
         return userService.delete(map);
     }
+
+    @GetMapping("/report")
+    @VerificationToken(roleType = RoleEnum.ADMIN)
+    public R getReport(){
+        return userService.getReport();
+    }
 }

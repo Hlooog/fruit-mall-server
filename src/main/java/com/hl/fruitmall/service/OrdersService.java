@@ -46,4 +46,13 @@ public interface OrdersService {
     R adminPage(Integer id, Integer cur, Integer type, String startTime, String endTime);
 
     R confirm(Integer id);
+
+    R getNumberReport(Integer id);
+
+    R getPriceReport(Integer id);
+
+    R getAdminNumberReport();
+
+    R getAdminPriceReport();
+
 }

@@ -411,6 +411,12 @@ public class UserServiceImpl implements UserService {
         return R.ok();
     }
 
+    @Override
+    public R getReport() {
+        List<Map<Date,Integer>> list = userMapper.getReport();
+        return R.ok(list);
+    }
+
     private String keyCache(User user) {
         String key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), user.getId(), user.getPhone());
         String token = TokenUtils.getToken(user);

@@ -131,6 +131,27 @@ public class OrdersController {
         return ordersService.confirm(id);
     }
 
+    @GetMapping("/number/report/{id}")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R getNumberReport(@PathVariable("id") Integer id){
+        return ordersService.getNumberReport(id);
+    }
 
+    @GetMapping("/price/report/{id}")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R getPriceReport(@PathVariable("id") Integer id){
+        return ordersService.getPriceReport(id);
+    }
 
+    @GetMapping("/admin/number/report")
+    @VerificationToken(roleType = RoleEnum.ADMIN)
+    public R getAdminNumberReport(){
+        return ordersService.getAdminNumberReport();
+    }
+
+    @GetMapping("/admin/price/report")
+    @VerificationToken(roleType = RoleEnum.ADMIN)
+    public R getAdminPriceReport(){
+        return ordersService.getAdminPriceReport();
+    }
 }

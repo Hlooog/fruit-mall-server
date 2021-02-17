@@ -15,7 +15,6 @@
     </resultMap>
 
 
-
     <insert id="insert">
         INSERT INTO orders(order_id, user_id, address_id)
         VALUES (#{order.orderId}, #{order.userId}, #{order.addressId})
@@ -48,5 +47,34 @@
         FROM orders o
                  LEFT JOIN address a ON o.address_id = a.id
         WHERE o.order_id = #{orderId}
+    </select>
+    <select id="getNumberReport" resultType="java.util.Map">
+        SELECT inn.date, SUM(inn.number) number
+        FROM (SELECT DATE_FORMAT(o.create_time, '%Y%m%d') date, COUNT(1) number
+                FROM orders o
+                RIGHT JOIN order_info oi on o.order_id = oi.order_id
+                <where>
+                    <if test="id != null">
+                        oi.shop_id = #{id}
+                    </if>
+                    AND oi.status NOT IN (4, 5, 6)
+                </where>
+                GROUP BY oi.order_id, date) inn
+        GROUP BY inn.date;
+    </select>
+    <select id="getPriceReport" resultType="java.util.Map">
+        SELECT inn.date, SUM(inn.price) price
+        FROM (SELECT DATE_FORMAT(o.create_time, '%Y%m%d') date, SUM(ci.price) price
+                FROM order_info oi
+                LEFT JOIN orders o on o.order_id = oi.order_id
+                LEFT JOIN commodity_info ci on oi.commodity_id = ci.commodity_id
+                <where>
+                    <if test="id != null">
+                        oi.shop_id = #{id}
+                    </if>
+                    AND oi.status NOT IN (4, 5, 6)
+                </where>
+                GROUP BY oi.order_id, date) inn
+        GROUP BY inn.date;
     </select>
 </mapper>

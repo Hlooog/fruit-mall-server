@@ -93,4 +93,7 @@
         </where>
         LIMIT 10 OFFSET #{cur}
     </select>
+    <select id="getReport" resultType="java.util.Map">
+        SELECT DATE_FORMAT(create_time,'%Y%m%d') date, COUNT(1) number FROM user GROUP BY date;
+    </select>
 </mapper>

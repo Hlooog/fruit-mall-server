@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户表(User)表数据库访问层
@@ -49,5 +50,7 @@ public interface UserMapper {
     void update(@Param("user") User user);
 
     void insertBatch(@Param("list") List<User> list);
+
+    List<Map<Date, Integer>> getReport();
 
 }

@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Hl
@@ -52,6 +55,8 @@ public class OrdersServiceTest {
 
         /*List<BackstageOrderVO> list = orderInfoMapper.selectPage(10004, 0, 10049, null, null, null);
         System.out.println(list);*/
+        List<Map<Date, BigDecimal>> report = ordersMapper.getPriceReport(null);
+        System.out.println(report);
     }
 
 }
