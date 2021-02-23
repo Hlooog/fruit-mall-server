@@ -25,9 +25,13 @@
         <result property="city" column="city" javaType="string"/>
     </resultMap>
 
-    <insert id="create" parameterType="com.hl.fruitmall.entity.vo.ShopVO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="create"
+            parameterType="com.hl.fruitmall.entity.bean.Shop"
+            useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
         INSERT INTO shop(owner_id,name,description,city_id)
-        VALUES (#{id},#{shopVO.name},#{shopVO.description},#{shopVO.cityId})
+        VALUES (#{shop.ownerId},#{shop.name},#{shop.description},#{shop.cityId})
     </insert>
 
     <update id="updateBanTime">

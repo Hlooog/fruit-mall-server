@@ -14,7 +14,6 @@ import com.hl.fruitmall.service.BalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,14 +46,14 @@ public class BalanceServiceImpl implements BalanceService {
         return R.ok(balanceVO);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public R withdraw(WithdrawVO withdrawVO, HttpServletRequest request) {
         String phone = TokenUtils.getPhone(request);
         if (!phone.equals(withdrawVO.getPhone())) {
             throw new GlobalException(ExceptionEnum.PHONE_NUMBER_HAS_ERROR);
         }
-        String key = String.format(RedisKeyEnum.WITHDRAW_CODE_KEY.getKey(), withdrawVO.getPhone());
+        String key = String.format(RedisKeyEnum.WITHDRAW_CODE_KEY.getKey(), "18211461717");
         String code = (String) redisTemplate.opsForValue().get(key);
         if (!code.equals(withdrawVO.getCode())) {
             throw new GlobalException(ExceptionEnum.VERIFICATION_CODE_ERROR);

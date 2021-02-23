@@ -332,9 +332,9 @@ public class OrdersServiceImpl implements OrdersService {
     public R refuse(Integer id) {
         BackstageOrderVO orderInfo = orderInfoMapper.selectById(id);
         if ("".equals(orderInfo.getTrackNumber())) {
-            orderInfoMapper.updateStatus("id", id, OrderStatusEnum.SHIPPING.getCode());
-        } else {
             orderInfoMapper.updateStatus("id", id, OrderStatusEnum.PAID.getCode());
+        } else {
+            orderInfoMapper.updateStatus("id", id, OrderStatusEnum.SHIPPING.getCode());
         }
         return R.ok();
     }

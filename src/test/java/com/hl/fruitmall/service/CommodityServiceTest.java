@@ -90,6 +90,13 @@ public class CommodityServiceTest {
         }*/
         /*Set set = redisTemplate.opsForZSet().reverseRange("key", 0, -1);
         System.out.println(set.size());*/
+
+        /*String str = (String) redisTemplate.opsForValue().get(RedisKeyEnum.CITY.getKey());
+        List list = JSON.parseObject(str, List.class);
+        System.out.println(list);*/
+        String key = String.format(RedisKeyEnum.WITHDRAW_CODE_KEY.getKey(), "18211461717");
+        String code = (String) redisTemplate.opsForValue().get(key);
+        System.out.println(code);
     }
 
     @Test

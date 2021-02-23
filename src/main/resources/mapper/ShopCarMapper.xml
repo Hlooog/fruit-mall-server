@@ -8,6 +8,7 @@
         <id property="id" column="id" javaType="int"/>
         <result property="shopId" column="shop_id" javaType="int"/>
         <result property="commodityId" column="commodity_id" javaType="int"/>
+        <result property="userId" column="user_id" javaType="int"/>
         <result property="shopName" column="shop_name" javaType="string"/>
         <result property="commodityName" column="commodity_name" javaType="string"/>
         <result property="specification" column="specification" javaType="string"/>
@@ -16,6 +17,7 @@
         <result property="quantity" column="quantity" javaType="int"/>
         <result property="createTime" column="create_time" javaType="java.util.Date"/>
         <result property="url" column="url" javaType="string"/>
+        <result property="infoId" column="info_id" javaType="int"/>
     </resultMap>
     <insert id="insert">
         INSERT INTO
@@ -58,8 +60,10 @@
                 sc.shop_id,
                 sc.shop_name,
                 sc.commodity_id,
+                sc.user_id,
                 sc.commodity_name,
                 sc.quantity,
+                sc.info_id,
                 sc.create_time,
                 sc.url,
                 ci.specification,

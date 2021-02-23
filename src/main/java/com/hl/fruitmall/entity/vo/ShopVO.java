@@ -1,5 +1,6 @@
 package com.hl.fruitmall.entity.vo;
 
+import com.hl.fruitmall.entity.bean.Shop;
 import lombok.Data;
 
 /**
@@ -18,5 +19,14 @@ public class ShopVO {
         this.name = name;
         this.description = description;
         this.cityId = cityId;
+    }
+
+
+    public Shop toShop() {
+        Shop shop = new Shop();
+        shop.setName(name);
+        shop.setDescription(description);
+        shop.setCityId(cityId);
+        return shop;
     }
 }

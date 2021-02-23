@@ -4,15 +4,21 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
+    password: 19980708
     url: jdbc:mysql://8.129.87.61:3306/fruit_mall?useUniCode=true?charsetEncoding=utf-8?serverTimeZone=GMT%2B8
     type: com.alibaba.druid.pool.DruidDataSource
+  #  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: xhlong9798
+#    url: jdbc:mysql://8.129.87.61:3306/fruit_mall?useUniCode=true?charsetEncoding=utf-8?serverTimeZone=GMT%2B8
+#    type: com.alibaba.druid.pool.DruidDataSource
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   redis:
     host: 8.129.87.61
-    password: 123456
+    password: xhlong9798
     port: 6379
     database: 6
     timeout: 10000
@@ -20,7 +26,7 @@ spring:
     host: 8.129.87.61
     port: 5672
     username: hl
-    password: 123456
+    password: xhlong9798
     virtual-host: /fruit-mall
     publisher-confirm-type: correlated
     listener:
@@ -50,11 +56,11 @@ logging:
 aliyun:
   oss:
     endpoint: oss-cn-guangzhou.aliyuncs.com
-    accessKeyId: LTAI4G5YccKj9CQjMbCbgK5A
-    accessKeySecret: 34FuxnnHiyqlfaBFS0ORFSlS9rRJ0w
+    accessKeyId: LTAI4GKsWJN9WWFyyRS65WZr
+    accessKeySecret: OKeEZQKU0TYt3noOkR7hjlFRjAYWXT
     bucketName: hl-fruit-mall
   sms:
-    key-id: LTAI4GFp1VNXWNmSRySrqzQb
-    key-secret: YsVWhqa5vdqnfj9FJABepmY4eg6hUH
+    key-id: LTAI4GKsWJN9WWFyyRS65WZr
+    key-secret: OKeEZQKU0TYt3noOkR7hjlFRjAYWXT
     sign-name: CcShare
     template-code: SMS_170181193

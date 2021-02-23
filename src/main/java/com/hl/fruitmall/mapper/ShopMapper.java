@@ -39,7 +39,7 @@ public interface ShopMapper {
                      @Param("end") Date end,
                      @Param("cityId") Integer cityId);
 
-    void create(@Param("shopVO") ShopVO shopVO, @Param("id") Integer id);
+    void create(@Param("shop") Shop shop);
 
     void update(@Param("shopVO") ShopVO shopVO);
 

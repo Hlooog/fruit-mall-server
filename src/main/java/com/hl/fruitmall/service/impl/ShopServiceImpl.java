@@ -102,22 +102,26 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public R createOrUpdate(ShopVO shopVO, HttpServletRequest request) {
         Integer id = TokenUtils.getId(request);
+        Integer shopId = shopVO.getId();
         if (shopVO.getId() == null) {
             Shop shop = shopMapper.selectByFiled("owner_id", id);
             if (shop == null) {
                 // 创建
                 String phone = TokenUtils.getPhone(request);
-                shopMapper.create(shopVO, id);
-                balanceMapper.insert(shopVO.getId(),phone);
+                shop = shopVO.toShop();
+                shop.setOwnerId(id);
+                shopMapper.create(shop);
+                balanceMapper.insert(shop.getId(),phone);
             } else {
                 shopVO.setId(shop.getId());
                 shopMapper.update(shopVO);
             }
+            shopId = shop.getId();
         } else {
             // 修改
             shopMapper.update(shopVO);
         }
-        return R.ok();
+        return R.ok(shopId);
     }
 
     @Override

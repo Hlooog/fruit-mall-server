@@ -23,7 +23,7 @@ public class RedisConfig {
         redisTemplate.setHashKeySerializer(new FastJsonRedisSerializer<>(Object.class));
         redisTemplate.setHashValueSerializer(new FastJsonRedisSerializer<>(Object.class));
         redisTemplate.setConnectionFactory(connectionFactory);
-        redisTemplate.setEnableTransactionSupport(true);
+//        redisTemplate.setEnableTransactionSupport(true); // 不要在配置类开启事务
         return redisTemplate;
     }
 }

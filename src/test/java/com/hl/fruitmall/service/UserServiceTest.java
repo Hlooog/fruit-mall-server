@@ -63,4 +63,8 @@ public class UserServiceTest {
         List<Map<Date, Integer>> report = userMapper.getReport();
         System.out.println(report);
     }
+
+    @Test
+    void test4(){
+    }
 }
