@@ -84,6 +84,14 @@
     <update id="updateTrack">
         UPDATE order_info SET status = #{code}, track_number = #{trackNumber} WHERE id = #{id}
     </update>
+    <update id="updateBatch">
+        <foreach collection="list" item="map" index="i" separator=";">
+            UPDATE order_info SET
+            <foreach collection="map" index="key" item="value">
+                track_number = #{value}, status = 2 WHERE id = #{key}
+            </foreach>
+        </foreach>
+    </update>
     <select id="getInfoList" resultMap="userInfoVO">
         SELECT oi.id,
                oi.shop_id,
@@ -148,6 +156,9 @@
             ${field} = #{value}
             <if test="start != null">
                AND create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
             </if>
         </where>
     </select>

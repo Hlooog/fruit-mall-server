@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单详情表(OrderInfo)表数据库访问层
@@ -35,7 +36,8 @@ public interface OrderInfoMapper {
     Integer getTotal(@Param("field") String field,
                      @Param("value") Object value,
                      @Param("start") Date start,
-                     @Param("end") Date end);
+                     @Param("end") Date end,
+                     @Param("status") Integer status);
 
     void updateTrack(@Param("id") Integer id,
                      @Param("trackNumber") String trackNumber,
@@ -49,4 +51,6 @@ public interface OrderInfoMapper {
     BackstageOrderVO selectById(@Param("id") Integer id);
 
     Integer getTotalByUserId(@Param("userId") Integer id,@Param("start") Date start,@Param("end") Date end);
+
+    void updateBatch(@Param("list") List<Map<Integer, String>> list);
 }

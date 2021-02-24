@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 19980708
-    url: jdbc:mysql://8.129.87.61:3306/fruit_mall?useUniCode=true?charsetEncoding=utf-8?serverTimeZone=GMT%2B8
+    url: jdbc:mysql://8.129.87.61:3306/fruit_mall?useUniCode=true?charsetEncoding=utf-8?serverTimeZone=GMT%2B8&allowMultiQueries=true&rewriteBatchedStatements=true
     type: com.alibaba.druid.pool.DruidDataSource
   #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver

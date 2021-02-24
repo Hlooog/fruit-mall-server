@@ -10,6 +10,7 @@ import com.hl.fruitmall.config.RabbitConfig;
 import com.hl.fruitmall.entity.bean.OrderInfo;
 import com.hl.fruitmall.entity.bean.Orders;
 import com.hl.fruitmall.entity.vo.*;
+import com.hl.fruitmall.listener.ShipListener;
 import com.hl.fruitmall.mapper.CommodityInfoMapper;
 import com.hl.fruitmall.mapper.OrderInfoMapper;
 import com.hl.fruitmall.mapper.OrdersMapper;
@@ -21,10 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -273,7 +276,7 @@ public class OrdersServiceImpl implements OrdersService {
         list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
         });
-        Integer total = orderInfoMapper.getTotal("shop_id", shopId, start, end);
+        Integer total = orderInfoMapper.getTotal("shop_id", shopId, start, end,status);
         return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
@@ -368,7 +371,7 @@ public class OrdersServiceImpl implements OrdersService {
         } else if (type.equals(1)) {
             list = orderInfoMapper.
                     selectPage(id, (cur - 1) * 10, null, start, end, null);
-            total = orderInfoMapper.getTotal("shop_id", id, start, end);
+            total = orderInfoMapper.getTotal("shop_id", id, start, end, null);
         }
         list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
@@ -414,6 +417,18 @@ public class OrdersServiceImpl implements OrdersService {
     public R getAdminPriceReport() {
         List<Map<Date, BigDecimal>> list = ordersMapper.getPriceReport(null);
         return R.ok(list);
+    }
+
+    @Override
+    public R bulkShip(MultipartFile file) {
+        try {
+            EasyExcel.read(file.getInputStream(),
+                    BackstageOrderVO.class,
+                    new ShipListener(orderInfoMapper)).sheet().doRead();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return R.ok();
     }
 
     public Map<String, Object> query(String orderId) {

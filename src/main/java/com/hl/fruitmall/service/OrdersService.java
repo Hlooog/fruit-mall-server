@@ -3,6 +3,7 @@ package com.hl.fruitmall.service;
 import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.vo.OrderCarVO;
 import com.hl.fruitmall.entity.vo.OrderVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -55,4 +56,5 @@ public interface OrdersService {
 
     R getAdminPriceReport();
 
+    R bulkShip(MultipartFile file);
 }

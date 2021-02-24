@@ -8,6 +8,7 @@ import com.hl.fruitmall.entity.vo.OrderCarVO;
 import com.hl.fruitmall.entity.vo.OrderVO;
 import com.hl.fruitmall.service.OrdersService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -153,5 +154,11 @@ public class OrdersController {
     @VerificationToken(roleType = RoleEnum.ADMIN)
     public R getAdminPriceReport(){
         return ordersService.getAdminPriceReport();
+    }
+
+    @PostMapping("/bulk/ship")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R bulkShip(@RequestBody MultipartFile file){
+        return ordersService.bulkShip(file);
     }
 }

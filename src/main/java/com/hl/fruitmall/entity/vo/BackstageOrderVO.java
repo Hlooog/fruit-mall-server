@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 public class BackstageOrderVO {
-    @ExcelIgnore
+    @ExcelProperty("订单编号")
     private Integer id;
     @ExcelProperty("订单id")
     private String orderId;
