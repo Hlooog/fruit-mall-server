@@ -1,6 +1,7 @@
 package com.hl.fruitmall.controller;
 
 
+import com.hl.fruitmall.common.annotation.AntiRefresh;
 import com.hl.fruitmall.common.annotation.VerificationToken;
 import com.hl.fruitmall.common.enums.RoleEnum;
 import com.hl.fruitmall.common.uitls.R;
@@ -32,10 +33,11 @@ public class BalanceController {
         return balanceService.get(request);
     }
 
+    @AntiRefresh(logos = {"phone", "shopId"}, time = 60 * 30)
     @PostMapping("/withdraw")
     @VerificationToken(roleType = RoleEnum.MERCHANT)
-    public R withdraw(@RequestBody WithdrawVO withdrawVO, HttpServletRequest request) {
-        return balanceService.withdraw(withdrawVO, request);
+    public R withdraw(@RequestBody WithdrawVO withdrawVO) {
+        return balanceService.withdraw(withdrawVO);
     }
 
 }

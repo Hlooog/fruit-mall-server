@@ -6,6 +6,7 @@ import com.hl.fruitmall.common.exception.GlobalException;
 import com.hl.fruitmall.entity.bean.Withdraw;
 import com.hl.fruitmall.entity.vo.BalanceVO;
 import com.hl.fruitmall.entity.vo.UserOrderInfoVO;
+import com.hl.fruitmall.entity.vo.WithdrawRecordVO;
 import com.hl.fruitmall.entity.vo.WithdrawVO;
 import com.hl.fruitmall.mapper.BalanceMapper;
 import com.hl.fruitmall.mapper.WithdrawMapper;
@@ -39,7 +40,7 @@ public class BalanceUtils {
     @Resource(name = "taskExecutor")
     private Executor taskExecutor;
 
-    public static WeakHashMap<Integer, ReentrantLock> map = new WeakHashMap<>();
+    public static Map<Integer, ReentrantLock> map = new WeakHashMap<>();
 
     public static ReentrantLock reentrantLock = new ReentrantLock();
 
@@ -57,7 +58,6 @@ public class BalanceUtils {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public void increaseFrozen(List<UserOrderInfoVO> infoList) {
         Map<Integer, BigDecimal> priceMap = new HashMap<>();
         infoList.stream().forEach(info -> {
@@ -67,7 +67,7 @@ public class BalanceUtils {
         });
         priceMap.forEach((k, v) -> {
             ReentrantLock lock = getLock(k);
-            taskExecutor.execute( () -> {
+            taskExecutor.execute(() -> {
                 try {
                     lock.lock();
                     balanceMapper.increaseFrozen(k, v);
@@ -78,15 +78,14 @@ public class BalanceUtils {
         });
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public void withdraw(WithdrawVO withdrawVO) {
-        BalanceVO balanceVO = balanceMapper.select(withdrawVO.getPhone());
-        if (withdrawVO.getAmount().compareTo(balanceVO.getWithdrawAble()) == 1) {
-            throw new GlobalException(ExceptionEnum.WITHDRAW_THAN_WITHDRAWABLE);
-        }
-        ReentrantLock lock = getLock(balanceVO.getShopId());
+        ReentrantLock lock = getLock(withdrawVO.getShopId());
+        lock.lock();
         try {
-            lock.lock();
+            BalanceVO balanceVO = balanceMapper.select(withdrawVO.getPhone());
+            if (withdrawVO.getAmount().compareTo(balanceVO.getWithdrawAble()) == 1) {
+                throw new GlobalException(ExceptionEnum.WITHDRAW_THAN_WITHDRAWABLE);
+            }
             balanceVO.setWithdrawAble(balanceVO.getWithdrawAble().subtract(withdrawVO.getAmount()));
             balanceVO.setFrozen(balanceVO.getFrozen().add(withdrawVO.getAmount()));
             balanceMapper.update(withdrawVO.getPhone(), balanceVO);
@@ -94,6 +93,7 @@ public class BalanceUtils {
             lock.unlock();
         }
         Withdraw withdraw = new Withdraw(
+                withdrawVO.getShopId(),
                 withdrawVO.getPhone(),
                 withdrawVO.getAccount(),
                 WithdrawStatusEnum.REVIEW.getCode(),
@@ -118,7 +118,43 @@ public class BalanceUtils {
         ReentrantLock lock = getLock(shopId);
         try {
             lock.lock();
-            balanceMapper.increaseWithdrawAble(shopId,price);
+            balanceMapper.increaseWithdrawAble(shopId, price);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void review(Integer id, Integer shopId, String phone) {
+        ReentrantLock lock = getLock(shopId);
+        lock.lock();
+        try {
+            BalanceVO balanceVO = balanceMapper.select(phone);
+            WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id", id);
+            if (!withdraw.getStatus().equals(0)) {
+                throw new GlobalException(ExceptionEnum.MAKE_MONEY_HAS_ERROR);
+            }
+            balanceVO.setFrozen(balanceVO.getFrozen().subtract(withdraw.getAmount()));
+            balanceVO.setWithdraw(balanceVO.getWithdraw().add(withdraw.getAmount()));
+            withdrawMapper.updateById(id, WithdrawStatusEnum.FINISH.getCode());
+            balanceMapper.update(phone, balanceVO);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void refuse(Integer id, Integer shopId, String phone) {
+        ReentrantLock lock = getLock(shopId);
+        lock.lock();
+        try {
+            BalanceVO balanceVO = balanceMapper.select(phone);
+            WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id", id);
+            if (!withdraw.getStatus().equals(0)) {
+                throw new GlobalException(ExceptionEnum.MAKE_MONEY_HAS_ERROR);
+            }
+            balanceVO.setFrozen(balanceVO.getFrozen().subtract(withdraw.getAmount()));
+            balanceVO.setWithdrawAble(balanceVO.getWithdrawAble().add(withdraw.getAmount()));
+            withdrawMapper.updateById(id, WithdrawStatusEnum.REFUSE.getCode());
+            balanceMapper.update(phone, balanceVO);
         } finally {
             lock.unlock();
         }

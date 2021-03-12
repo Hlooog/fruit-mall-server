@@ -51,11 +51,11 @@ public class OrdersController {
     @VerificationToken(roleType = RoleEnum.MERCHANT)
     public R merchantPage(@RequestParam("shopId") Integer shopId,
                           @RequestParam("cur") Integer cur,
-                          @RequestParam(value = "userId", required = false) Integer userId,
+                          @RequestParam(value = "userId", required = false) String key,
                           @RequestParam(value = "startTime", required = false) String startTime,
                           @RequestParam(value = "endTime", required = false) String endTime,
                           @RequestParam("status") Integer status) {
-        return ordersService.merchantPage(shopId, cur, userId, startTime, endTime, status);
+        return ordersService.merchantPage(shopId, cur, key, startTime, endTime, status);
     }
 
     @GetMapping("/get/{orderId}")
@@ -118,12 +118,12 @@ public class OrdersController {
 
     @GetMapping("/admin/page")
     @VerificationToken(roleType = RoleEnum.ADMIN)
-    public R adminPage(@RequestParam("id") Integer id,
+    public R adminPage(@RequestParam("id") String key,
                        @RequestParam("cur") Integer cur,
                        @RequestParam("type") Integer type,
                        @RequestParam("startTime") String startTime,
                        @RequestParam("endTime") String endTime) {
-        return ordersService.adminPage(id, cur, type, startTime, endTime);
+        return ordersService.adminPage(key, cur, type, startTime, endTime);
     }
 
     @PutMapping("/confirm/{id}")

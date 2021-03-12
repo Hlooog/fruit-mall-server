@@ -2,6 +2,8 @@ package com.hl.fruitmall.entity.vo;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.hl.fruitmall.common.enums.OrderStatusEnum;
+import com.hl.fruitmall.common.uitls.EnumUtils;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -49,4 +51,12 @@ public class BackstageOrderVO {
     private String statusStr;
     @ExcelProperty("快递单号")
     private String trackNumber;
+
+    /*public String getStatusStr() {
+        return EnumUtils.getByCode(this.status, OrderStatusEnum.class);
+    }*/
+
+    public void setStatusStr(Integer status) {
+        this.statusStr = EnumUtils.getByCode(status, OrderStatusEnum.class);
+    }
 }

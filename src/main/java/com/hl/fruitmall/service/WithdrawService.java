@@ -12,7 +12,7 @@ public interface WithdrawService {
 
     R page(String phone, Integer cur, String startTime, String endTime, Integer status);
 
-    R review(Integer id, String phone);
+    R review(Integer id, Integer shopId, String phone);
 
-    R refuse(Integer id, String phone);
+    R refuse(Integer id, Integer shopId, String phone);
 }

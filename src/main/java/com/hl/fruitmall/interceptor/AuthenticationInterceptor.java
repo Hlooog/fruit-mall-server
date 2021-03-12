@@ -35,7 +35,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private RedisTemplate redisTemplate;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)  {
         String token = request.getHeader("X-Token");
         // 如果不是映射到方法直接通过
         if (!(handler instanceof HandlerMethod)) {
@@ -43,6 +43,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
+
         if (method.isAnnotationPresent(PassToken.class)) {
             return true;
         }
@@ -50,7 +51,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             VerificationToken verificationToken = method.getAnnotation(VerificationToken.class);
             if (verificationToken.required()) {
                 if (token == null) {
-                    throw new GlobalException(ExceptionEnum.TOKEN_INVALIDATION);
+                    throw new GlobalException(ExceptionEnum.CAN_NOT_LOGIN);
                 }
                 String id, phoneNumber, roleType;
                 int intRoleType;

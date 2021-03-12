@@ -10,10 +10,9 @@ import java.math.BigDecimal;
  */
 @Data
 public class WithdrawVO {
-
+    private Integer shopId;
     private String account;
     private BigDecimal amount;
     private String phone;
     private String code;
-
 }

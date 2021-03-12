@@ -189,11 +189,11 @@ public class OrdersServiceImpl implements OrdersService {
         Integer userId = TokenUtils.getId(request);
         List<UserOrderVO> voList = ordersMapper.selectPage(userId, (cur - 1) * 10);
         Integer total = ordersMapper.getTotal("user_id", userId);
-        voList.stream().forEach(vo -> {
+        /*voList.stream().forEach(vo -> {
             vo.getInfoList().stream().forEach(info -> {
                 info.setStatusStr(EnumUtils.getByCode(info.getStatus(), OrderStatusEnum.class));
             });
-        });
+        });*/
         return R.ok(new HashMap<String, Object>() {
             {
                 put("data", voList);
@@ -233,7 +233,6 @@ public class OrdersServiceImpl implements OrdersService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public R queryOrder(String orderId) {
         Map<String, Object> queryMap = query(orderId);
@@ -265,18 +264,18 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public R merchantPage(Integer shopId,
                           Integer cur,
-                          Integer userId,
+                          String key,
                           String startTime,
                           String endTime,
                           Integer status) {
         Date[] dates = globalUtils.strToDate(startTime, endTime);
         Date start = dates[0], end = dates[1];
         List<BackstageOrderVO> list = orderInfoMapper.
-                selectPage(shopId, (cur - 1) * 10, userId, start, end, status);
-        list.stream().forEach(vo -> {
+                selectPage(shopId, (cur - 1) * 10, key, start, end, status);
+        /*list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
-        });
-        Integer total = orderInfoMapper.getTotal("shop_id", shopId, start, end,status);
+        });*/
+        Integer total = orderInfoMapper.getTotal("shop_id", shopId, key, start, end,status);
         return R.ok(new HashMap<String, Object>() {
             {
                 put("data", list);
@@ -298,9 +297,9 @@ public class OrdersServiceImpl implements OrdersService {
         Date[] dates = globalUtils.strToDate(startTime, endTime);
         Date start = dates[0], end = dates[1];
         List<BackstageOrderVO> list = orderInfoMapper.selectExportData(shopId, start, end, status);
-        list.stream().forEach(vo -> {
+        /*list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
-        });
+        });*/
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         EasyExcel.write(outputStream, BackstageOrderVO.class).sheet(1).doWrite(list);
         String title = new SimpleDateFormat("yyyy:MM:dd HH:mm:sss").format(new Date());
@@ -347,9 +346,9 @@ public class OrdersServiceImpl implements OrdersService {
         Date[] dates = globalUtils.strToDate(startTime, endTime);
         Date start = dates[0], end = dates[1];
         List<BackstageOrderVO> list = orderInfoMapper.selectExportData(null, start, end, null);
-        list.stream().forEach(vo -> {
+        /*list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
-        });
+        });*/
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         EasyExcel.write(outputStream, BackstageOrderVO.class).sheet(1).doWrite(list);
         String title = new SimpleDateFormat("yyyy:MM:dd HH:mm:sss").format(new Date());
@@ -359,23 +358,23 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public R adminPage(Integer id, Integer cur, Integer type, String startTime, String endTime) {
+    public R adminPage(String key, Integer cur, Integer type, String startTime, String endTime) {
         Date[] dates = globalUtils.strToDate(startTime, endTime);
         Date start = dates[0], end = dates[1];
         List<BackstageOrderVO> list = null;
         Integer total = null;
         if (type.equals(0)) {
             list = orderInfoMapper.
-                    selectPage(null, (cur - 1) * 10, id, start, end, null);
-            total = orderInfoMapper.getTotalByUserId(id, start, end);
+                    selectPage(null, (cur - 1) * 10, key, start, end, null);
+            total = orderInfoMapper.getTotalByUserId(key, start, end);
         } else if (type.equals(1)) {
             list = orderInfoMapper.
-                    selectPage(id, (cur - 1) * 10, null, start, end, null);
-            total = orderInfoMapper.getTotal("shop_id", id, start, end, null);
+                    selectPage(Integer.valueOf(key), (cur - 1) * 10, null, start, end, null);
+            total = orderInfoMapper.getTotal("shop_id", key, null, start, end, null);
         }
-        list.stream().forEach(vo -> {
+        /*list.stream().forEach(vo -> {
             vo.setStatusStr(EnumUtils.getByCode(vo.getStatus(), OrderStatusEnum.class));
-        });
+        });*/
         Map<String, Object> map = new HashMap<>();
         map.put("data", list);
         map.put("total", total);

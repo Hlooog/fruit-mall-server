@@ -15,6 +15,6 @@ public interface BalanceService {
 
     R get(HttpServletRequest request);
 
-    R withdraw(WithdrawVO withdrawVO, HttpServletRequest request);
+    R withdraw(WithdrawVO withdrawVO);
 
 }

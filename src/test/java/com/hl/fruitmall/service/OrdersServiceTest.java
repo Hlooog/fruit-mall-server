@@ -1,5 +1,6 @@
 package com.hl.fruitmall.service;
 
+import com.hl.fruitmall.entity.vo.BackstageOrderVO;
 import com.hl.fruitmall.entity.vo.UserOrderInfoVO;
 import com.hl.fruitmall.entity.vo.UserOrderVO;
 import com.hl.fruitmall.mapper.OrderInfoMapper;
@@ -26,6 +27,8 @@ public class OrdersServiceTest {
     @Autowired
     private OrdersMapper ordersMapper;
 
+    @Autowired
+    private OrdersService ordersService;
 
     @Test
     void test() {
@@ -57,6 +60,15 @@ public class OrdersServiceTest {
         System.out.println(list);*/
         List<Map<Date, BigDecimal>> report = ordersMapper.getPriceReport(null);
         System.out.println(report);
+    }
+
+    @Test
+    void test3(){
+        /*R r = ordersService.merchantExport(10000, null, null, null);
+        Object data = r.getData();
+        System.out.println(data);*/
+        List<BackstageOrderVO> list = orderInfoMapper.selectExportData(10000, null, null, null);
+        System.out.println(list);
     }
 
 }

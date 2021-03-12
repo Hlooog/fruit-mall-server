@@ -1,17 +1,14 @@
 package com.hl.fruitmall.service.impl;
 
-import com.hl.fruitmall.common.enums.WithdrawStatusEnum;
+import com.hl.fruitmall.common.uitls.BalanceUtils;
 import com.hl.fruitmall.common.uitls.GlobalUtils;
 import com.hl.fruitmall.common.uitls.R;
-import com.hl.fruitmall.entity.vo.BalanceVO;
 import com.hl.fruitmall.entity.vo.WithdrawRecordVO;
 import com.hl.fruitmall.mapper.BalanceMapper;
 import com.hl.fruitmall.mapper.WithdrawMapper;
 import com.hl.fruitmall.service.WithdrawService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +28,9 @@ public class WithdrawServiceImpl implements WithdrawService {
     private BalanceMapper balanceMapper;
 
     @Autowired
+    private BalanceUtils balanceUtils;
+
+    @Autowired
     private GlobalUtils globalUtils;
 
     @Override
@@ -47,26 +47,15 @@ public class WithdrawServiceImpl implements WithdrawService {
         });
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public R review(Integer id, String phone) {
-        BalanceVO balanceVO = balanceMapper.select(phone);
-        WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id", id);
-        balanceVO.setFrozen(balanceVO.getFrozen().subtract(withdraw.getAmount()));
-        balanceVO.setWithdraw(balanceVO.getWithdraw().add(withdraw.getAmount()));
-        withdrawMapper.updateById(id, WithdrawStatusEnum.FINISH.getCode());
-        balanceMapper.update(phone, balanceVO);
+    public R review(Integer id, Integer shopId, String phone) {
+        balanceUtils.review(id,shopId, phone);
         return R.ok();
     }
 
     @Override
-    public R refuse(Integer id, String phone) {
-        BalanceVO balanceVO = balanceMapper.select(phone);
-        WithdrawRecordVO withdraw = withdrawMapper.selectByFiled("id", id);
-        balanceVO.setFrozen(balanceVO.getFrozen().subtract(withdraw.getAmount()));
-        balanceVO.setWithdrawAble(balanceVO.getWithdrawAble().add(withdraw.getAmount()));
-        withdrawMapper.updateById(id, WithdrawStatusEnum.REFUSE.getCode());
-        balanceMapper.update(phone, balanceVO);
+    public R refuse(Integer id, Integer shopId, String phone) {
+        balanceUtils.refuse(id,shopId,phone);
         return R.ok();
     }
 }

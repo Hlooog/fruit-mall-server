@@ -13,8 +13,10 @@ import java.util.Date;
 public class WithdrawRecordVO {
     //主键id
     private Integer id;
-    //商户id
+    //手机号码
     private String phone;
+    // 商户id
+    private Integer shopId;
     //账户
     private String account;
     //金额

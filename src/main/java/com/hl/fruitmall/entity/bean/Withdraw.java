@@ -19,6 +19,8 @@ public class Withdraw implements Serializable {
     //主键id
     private Integer id;
     //商户id
+    private Integer shopId;
+    // 手机号码
     private String phone;
     //账户
     private String account;
@@ -29,7 +31,8 @@ public class Withdraw implements Serializable {
     //创建时间
     private Date createTime;
 
-    public Withdraw(String phone, String account, Integer status, BigDecimal amount) {
+    public Withdraw(Integer shopId, String phone, String account, Integer status, BigDecimal amount) {
+        this.shopId = shopId;
         this.phone = phone;
         this.account = account;
         this.status = status;

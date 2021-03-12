@@ -32,7 +32,7 @@ public interface OrdersService {
 
     R cancel(String orderId);
 
-    R merchantPage(Integer shopId, Integer cur, Integer userId, String startTime, String endTime, Integer status);
+    R merchantPage(Integer shopId, Integer cur, String key, String startTime, String endTime, Integer status);
 
     R ship(Map<String, Object> map);
 
@@ -44,7 +44,7 @@ public interface OrdersService {
 
     R adminExport(String startTime, String endTime);
 
-    R adminPage(Integer id, Integer cur, Integer type, String startTime, String endTime);
+    R adminPage(String key, Integer cur, Integer type, String startTime, String endTime);
 
     R confirm(Integer id);
 

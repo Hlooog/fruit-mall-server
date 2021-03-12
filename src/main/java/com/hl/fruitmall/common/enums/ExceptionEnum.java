@@ -28,7 +28,11 @@ public enum ExceptionEnum {
     REPEAT_APPLICATION(10021,"重复申请"),
     ORDER_HAS_ERROR(10022,"订单异常"),
     INVENTORY_SHORTAGE(10023,"库存不足"),
-    CREATE_NATIVE_HAS_ERR(10024,"创建支付二维码异常")
+    CREATE_NATIVE_HAS_ERR(10024,"创建支付二维码异常"),
+    CAN_NOT_LOGIN(10025,"请先登录再访问"),
+    MAKE_MONEY_HAS_ERROR(10026,"提现申请异常"),
+    PLEASE_TRY_AGAIN_LATER(10027,"请稍后再试"),
+    REPEATED_SUBMIT(10028,"重复提交"),
     ;
 
 

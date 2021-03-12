@@ -1,5 +1,7 @@
 package com.hl.fruitmall.entity.vo;
 
+import com.hl.fruitmall.common.enums.OrderStatusEnum;
+import com.hl.fruitmall.common.uitls.EnumUtils;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -24,4 +26,8 @@ public class UserOrderInfoVO {
     private Float weight;
     private String statusStr;
     private String trackNumber;
+
+    public void setStatusStr(Integer status) {
+        this.statusStr = EnumUtils.getByCode(status, OrderStatusEnum.class);
+    }
 }

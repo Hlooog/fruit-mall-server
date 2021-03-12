@@ -327,6 +327,15 @@ public class CommodityServiceTest {
 
     @Test
     void test21() {
+        redisTemplate.opsForHash().delete(RedisKeyEnum.COMMODITY_HASH.getKey(), 10041);
+        redisTemplate.opsForZSet().remove(RedisKeyEnum.COMMODITY_Z_SET.getKey(), 10041);
+    }
+
+    @Test
+    void test22(){
+        /*redisTemplate.opsForZSet().add("key", 1001, 1);
+        redisTemplate.opsForZSet().add("key", 1002, 2);*/
+        redisTemplate.opsForZSet().remove("key", 1001);
     }
 
 }

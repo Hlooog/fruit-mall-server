@@ -28,13 +28,14 @@ public interface OrderInfoMapper {
 
     List<BackstageOrderVO> selectPage(@Param("shopId") Integer shopId,
                                       @Param("cur") int cur,
-                                      @Param("userId") Integer userId,
+                                      @Param("key") String key,
                                       @Param("start") Date start,
                                       @Param("end") Date end,
                                       @Param("status") Integer code);
 
     Integer getTotal(@Param("field") String field,
                      @Param("value") Object value,
+                     @Param("key") String key,
                      @Param("start") Date start,
                      @Param("end") Date end,
                      @Param("status") Integer status);
@@ -50,7 +51,7 @@ public interface OrderInfoMapper {
 
     BackstageOrderVO selectById(@Param("id") Integer id);
 
-    Integer getTotalByUserId(@Param("userId") Integer id,@Param("start") Date start,@Param("end") Date end);
+    Integer getTotalByUserId(@Param("key") String id,@Param("start") Date start,@Param("end") Date end);
 
     void updateBatch(@Param("list") List<Map<Integer, String>> list);
 }

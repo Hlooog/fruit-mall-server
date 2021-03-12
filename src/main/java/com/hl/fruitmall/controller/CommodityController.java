@@ -8,8 +8,6 @@ import com.hl.fruitmall.common.uitls.R;
 import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
 import com.hl.fruitmall.entity.vo.EditCommodityVO;
 import com.hl.fruitmall.service.CommodityService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -30,9 +28,6 @@ public class CommodityController {
      */
     @Resource
     private CommodityService commodityService;
-
-    @Autowired
-    RedisTemplate redisTemplate;
 
     @GetMapping("/list/{id}")
     @VerificationToken(roleType = RoleEnum.CUSTOMER_SERVICE)

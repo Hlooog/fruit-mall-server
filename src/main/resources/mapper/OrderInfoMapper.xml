@@ -17,6 +17,8 @@
         <result property="quantity" column="quantity" javaType="int"/>
         <result property="url" column="url" javaType="string"/>
         <result property="trackNumber" column="track_number" javaType="string"/>
+        <result property="status" column="status" javaType="int"/>
+        <result property="statusStr" column="status" javaType="int"/>
     </resultMap>
 
     <resultMap id="merchantVO" type="com.hl.fruitmall.entity.vo.BackstageOrderVO">
@@ -35,6 +37,7 @@
         <result property="phone" column="phone" javaType="string"/>
         <result property="address" column="address" javaType="string"/>
         <result property="status" column="status" javaType="int"/>
+        <result property="statusStr" column="status" javaType="int"/>
         <result property="userId" column="user_id" javaType="int"/>
         <result property="trackNumber" column="track_number" javaType="string"/>
     </resultMap>
@@ -140,8 +143,8 @@
             <if test="status != null">
                 AND oi.status = #{status}
             </if>
-            <if test="userId != null">
-                AND o.user_id = #{userId}
+            <if test="key != null and key.trim != ''">
+                AND (o.user_id = #{key} OR o.order_id = #{key})
             </if>
             <if test="start != null">
                 AND o.create_time BETWEEN #{start} AND #{end}
@@ -151,14 +154,17 @@
         LIMIT 10 OFFSET #{cur}
     </select>
     <select id="getTotal" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM order_info
+        SELECT COUNT(1) FROM order_info oi LEFT JOIN orders o ON oi.order_id = o.order_id
         <where>
             ${field} = #{value}
             <if test="start != null">
-               AND create_time BETWEEN #{start} AND #{end}
+                AND o.create_time BETWEEN #{start} AND #{end}
+            </if>
+            <if test="key != null and key.trim != ''">
+                AND (o.user_id = #{key} OR o.order_id = #{key})
             </if>
             <if test="status != null">
-                AND status = #{status}
+                AND oi.status = #{status}
             </if>
         </where>
     </select>
@@ -226,7 +232,7 @@
         FROM order_info oi
         LEFT JOIN orders o on oi.order_id = o.order_id
         <where>
-            o.user_id = #{userId}
+            o.user_id = #{key} OR o.order_id = #{key}
             <if test="start != null">
                 AND o.create_time BETWEEN #{start} AND #{end}
             </if>

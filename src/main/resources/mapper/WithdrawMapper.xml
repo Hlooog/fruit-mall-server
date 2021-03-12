@@ -6,6 +6,7 @@
     <resultMap id="withdraw" type="com.hl.fruitmall.entity.vo.WithdrawRecordVO">
         <id column="id" property="id" javaType="int"/>
         <result column="phone" property="phone" javaType="string"/>
+        <result column="shop_id" property="shopId" javaType="int"/>
         <result column="account" property="account" javaType="string"/>
         <result column="amount" property="amount" javaType="java.math.BigDecimal"/>
         <result column="status" property="status" javaType="int"/>
@@ -13,14 +14,14 @@
     </resultMap>
 
     <insert id="insert">
-        INSERT INTO withdraw(phone,account,amount,status)
-            VALUES (#{bo.phone},#{bo.account},#{bo.amount}, #{bo.status})
+        INSERT INTO withdraw(phone,account,amount,status,shop_id)
+            VALUES (#{bo.phone},#{bo.account},#{bo.amount}, #{bo.status}, #{bo.shopId})
     </insert>
     <update id="updateById">
         UPDATE withdraw SET status = #{code} WHERE id = #{id}
     </update>
     <select id="page" resultMap="withdraw">
-        SELECT id,phone,account,amount,create_time,status FROM withdraw
+        SELECT id,phone,shop_id,account,amount,create_time,status FROM withdraw
         <where>
             <if test="phone != null and phone.trim != ''">
                 phone = #{phone}
@@ -44,6 +45,6 @@
         </where>
     </select>
     <select id="selectByFiled" resultMap="withdraw">
-        SELECT id,phone,account,amount,create_time,status FROM withdraw WHERE ${field} = #{value}
+        SELECT id,phone,shop_id,account,amount,create_time,status FROM withdraw WHERE ${field} = #{value}
     </select>
 </mapper>

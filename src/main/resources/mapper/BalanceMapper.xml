@@ -15,10 +15,10 @@
         WHERE phone = #{phone}
     </update>
     <update id="increaseFrozen">
-        UPDATE balance SET frozen = frozen + #{price} WHERE shop_id = #{shopId}
+        UPDATE balance SET frozen = frozen + #{price}, lump_sum = lump_sum + #{price} WHERE shop_id = #{shopId}
     </update>
     <update id="decreaseFrozen">
-        UPDATE balance SET frozen = frozen - #{price} WHERE shop_id = #{shopId}
+        UPDATE balance SET frozen = frozen - #{price}, lump_sum = lump_sum - #{price} WHERE shop_id = #{shopId}
     </update>
     <update id="increaseWithdrawAble">
         UPDATE balance SET frozen = frozen - #{price}, withdraw_able = withdraw_able + #{price}
