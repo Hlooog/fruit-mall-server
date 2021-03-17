@@ -37,7 +37,6 @@ public class ShipListener extends AnalysisEventListener<BackstageOrderVO> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-        System.out.println(list);
         orderInfoMapper.updateBatch(list);
         list.clear();
         list = null;
