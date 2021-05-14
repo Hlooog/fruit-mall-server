@@ -167,4 +167,22 @@ public class CommodityController {
     public R cancel(@PathVariable("id") Integer id, HttpServletRequest request){
         return commodityService.cancel(id, request);
     }
+
+    @GetMapping("/sales/{id}")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R getSales(@PathVariable("id") Integer id){
+        return commodityService.getSales(id);
+    }
+
+    @GetMapping("/all/fruit/{id}")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R allFruit(@PathVariable("id") Integer id){
+        return  commodityService.allFruit(id);
+    }
+
+    @GetMapping("/one/fruit/{id}")
+    @VerificationToken(roleType = RoleEnum.MERCHANT)
+    public R oneFruit(@PathVariable("id") Integer id){
+        return commodityService.oneFruit(id);
+    }
 }

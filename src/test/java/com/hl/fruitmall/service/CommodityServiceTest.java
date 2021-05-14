@@ -335,7 +335,9 @@ public class CommodityServiceTest {
     void test22(){
         /*redisTemplate.opsForZSet().add("key", 1001, 1);
         redisTemplate.opsForZSet().add("key", 1002, 2);*/
-        redisTemplate.opsForZSet().remove("key", 1001);
+//        redisTemplate.opsForZSet().remove("key", 1001);
+        List<Map<String, Integer>> map = commodityInfoMapper.selectSales(10000);
+        System.out.println(map);
     }
 
 }

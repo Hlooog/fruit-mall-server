@@ -4,6 +4,7 @@ import com.hl.fruitmall.entity.vo.CommodityInfoVO;
 import com.hl.fruitmall.entity.vo.EditCommodityInfoVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,4 +33,10 @@ public interface CommodityInfoMapper {
 
 
     void increaseStock(@Param("id") Integer id,@Param("stock") Integer stock);
+
+    List<Map<String, Integer>> selectSales(@Param("id") Integer id);
+
+    List<Map<Integer, String>> getAllFruit(@Param("id") Integer id);
+
+    List<Map<Date, Integer>> gerOneFruitSales(@Param("id") Integer id);
 }

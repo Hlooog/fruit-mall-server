@@ -64,4 +64,10 @@ public interface CommodityService {
 
     R cancel(Integer id, HttpServletRequest request);
 
+    R getSales(Integer id);
+
+    R allFruit(Integer id);
+
+    R oneFruit(Integer id);
+
 }

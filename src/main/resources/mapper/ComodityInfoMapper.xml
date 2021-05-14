@@ -27,6 +27,22 @@
             (id = #{key} AND stock >= #{value})
         </foreach>
     </select>
+    <select id="selectSales" resultType="java.util.Map">
+        SELECT commodity_name AS name, COUNT(1) AS sales
+            FROM fruit_mall.order_info
+            WHERE shop_id = #{id}
+        GROUP BY order_info.commodity_name ORDER BY sales;
+    </select>
+    <select id="getAllFruit" resultType="java.util.Map">
+        SELECT id, name FROM commodity WHERE shop_id = #{id};
+    </select>
+    <select id="gerOneFruitSales" resultType="java.util.Map">
+        SELECT inn.date AS date, SUM(inn.number) AS number
+        FROM (SELECT DATE_FORMAT(o.create_time, '%Y%m%d') date, COUNT(1) number FROM orders o
+                RIGHT JOIN order_info oi on o.order_id = oi.order_id
+                    WHERE oi.commodity_id = #{id} GROUP BY oi.order_id,date) inn
+        GROUP BY inn.date;
+    </select>
 
     <insert id="insertInfo">
         INSERT INTO commodity_info(commodity_id,specification,weight,stock,price,shop_id)

@@ -255,7 +255,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public R smsLogin(LoginVO loginVO) {
         User user = checkUser("phone", loginVO.getPhone());
-        String key = String.format(RedisKeyEnum.USER_LOGIN_KEY.getKey(), loginVO.getPhone());
+        String key = String.format(RedisKeyEnum.LOGIN_CODE_KEY.getKey(), loginVO.getPhone());
         String code = (String) redisTemplate.opsForValue().get(key);
         if (!loginVO.getCode().equals(code)) {
             throw new GlobalException(ExceptionEnum.VERIFICATION_CODE_ERROR);

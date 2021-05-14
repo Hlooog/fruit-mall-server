@@ -483,6 +483,24 @@ public class CommodityServiceImpl implements CommodityService {
         return R.ok();
     }
 
+    @Override
+    public R getSales(Integer id) {
+        List<Map<String, Integer>> list = commodityInfoMapper.selectSales(id);
+        return R.ok(list);
+    }
+
+    @Override
+    public R allFruit(Integer id) {
+        List<Map<Integer, String>> list = commodityInfoMapper.getAllFruit(id);
+        return R.ok(list);
+    }
+
+    @Override
+    public R oneFruit(Integer id) {
+        List<Map<Date, Integer>> list = commodityInfoMapper.gerOneFruitSales(id);
+        return R.ok(list);
+    }
+
     private void deleteImage(List<String> list) {
         commodityMapper.deleteImage(list);
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_OSS_DELETE,
